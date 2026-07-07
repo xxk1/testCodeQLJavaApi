@@ -1,0 +1,253 @@
+swagger: "2.0"
+info:
+  title: 课程包导入导出相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /coursebag/export:
+    post:
+      tags:
+        - "CourseBagExport"
+      summary: "课程包导出"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: exportCourseBag
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: versionId
+          in: query
+          description: 版本id
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: 用户ID
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /coursebag/import:
+    post:
+      tags:
+        - "CourseBagExport"
+      summary: "课程包导入"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: importCourseBag
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: "courseBag"
+          type: "file"
+          in: "formData"
+          description: "课程包信息（只支持zip文件）"
+          required: false
+        - name: versionId
+          in: query
+          description: 版本id
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: 用户ID
+          type: string
+          required: true
+        - name: userName
+          in: query
+          description: 用户名称
+          type: string
+          required: false
+        - name: uploadType
+          in: query
+          description: 上传类型(0:上传课程包，1:生成课程)
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /coursebag/list:
+    get:
+      tags:
+        - "CourseBagExport"
+      summary: "课程包打包列表"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: packCourseBag
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: 用户ID
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CoursePackageListVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /coursebag/list/record:
+    get:
+      tags:
+        - "CourseBagExport"
+      summary: "课程包生成导出记录"
+      description: "1.云课堂教师端-课程建设-导出使用"
+      operationId: recordCourseBag
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: versionId
+          in: query
+          description: 版本id
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: 用户ID
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CoursePackageListVo:
+    type: "object"
+    properties:
+      taskType:
+        type: "string"
+        description: "任务类型"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseId:
+        type: "string"
+        description: "课程ID"
+      versionId:
+        type: "string"
+        description: "版本ID"
+      fileSize:
+        type: "string"
+        description: "文件大小"
+      startTime:
+        type: "string"
+        description: "打包开始时间"
+      taskStatus:
+        type: "string"
+        description: "任务状态"
+      intranetFilePath:
+        type: "string"
+        description: "内网访问地址"
+      outerNetFilePath:
+        type: "string"
+        description: "外网访问地址"
+      physicalPath:
+        type: "string"
+        description: "文件物理路径"

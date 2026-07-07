@@ -1,0 +1,183 @@
+swagger: "2.0"
+info:
+  description: "我的大学回忆相关接口文档"
+  version: "1.0.0"
+  title: "我的大学回忆相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/api/v1"
+schemes:
+  - "http"
+paths:
+  '/myuniversity/highestscorecourseinfos':
+    get:
+      tags:
+        - "MyUniversity"
+      summary: "我的大学回忆-根据学生学号获取最高成绩课程信息"
+      description: "使用方：我的大学回忆"
+      operationId: "getMyUniversityHighestScoreCourseInfos"
+      parameters:
+        - name: "studentNo"
+          in: "query"
+          type: "string"
+          description: "学生学号"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/MyUniversityHighestScoreCourseInfoInfoVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "没有最高成绩课程信息(code:B10010)"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  '/myuniversity/attendclassstatisticsinfos':
+    get:
+      tags:
+        - "MyUniversity"
+      summary: "我的大学回忆-根据学生id统计第一堂课程、总课程数、总学时信息"
+      description: "使用方：我的大学回忆"
+      operationId: "getMyUniversityAttendClassStatisticsInfos"
+      parameters:
+        - name: "studentId"
+          in: "query"
+          type: "string"
+          description: "学生id"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/MyUniversityAttendClassStatisticsInfoVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "没有统计信息(code:B10010)"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  '/myuniversity/{studentId}/coursetableids':
+    get:
+      tags:
+        - "MyUniversity"
+      summary: "我的大学回忆-根据学生id获取学生学校所有上过课程开课id列表"
+      description: "使用方：1、内部调用"
+      operationId: "getStudentIdByCourseTableIds"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          type: "string"
+          description: "学生id"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTableIdVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "没有数据"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  MyUniversityHighestScoreCourseInfoInfoVo:
+    type: "object"
+    properties:
+      courseCode:
+        type: "string"
+        description: "课程编码"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      score:
+        type: "string"
+        description: "分数"
+
+  MyUniversityAttendClassStatisticsInfoVo:
+    type: "object"
+    properties:
+      firstClassYear:
+        type: "string"
+        description: "第一堂课年份"
+      firstClassMonth:
+        type: "string"
+        description: "第一堂课月份"
+      firstClassDay:
+        type: "string"
+        description: "第一堂课日"
+      firstClassHour:
+        type: "string"
+        description: "第一堂课时"
+      firstClassMinute:
+        type: "string"
+        description: "第一堂课分"
+      firstClassCourseName:
+        type: "string"
+        description: "第一堂课课程名称"
+      totalCourseNumber:
+        type: "string"
+        description: "总课程门数"
+      totalSegmentNumber:
+        type: "string"
+        description: "总课时数"
+  CourseTableIdVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "开课id"
+

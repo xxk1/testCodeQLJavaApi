@@ -1,0 +1,92 @@
+swagger: "2.0"
+info:
+  description: "课程管理相关接口"
+  version: "1.0.0"
+  title: "courseApi文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/courseleader":
+    post:
+      tags:
+        - "CourseLeader"
+      summary: "课程负责人转让"
+      description: "1、云课堂老师端课程管理调用"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'courseLeaderVo'
+          schema:
+            $ref: "#/definitions/CourseLeaderVo"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密验证失败"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到老师相关信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "该老师不是课程负责人"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CourseLeaderVo:
+    type: "object"
+    properties:
+      versionId:
+        type: string
+        description: "版本id"
+      managementPort:
+        type: "boolean"
+        description: "是否为管理端修改调用"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseLeaderId:
+        type: "string"
+        description: "课程负责人Id"
+      courseLeaderName:
+        type: "string"
+        description: "课程负责人姓名"
+      actionType:
+        type: "integer"
+        description: "0:转让并离开团队 1：转让"
+      teacherId:
+        type: "string"
+        description: "老师Id"
+      teacherNo:
+        type: "string"
+        description: "老师工号"
+      teacherName:
+        type: "string"
+        description: "老师姓名"

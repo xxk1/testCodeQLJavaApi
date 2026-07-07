@@ -1,0 +1,90 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "课表信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/coursetables/courseoccupancylablist":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "获取课程占用实验室信息"
+      description: "teaching项目使用"
+      operationId: getCourseOccupancyLabList
+      produces:
+        - "application/json"
+      parameters:
+        - name: "courseDates"
+          in: "query"
+          description: "课程日期（格式：yyyy-MM-dd；多个用“,”隔开，如：2019-02-02,2019-02-03）"
+          type: "string"
+          required: true
+        - name: "courseSegments"
+          in: "query"
+          description: "课程节次（多个用“,”隔开，如：1,2,3）"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "courseSegments=XXX&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功，返回实验室信息列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RoomResource"
+        '400':
+          description: 参数异常
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '403':
+          description: 传入的加密参数未通过验证
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '404':
+          description: 资源路径参数对应的资源未找到
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '500':
+          description: 文件操作IO异常等
+
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+
+
+  RoomResource:
+    type: "object"
+    properties:
+      roomId:
+        type: "string"
+        description: "教室Id"
+      roomCode:
+        type: "string"
+        description: "教室编号"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      courseSegments:
+        type: "string"
+        description: "课程节次（多个“,”拼接）"

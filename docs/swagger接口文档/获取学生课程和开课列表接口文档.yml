@@ -1,0 +1,107 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取学生课程和开课列表接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  /students/courseandcoursetableids:
+    get:
+      tags:
+        - "Students"
+      summary: "获取学生课程和开课列表信息"
+      description: "使用方：云课堂学生端AI伴学-一站式搜索"
+      operationId: "getCourseAndCourseTableIdsByStudentId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "学生Id"
+          type: "string"
+          required: true
+        - name: "openId"
+          in: "query"
+          description: "openId"
+          type: "string"
+          required: false
+        - name: "term"
+          in: "query"
+          description: "学期"
+          type: "integer"
+          required: false
+        - name: "schoolYear"
+          in: "query"
+          description: "学年"
+          type: "string"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/StudentCourseNameFirstSpell"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  StudentCourseNameFirstSpell:
+    type: "object"
+    properties:
+      firstSpell:
+        type: "string"
+        description: "首字母"
+      courseList:
+        type: "array"
+        items:
+          $ref: "#/definitions/StudentCourseAndCourseTableId"
+
+  StudentCourseAndCourseTableId:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseCode:
+        type: "string"
+        description: "课程code"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseTableIds:
+        type: "array"
+        items:
+          $ref: "string"
+        description: "开课id列表"
+      groupIds:
+        type: "array"
+        items:
+          $ref: "string"
+        description: "班级id列表"

@@ -1,0 +1,3607 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取课程信息的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/coursetables":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据课程id，老师Id和学期查询课表信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "courseIds"
+          type: "string"
+          in: "query"
+          description: "课程ID,多个用“,”隔开"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师Id"
+          required: true
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: true
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码courseIds=?&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  /CollegeResources:
+    get:
+      tags:
+        - "CollegeResources"
+      summary: "查询所有学院信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "collegeName"
+          in: "query"
+          description: "学院名称（模糊查询）"
+          type: "string"
+          required: false
+        - name: "courseInfoCollege"
+          in: "query"
+          description: "是否是开课学院"
+          type: "Integer"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CollegeResources"
+        400:
+          description: "参数不正确"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+  '/CourseResources':
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '查询课程信息'
+      description: ''
+      operationId: "getCourseResourcePage"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串'
+        - in: 'query'
+          name: 'collegeId'
+          type: string
+          description: '学院Id'
+          required: false
+        - in: 'query'
+          name: 'courseName'
+          type: string
+          description: '课程名称'
+          required: false
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: true
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+        - in: query
+          name: courseSource
+          type: integer
+          description: "课程来源 0：数据对接；1：课程管理老师新建"
+          required: false
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/CourseResourcesPageVo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseresources/courseinforesources:
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '根据课程名称查询课程信息'
+      description: '云课堂管理端使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串（&signKey=123123）'
+        - in: 'query'
+          name: 'courseName'
+          type: string
+          description: '课程名称'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseInfoResource"
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到
+        '500':
+          description: 文件操作IO异常等
+
+  /teachers/currentcoursetables:
+    get:
+      tags:
+        - "teachers"
+      summary: "接口-获取老师当前时间的课表简项信息"
+      description: "互动课堂使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseTableSimpleVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "当前时间不存在课表"
+        500:
+          description: "服务器异常"
+
+  /courseTables/studentCourseList:
+    get:
+      tags:
+        - "CourseStudentResource"
+      summary: "获取学生课程信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "学生Id"
+          type: "string"
+          required: false
+        - name: "openId"
+          in: "query"
+          description: "openId"
+          type: "string"
+          required: false
+        - name: "term"
+          in: "query"
+          description: "学期"
+          type: "integer"
+          required: true
+        - name: "schoolYear"
+          in: "query"
+          description: "学年"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码（userId=?&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseStudentResource"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到学生课程信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+  /courseteacher/{userId}:
+    get:
+      tags:
+        - "CourseTeacher"
+      summary: "查询上课老师课程信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "老师Id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码（userId=?&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTeacher"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到上课老师课程信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+  /coursetabledetails/{id}:
+    get:
+      tags:
+        - "CourseTableDetails"
+      summary: "通过课表明细id获取课表信息"
+      description: "1、互动课堂内部使用；2、督导听课提交内部使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "课表明细id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseTableInfo"
+        400:
+          description: "客户端错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课表明细的课表信息"
+        500:
+          description: "服务器异常"
+
+  "/coursetablesdayorweek":
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "获取课表信息（日课表，周课表公用）"
+      description: "小程序调用"
+      operationId: "getCourseTablesDayOrWeek"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码&signKey=123123"
+          type: "string"
+          required: true
+        - in: "body"
+          name: "courseparms"
+          description: "查询课表条件集合"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseParms"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseTableDate"
+        404:
+          description: "未找到日期信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/coursetables/{userId}":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学生Id,课程id和学期查询课表信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          type: "string"
+          in: "path"
+          description: "学生Id"
+          required: true
+        - name: "courseIds"
+          type: "string"
+          in: "query"
+          description: "课程ID,多个用“,”隔开"
+          required: true
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: true
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码userId=?&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/StudentHomepageCourse"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/courses":
+    post:
+      tags:
+        - "CourseResource"
+      summary: "保存课程"
+      description: "数据对接使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "courses"
+          in: "body"
+          required: true
+          description: "课程列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseInfo"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  /v1/courseTables/teacherCourseList:
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据老师Id和学期查询课表信息"
+      description: "云课堂前端使用"
+      operationId: "courseTablesTeacherCourseListGet"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "schoolYear"
+          in: query
+          description: 学年
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+        - name: userId
+          in: query
+          description: 老师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: 加密验证码userId=?&signKey=123123
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: courseStudentTypes
+          in: query
+          description: 允许的授课学生类型的开课
+          required: false
+          type: string
+        - name: isNeedDistinguish
+          in: query
+          description: "是否需要区分授课学生类型"
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResource"
+        '400':
+          description: 参数不正确
+        '401':
+          description: 解密验证失败
+        '404':
+          description: 未找到课表信息
+        '500':
+          description: 服务器异常
+
+  "/dibblingvideo/coursetable":
+    get:
+      tags:
+        - "DibblingVideo"
+      summary: "获取课程视频详情信息"
+      description: "云课堂-管理端"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "课表Id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseTableVo'
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  /evaluation/currentcoursetable:
+    get:
+      tags:
+        - "Evaluation"
+      summary: "获取老师当前时间的课表信息"
+      description: "小程序"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "delayTime"
+          type: "string"
+          in: "query"
+          description: "课后延长时间"
+          required: true
+        - name: "delayType"
+          type: "integer"
+          in: "query"
+          description: "延时类型：0:课后延迟时间；1:当天24点前"
+          required: true
+        - name: "advanceTime"
+          type: "string"
+          in: "query"
+          description: "课前提前时间"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EvaluationCourseTableVo"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        404:
+          description: "老师当前时间不存在正在上课的课表"
+        500:
+          description: "服务器异常"
+
+  '/allcourseresource':
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '获取所有课程信息，教研室管理、权限课程数据对接调用'
+      description: ''
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: "string"
+          description: 'MD5加密验证字符串（&signKey=123123）'
+      responses:
+        200:
+          description: "操作成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResourceVo"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+
+  /resource/testpapers:
+    get:
+      tags:
+        - TestPaper
+      summary: 根据courseId及teacherId获取备课包下测验资源
+      description: '互动课堂备课包获取该老师该课程下的测验资源,接口做排序'
+      operationId: getTestPapers
+      produces:
+        - '*/*'
+      parameters:
+        - name: courseId
+          in: query
+          description: 课程Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: teacherId
+          in: query
+          description: 教师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: testName
+          in: query
+          description: 测验名称
+          required: false
+          type: string
+        - name: validCode
+          in: query
+          description: '验证码（courseId={}&signKey=123123）'
+          required: true
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TestPaperResource'
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到
+        '409':
+          description: 自定义错误
+
+
+  "/realtimeschedule":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "获取课表信息（实时课表）"
+      description: "电子班牌调用（1：实时课表；2：巡课）"
+      parameters:
+        - name: "roomId"
+          in: "query"
+          description: "教室id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码roomId={xxx}&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/RealTimeSchedule"
+        404:
+          description: "未找到日期信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseresources/courseinfo:
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '根据课程名称/课程编号查询课程信息'
+      description: '云课堂小程序端使用'
+      operationId: "getCourseInfo"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串（&signKey=123123）'
+        - in: 'query'
+          name: 'courseNameOrNo'
+          type: string
+          description: '课程名称/课程编号'
+          required: true
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: true
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseInfoPageVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  /courseresources/courseinfos:
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '根据课程名称/课程编号模糊查询课程信息'
+      description: '教研室平台 添加已有课程使用 '
+      operationId: "getCourseInfos"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串（&signKey=123123）'
+        - in: 'query'
+          name: 'courseNameOrNo'
+          type: string
+          description: '课程名称/课程编号'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseInfoResourceVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  '/foundationcourse':
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '查询基础课程信息；相同课程名称去重'
+      description: '使用方：1.赏课'
+      operationId: getFoundationCourseList
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串'
+        - in: 'query'
+          name: 'courseName'
+          type: string
+          description: '课程名称'
+          required: false
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: true
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/FoundationCoursePageVo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  '/coursedeletestate':
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '查询基础课程删除状态'
+      description: '使用方：1.云课堂老师端——课程首页'
+      operationId: getCourseDeleteState
+      parameters:
+        - name: "courseId"
+          type: "string"
+          description: "课程id"
+          required: true
+          in: "query"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseId={xxx}&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            description: "课程删除状态（0：已删除；1：未删除）"
+            type: "boolean"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  '/course/{id}/delete':
+    post:
+      tags:
+        - 'CourseResources'
+      summary: '删除课程接口'
+      description: '1.云课堂老师端-课程管理删除课程；2.云课堂管理端-删除课程'
+      operationId: deleteCourse
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: '验证码：id=?&signKey=123123(md5加密)'
+        - in: 'path'
+          name: 'id'
+          type: string
+          description: '课程id'
+          required: true
+
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /course/{id}/coursename:
+    post:
+      tags:
+        - "CourseResources"
+      summary: "修改课程名称接口"
+      description: "1.云课堂老师端-课程建设修改课程名称"
+      operationId: updateCourseName
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: '验证码：id=?&signKey=123123(md5加密)'
+        - in: 'path'
+          name: 'id'
+          type: string
+          description: '课程id'
+          required: true
+        - in: 'query'
+          name: 'newCourseName'
+          type: string
+          description: '新课程名称'
+          required: true
+      responses:
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  /courseTables/teacherCourseMembers:
+    get:
+      tags:
+        - "CourseResources"
+      summary: "根据老师Id和学期查询课程和上课人数"
+      description: "小程序端使用"
+      operationId: "getTeacherCourseAndMembers"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "schoolYear"
+          in: query
+          description: 学年
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+        - name: userId
+          in: query
+          description: 老师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: 加密验证码userId=?&signKey=123123
+          required: true
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseAndMembers"
+        '400':
+          description: 参数不正确
+        '401':
+          description: 解密验证失败
+        '404':
+          description: 未找到课表信息
+        '500':
+          description: 服务器异常
+
+
+  '/coursetable/{courseTableDetailId}/coursetabledetail':
+    get:
+      tags:
+        - "CourseResources"
+      summary: "根据课表详情ID查询课程信息的接口"
+      description: "调用方： 1.轻课堂;2.云课堂听查课端——AI实时预警"
+      operationId: getCourseByCourseTableDetailId
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseTableDetailId={}&signKey=123123(md5加密)"
+          required: true
+        - name: "courseTableDetailId"
+          type: "string"
+          in: "path"
+          description: "课表详情ID"
+          required: true
+
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CoursetableResourceVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+  "/availablecourse":
+    get:
+      tags:
+        - "CourseResource"
+      summary: "根据查询在用的课程信息"
+      description: "云课堂RPC使用"
+      operationId: "getAvailableCourseInfo"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串(&signKey=123123)'
+        - in: 'query'
+          name: 'courseNameOrNo'
+          type: string
+          description: '课程名称或编号'
+        - in: 'query'
+          name: 'collegeId'
+          type: string
+          description: '学院id'
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseInfosTO"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  /v2/teachers/currentcoursetables:
+    get:
+      tags:
+        - "teachers"
+      summary: "接口-获取老师当前时间的课表简项信息"
+      description: "互动课堂使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TeacherCourseTableSimpleResource"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "当前时间不存在课表"
+        500:
+          description: "服务器异常"
+  "/course/allcourse":
+    get:
+      tags:
+        - "courses"
+      summary: "获取所有课程信息"
+      description: "期末评教获取所有课程信息"
+      produces:
+        - "application/json"
+      operationId: "getAllCourseList"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseData"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseresources/courseno:
+    get:
+      tags:
+        - 'CourseResources'
+      summary: '根据课程编号精确查询课程信息'
+      description: '调用方:teachingApi-题库导入接口'
+      operationId: "getCourseInfoByCourseNo"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串（&signKey=123123）'
+        - in: 'query'
+          name: 'courseNo'
+          type: string
+          description: '课程编号'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseInfoVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "查询课程为空"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  "/courseresources":
+    post:
+      tags:
+        - "CourseResources"
+      summary: "新增课程"
+      description: "使用方：1、云课堂管理端-课程信息数据-课程信息"
+      operationId: "addCourse"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "courseResourceInfoVo"
+          in: "body"
+          required: true
+          description: "课程列表"
+          schema:
+            $ref: "#/definitions/CourseResourceInfoVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  "/courseinfosbycollegeid":
+    post:
+      tags:
+        - "CourseResources"
+      summary: "根据学院id获取学院下得所有课程"
+      description: "使用方：1、学业支持-内部调用"
+      operationId: "getCourseInfosByColegeIds"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "collegeIds"
+          in: "body"
+          required: true
+          description: "课程Id列表"
+          schema:
+            type: array
+            items:
+              type: string
+
+      responses:
+        200:
+          description: '成功'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CollegeCourseResource'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  "/coursetables/coursestructures":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学年学期获取老师课表课程及结构"
+      description: "1、互动课堂"
+      operationId: "getTeacherCourseTableCourseStructures"
+      parameters:
+        - name: "schoolYear"
+          in: query
+          description: "学年"
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: "term"
+          in: query
+          description: "学期"
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+        - name: "teacherId"
+          in: query
+          description: "老师Id"
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingCourseInfo"
+        '400':
+          description: "参数异常，接受传入的参数类型不正确、必填参数未填写"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '403':
+          description: "传入的加密参数未通过验证"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '404':
+          description: "资源路径参数对应的资源未找到"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '500':
+          description: "服务器异常"
+
+  /coursetables/teachercourseinfos:
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据老师Id查询当前学期查询开课详细信息"
+      description: "1、云课堂老师端"
+      operationId: "getTeacherCourseInfos"
+      produces:
+        - "application/json"
+      parameters:
+        - name: userId
+          in: query
+          description: 老师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: 加密验证码userId=?&signKey=123123
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: courseStudentTypes
+          in: query
+          description: 允许的授课学生类型的开课
+          required: false
+          type: string
+        - name: isNeedDistinguish
+          in: query
+          description: "是否需要区分授课学生类型"
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeacherCourseResource"
+        '400':
+          description: 参数不正确
+        '401':
+          description: 解密验证失败
+        '404':
+          description: 未找到课表信息
+        '500':
+          description: 服务器异常
+  '/evaluation/polymerizecourseinfos':
+    post:
+      tags:
+        - "Evaluation"
+      summary: "根据相关参数获取开课学院课程聚合数据"
+      description: "1、随堂评教评教进度内部调动"
+      operationId: getPolymerizeCourseInfoList
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "polymerizeCourseInfoParam"
+          description: "查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/PolymerizeCourseInfoParam"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PolymerizeCourseInfoModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  "/course/courseimageinfos":
+    post:
+      tags:
+        - "courses"
+      summary: "根据课程id(多个,拼接)获取课程图片信息列表"
+      description: "期末评教获取所有课程信息"
+      produces:
+        - "application/json"
+      operationId: "getCourseImageInfos"
+      parameters:
+        - in: "body"
+          name: "courseImageInfoQueryParam"
+          description: "查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseImageInfoQueryParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseImageInfoVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/coursetabledetails/times":
+    post:
+      tags:
+        - "CourseResources"
+      summary: "根据课表id列表获取课表时间(开始时间和结束时间)"
+      description: "1、内部使用"
+      operationId: "getCourseTableDetailTimeVoList"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "courseTableDetailIdList"
+          in: "body"
+          description: "课表列表"
+          required: true
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTableDetailTimeVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  "/coursetabledetails/currenttimestatistics":
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "根据当前时间获取节次信息及课表数,如果当前时间不在上课时间,获取今天当前时间之前课表数"
+      description: "内部调用"
+      operationId: getCurrentTimeStatistics
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "currentTimeStatisticsParam"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/CurrentTimeStatisticsParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CurrentTimeStatisticsModel"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /coursetabledetails/studentmonthteachingcalendarlist:
+    get:
+      tags:
+        - "CourseTableDetails"
+      summary: "根据年月获取学生本学期这年月教学日历列表"
+      description: "1、web云课堂学生端"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "yearMonth"
+          type: "string"
+          in: "query"
+          description: "年月(yyyy-MM)"
+          required: true
+        - name: "studentId"
+          type: "string"
+          in: "query"
+          description: "学生id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingCalendarResource"
+        400:
+          description: "客户端错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课表明细的课表信息"
+        500:
+          description: "服务器异常"
+
+  /courseTableDetail/{id}/status:
+    get:
+      tags:
+        - "CourseTableDetails"
+      summary: "根据课程表详情ID获取课程状态"
+      description: "1、teachingapi调用"
+      operationId: "getCourseTableDetailStatusById"
+      parameters:
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "课程表详情ID"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id={}&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseTableDetailStatusResource"
+        400:
+          description: "客户端错误"
+          schema:
+              $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/coursetabledetails/waitattendclasscoursetabledetails":
+    post:
+      tags:
+        - "CourseTableDetails"
+      summary: "根据相关信息获取待上课的课表列表"
+      description: "内部调用"
+      operationId: getWaitAttendClassCourseTableDetails
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "waitAttendClassCourseTableDetailParam"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/WaitAttendClassCourseTableDetailParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTableDetailResourceModel"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseTableDetail/terms:
+    get:
+      tags:
+        - "CourseTableDetails"
+      summary: "根据课程id和用户id查询开课学年学期列表"
+      description: "1、云课堂老师端"
+      operationId: "getCourseTableTermList"
+      parameters:
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+        - name: "userId"
+          type: "string"
+          in: "query"
+          description: "用户id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id={}&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTableTerm"
+        400:
+          description: "客户端错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /coursetabledetail/live:
+    post:
+      tags:
+        - "CourseTableDetail"
+      summary: "查询能够直播的课表信息"
+      description: "1.云课堂听查课端-在线巡课使用"
+      operationId: "coursetabledetailLivePost"
+      consumes:
+        - "application/json"
+      produces:
+        - '*/*'
+      parameters:
+        - name: "collegeId"
+          in: "query"
+          description: "学院Id"
+          required: false
+          type: "string"
+        - name: "collegeName"
+          in: "query"
+          description: "学院名称"
+          required: false
+          type: "string"
+        - in: "body"
+          name: "courseTableDetailPageRequest"
+          description: "在线巡课查询条件"
+          required: true
+          schema:
+            $ref: '#/definitions/CourseTableDetailPageRequest'
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseTableDetailPageResource'
+        '400':
+          description: "参数不正确"
+        '403':
+          description: "验证码错误"
+        '500':
+          description: "服务器异常"
+
+  /coursetabledetail/administrativeclass/live:
+    post:
+      tags:
+        - "CourseTableDetail"
+      summary: "根据行政班查询能够直播的课表信息"
+      description: "1.云课堂听查课端-辅导员巡课"
+      operationId: "getLiveCourseTableDetailListByAdministrativeClassIdList"
+      consumes:
+        - "application/json"
+      produces:
+        - '*/*'
+      parameters:
+        - in: "body"
+          name: "pageRequest"
+          description: "辅导员巡课查询条件"
+          required: true
+          schema:
+            $ref: '#/definitions/CourseTableDetailAdministrativeClassPageRequest'
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseTableDetailPageResource'
+        '400':
+          description: "参数不正确"
+        '403':
+          description: "验证码错误"
+        '500':
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CourseTableDetailPageRequest:
+    type: "object"
+    properties:
+      collegeIds:
+        type: "string"
+        description: "学院id,多个以“，”分割"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      courseIds:
+        type: "string"
+        description: "课程Id,多个以“，”分割"
+      roomIdList:
+        type: "array"
+        description: "上课教室Id集合"
+        items:
+          type: string
+      courseStudentTypeIds:
+        type: "string"
+        description: "开课类型"
+      isDistinguishCourseStudentType:
+        type: "string"
+        description: "是否需要区分授课学生类型"
+      page:
+        type: "integer"
+        format: "int32"
+        description: "当前页数"
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "每页条数"
+      searchCourseName:
+        type: "string"
+        description: "高级搜索-课程名称模糊查询条件"
+      searchParams:
+        type: "string"
+        description: "查询条件 老师名称或者课程名称"
+      searchRoomName:
+        type: "string"
+        description: "高级搜索-教室名称模糊查询条件"
+      searchTeacherName:
+        type: "string"
+        description: "高级搜索-教师姓名模糊查询条件"
+      segment:
+        type: "string"
+        description: "节次"
+      sourceDataSource:
+        type: "string"
+        description: "数据来源"
+      studentType:
+        type: "integer"
+        format: "int32"
+        description: "开课类型"
+  CourseTableDetailAdministrativeClassPageRequest:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        format: "int32"
+        description: "当前页数"
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "每页条数"
+      administrativeClassIds:
+        type: "string"
+        description: "行政班id,多个以“，”分割"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      segment:
+        type: "string"
+        description: "节次"
+      searchParams:
+        type: "string"
+        description: "查询条件 老师名称或者课程名称"
+      searchRoomName:
+        type: "string"
+        description: "高级搜索-教室名称模糊查询条件"
+      searchCourseName:
+        type: "string"
+        description: "高级搜索-课程名称模糊查询条件"
+      searchTeacherName:
+        type: "string"
+        description: "高级搜索-教师姓名模糊查询条件"
+      sourceDataSource:
+        type: "string"
+        description: "数据来源"
+
+  CourseTableDetailPageResource:
+    type: "object"
+    properties:
+      courseTableDetailList:
+        type: "array"
+        items:
+          $ref: '#/definitions/CourseTableDetailResource'
+      page:
+        type: "integer"
+        format: "int32"
+        example: 10
+        description: "当前页"
+      pageCount:
+        type: "integer"
+        format: "int32"
+        description: "总页数"
+      pageSize:
+        type: "integer"
+        format: "int32"
+        example: 10
+        description: "每页个数"
+      total:
+        type: "integer"
+        format: "int32"
+        example: 10
+        description: "总条数"
+
+  CourseTableDetailResource:
+    type: "object"
+    properties:
+      buildName:
+        type: "string"
+        description: "教学楼"
+      classCompositionName:
+        type: "string"
+        description: "班级组成"
+      collegeId:
+        type: "string"
+        description: "学院名称"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseAttrName:
+        type: "string"
+        description: "课程类别"
+      courseCode:
+        type: "string"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseKind:
+        type: "integer"
+        format: "int32"
+        description: "课表类型  0：理论课；1：实践课"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseTableId:
+        type: "string"
+      courseType:
+        type: "string"
+        description: "课程类型"
+      currentSegment:
+        type: "integer"
+        format: "int32"
+        description: "当前所处节次"
+      groupId:
+        type: "string"
+        description: "组编号"
+      groupName:
+        type: "string"
+        description: "组名称"
+      groupNo:
+        type: "string"
+        description: "组编号"
+      hasLive:
+        type: "boolean"
+        description: "是否直播"
+      id:
+        type: "string"
+        description: "课表id"
+      roomId:
+        type: "string"
+        description: "教室id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segments:
+        type: "string"
+        description: "节次"
+      source:
+        type: "integer"
+        format: "int32"
+        description: "班级类型"
+      sourceDataSource:
+        type: "string"
+      sourceDataSourceName:
+        type: "string"
+      studentNum:
+        type: "object"
+        description: "学生人数"
+      studentType:
+        type: "integer"
+        format: "int32"
+        description: "学生类型"
+      studentTypeName:
+        type: "string"
+        description: "学生类型名称"
+      teacherName:
+        type: "string"
+        description: "教师名称"
+      teacherNameAndNo:
+        type: "string"
+        description: "教师姓名和编号（格式：名称 编号）"
+      teacherResourceList:
+        type: "array"
+        items:
+          $ref: '#/definitions/TeacherResource'
+      term:
+        type: "string"
+        description: "学期"
+      week:
+        type: "string"
+        description: "周次"
+      weekNum:
+        type: "string"
+        description: "星期几"
+
+  TeacherResource:
+    type: "object"
+    properties:
+      teacherCollegeId:
+        type: "string"
+      teacherCollegeName:
+        type: "string"
+      teacherId:
+        type: "string"
+        description: "教师id"
+      teacherName:
+        type: "string"
+        description: "教师名称"
+      teacherNo:
+        type: "string"
+        description: "教师工号"
+
+  CourseTableTerm:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "string"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      description:
+        type: "string"
+        description: "学期描述"
+      schoolYearTermNickName:
+        type: "string"
+        description: "学年学期昵称"
+
+  TeachingCalendarResource:
+    type: "object"
+    properties:
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      hasCourseTable:
+        type: "boolean"
+        description: "是否有课表"
+
+  CourseInfoResourceVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程ID"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      teachingUserType:
+        type: "string"
+        description: "授课对象"
+      classHours:
+        type: "string"
+        description: "学时"
+      courseContent:
+        type: "string"
+        description: "课程内容"
+      teachingMaterial:
+        type: "string"
+        description: "教材"
+      referenceMaterials:
+        type: "string"
+        description: "参考教材"
+
+  CoursetableResourceVo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "课程ID"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细ID"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      courseDate:
+        type: "string"
+        description: "上课时间"
+      classHour:
+        type: "string"
+        description: "第几节次"
+      teacherName:
+        type: "string"
+        description: "上课老师名称"
+      teacherId:
+        type: "string"
+        description: "上课老师ID"
+      teacherNo:
+        type: "string"
+        description: "上课老师编号"
+      term:
+        type: "string"
+        description: "学期"
+      className:
+        type: "string"
+        description: "上课班级名称"
+      collegeId:
+        type: "string"
+        description: "学院ID"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      segmentList:
+        type: "string"
+        description: "节次信息"
+      week:
+        type: "string"
+        description: "第几周"
+      weekNum:
+        type: "string"
+        description: "周几"
+      startDate:
+        type: "string"
+        description: "学期开始时间"
+      isInClass:
+        type: boolean
+        description: "是否上课中"
+      courseAttrName:
+        type: "string"
+        description: "课程属性名称"
+      studentNum:
+        type: "integer"
+        description: "上课人数"
+      roomId:
+        type: "string"
+        description: "教室ID"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      majorName:
+        type: "string"
+        description: "专业名称"
+      teacherInfoList:
+        type: array
+        description: "上课老师集合"
+        items:
+          $ref: "#/definitions/TeacherInfo"
+
+  TeacherInfo:
+    type: "object"
+    properties:
+      teacherId:
+        type: string
+        description: "老师id"
+      teacherName:
+        type: string
+        description: "老师姓名"
+      teacherNo:
+        type: string
+        description: "老师编号"
+      teacherTitle:
+        type: string
+        description: "老师职称"
+
+  CourseAndMembers:
+    type: "object"
+    properties:
+      teachingClassId:
+        type: "string"
+        description: "上课班级Id"
+      teachingClassMembers:
+        type: "integer"
+        description: "上课班级人数"
+      teachingClassTeacherName:
+        type: "string"
+        description: "上课老师"
+
+  CourseInfo:
+    type: "object"
+    properties:
+      courseCode:
+        type: "string"
+        description: "课程编码"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseType:
+        type: "string"
+        description: "课程类别"
+
+  CourseResource:
+    type: "object"
+    properties:
+      studentType:
+        type: "integer"
+        description: "开课类型"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseSource:
+        type: integer
+        description: "课程来源 0：对接；1：新增"
+      courseCollegeId:
+        type: "string"
+        description: "课程学院id"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      courseCollegeCode:
+        type: "string"
+        description: "课程学院编号"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teachingClassName:
+        description: "上课班级列表"
+        type: "array"
+        items:
+          properties:
+            source:
+              type: "string"
+              description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+            teachingClassId:
+              type: "string"
+              description: "上课班级Id"
+            teachingClassName:
+              type: "string"
+              description: "上课班级"
+            teachingClassNo:
+              type: "string"
+              description: "上课班级编号"
+            teachingClassMembers:
+              type: "integer"
+              description: "上课班级人数"
+            courseTableId:
+              type: "string"
+              description: "主课表id"
+            studentType:
+              type: "integer"
+              description: "课程开课类型： 0：本科生 1：研究生"
+            teachingClassTeacherName:
+              type: "string"
+              description: "上课老師"
+            classNickName:
+              type: "string"
+              description: "班级昵称"
+            classCompositionName:
+              type: "string"
+              description: "班级组成名称"
+            courseTableCollegeId:
+              type: "string"
+              description: "开课学院id"
+            courseTableCollegeName:
+              type: "string"
+              description: "开课学院名称"
+            groupAttributeValue:
+              type: "integer"
+              description: "班级属性编号"
+            groupAttributeName:
+              type: "integer"
+              description: "班级属性名称"
+
+  CourseTableSimpleVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "组id"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      roomIds:
+        type: string
+        description: "上课教室，多个使用逗号隔开"
+
+  TeacherCourseTableSimpleResource:
+    type: "object"
+    properties:
+      courseName:
+        type: string
+        description: "课程名称"
+      groupName:
+        type: string
+        description: "班级名称"
+      groupNo:
+        type: string
+        description: "班级编号"
+      groupMemberNum:
+        type: integer
+        description: "班级人数"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "组id"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseCollegeId:
+        type: "string"
+        description: "课程学院id"
+      courseCollegeName:
+        type: "string"
+        description: "课程学院名称"
+      courseCollegeCode:
+        type: "string"
+        description: "课程学院编号"
+      roomIds:
+        type: string
+        description: "上课教室，多个使用逗号隔开"
+      studentType:
+        type: integer
+        description: "课程开课类型"
+
+  CourseStudentResource:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseCategoryId:
+        type: "integer"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      teachingClasses:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseResourceStudentClassName"
+        description: "上课班级列表"
+
+  CourseResourceStudentClassName:
+    type: "object"
+    properties:
+      classId:
+        type: "string"
+        description: "班级Id"
+      className:
+        type: "string"
+        description: "班级名称"
+      classMembers:
+        type: "integer"
+        description: "班级人数"
+
+  CourseTeacher:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCategory:
+        type: "integer"
+        description: "课程类别"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+
+  StudentHomepageCourse:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      teachingClassName:
+        description: "上课班级列表"
+        type: "array"
+        items:
+          properties:
+            teachingClassId:
+              type: "string"
+              description: "上课班级Id(学生所在班级)"
+            teachingClassName:
+              type: "string"
+              description: "上课班级(学生所在班级)"
+            teachingClassMembers:
+              type: "integer"
+              description: "上课班级人数"
+
+  CourseTableInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "课表id"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      studentType:
+        type: "integer"
+        description: "课程开课类型：0：本科生 1：研究生"
+      courseTeacherName:
+        type: "string"
+        description: "课程老师姓名（多个逗号分割）"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      source:
+        type: "integer"
+        description: "来源"
+      weekType:
+        type: "integer"
+        description: "周类型"
+      groupId:
+        type: "string"
+        description: "组id"
+      groupName:
+        type: "string"
+        description: "组名称"
+      groupNo:
+        type: "string"
+        description: "组编号"
+      collegeId:
+        type: "string"
+        description: "开课学院id"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      courseTypeId:
+        type: "string"
+        description: "课程类型id"
+      courseTypeName:
+        type: "string"
+        description: "课程类型名称"
+      courseTableDetails:
+        type: "array"
+        description: "课表明细列表"
+        items:
+          $ref: "#/definitions/CourseTableDetailInfo"
+
+  CourseTableDetailInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "课表明细id"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      week:
+        type: "string"
+        description: "第几周"
+      weekNum:
+        type: "integer"
+        description: "周几"
+      segment:
+        type: "string"
+        description: "节次"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+      courseTableDetailSegmentVoList:
+        type: "array"
+        description: "课表明细节次列表"
+        items:
+          $ref: "#/definitions/CourseTableDetailSegmentVo"
+      courseTableDetailTeachers:
+        type: "array"
+        description: "课表明细老师列表"
+        items:
+          $ref: "#/definitions/CourseTableDetailTeacherInfo"
+
+  CourseTableDetailTeacherInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "课表明细老师明细id"
+      teacherId:
+        type: "string"
+        description: "老师id"
+      teacherName:
+        type: "string"
+        description: "老师姓名"
+      teacherNo:
+        type: "string"
+        description: "老师工号"
+      teacherTitle:
+        type: "string"
+        description: "老师职称"
+      teacherCollegeId:
+        type: "string"
+        description: "老师所属学院id"
+      teacherCollegeName:
+        type: "string"
+        description: "老师所属学院名称"
+
+  CourseResourcesPageVo:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      CourseResourcesList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseInfoResource'
+
+  CourseInfoResource:
+    type: object
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseLeaderId:
+        type: "string"
+        description: "课程负责人id"
+      courseLeaderName:
+        type: "string"
+        description: "课程负责人名称"
+      courseSource:
+        type: integer
+        description: "课程来源 0：数据对接；1：课程管理新建"
+      courseClassNum:
+        type: integer
+        description: "课程班级数量 biginteger类型"
+      operatorName:
+        type: "string"
+        description: "操作人"
+
+  CollegeResources:
+    type: "object"
+    properties:
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseInfoCollege:
+        type: "integer"
+        description: "是否是开课学院，0：是，1：否"
+      courseTableCollege:
+        type: "integer"
+        description: "是否是开课课表学院，0：是，1：否"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  CourseParms:
+    type: "object"
+    properties:
+      roomId:
+        type: string
+        description: "教室id"
+      courseDate:
+        type: string
+        description: "课程日期"
+      teacherId:
+        type: string
+        description: "教师id"
+      studentId:
+        type: string
+        description: "学生id"
+      week:
+        type: integer
+        description: "周次数"
+      courseInfoId:
+        type: string
+        description: "开课id不为空时，课程日期默认全部"
+      schoolYear:
+        type: string
+        description: "学年"
+      term:
+        type: integer
+        description: "学期"
+
+  CourseTableVo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "组Id"
+      groupName:
+        type: "string"
+        description: "组名称"
+      groupMember:
+        type: "integer"
+        description: "学生人数"
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseCategory:
+        type: "integer"
+        enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        description: "课程类别 0:必修 1:选修 2: 公选 3:指选 4:国际课 5:双学位 6:其他"
+
+  EvaluationCourseTableVo:
+    type: "object"
+    properties:
+      collegeId:
+        type: "string"
+        description: "开课学院Id"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      startTime:
+        type: "string"
+        description: "开始时间"
+      endTime:
+        type: "string"
+        description: "结束时间"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      courseTypeId:
+        type: "integer"
+        description: "课程类型Id"
+      courseTypeName:
+        type: "string"
+        description: "课程类型名称"
+      courseTableCount:
+        type: "integer"
+        description: "课表次数"
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      studentType:
+        type: "integer"
+        description: "课程开课类型 0：本科生 1：研究生"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "组id"
+      groupName:
+        type: "string"
+        description: "组名称"
+      segment:
+        type: 'string'
+        description: '节次'
+      week:
+        type: 'string'
+        description: '周次'
+      weekNum:
+        type: 'integer'
+        description: '周几'
+      roomId:
+        type: "string"
+        description: "教室Id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      classCompositionName:
+        type: "string"
+        description: "班级组成名称"
+      source:
+        type: "string"
+        description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+
+  CourseResourceVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  CourseTableDate:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      startTime:
+        type: "string"
+        description: "课表开始时间 yyyy-MM-dd HH:mm:ss"
+      endTime:
+        type: "string"
+        description: "课表结束时间 yyyy-MM-dd HH:mm:ss"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseDate:
+        type: "string"
+        description: "上课时间"
+      weekNum:
+        type: "integer"
+        description: "周几"
+      roomId:
+        type: "string"
+        description: "上课教室id"
+      roomName:
+        type: "string"
+        description: "上课教室名称"
+      status:
+        type: "integer"
+        enum:
+          - 0
+          - 1
+          - 2
+        description: "课表状态:0-未上课,1-上课中，2-已下课"
+      segmentList:
+        description: "节次列表"
+        type: array
+        items:
+          $ref: "#/definitions/CourseTableDateSegmentList"
+
+      courseName:
+        type: string
+        description: "课程名称"
+      courseId:
+        type: string
+        description: "课程id"
+      teachingClassName:
+        type: string
+        description: "上课班级"
+      teachingClassId:
+        type: string
+        description: "班级id"
+      courseAttr:
+        type: integer
+        enum:
+          - 0
+          - 1
+        description: "0:课标班 1:辅导班"
+      collegeId:
+        type: string
+        description: '学院id'
+      collegeName:
+        type: string
+        description: '学院名称'
+      segment:
+        type: "string"
+        description: "节次"
+      nowWeek:
+        type: "string"
+        description: "当前周次"
+      studentCount:
+        type: "string"
+        description: "选课人数"
+      courseType:
+        type: "integer"
+        enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        description: "0:必修 1:选修 2: 公选 3:指选 4:国际课 5:双学位 6:其他"
+      courseTypeName:
+        type: "string"
+        description: "课程类型名称"
+      weekType:
+        type: "string"
+        description: "单双周"
+      className:
+        type: "string"
+        description: "上课班级"
+      courseCategory:
+        type: "integer"
+        description: "课程种类id"
+      courseCategoryName:
+        type: "string"
+        description: "课程种类名称"
+      projectNames:
+        type: "string"
+        description: "项目名称，多个用逗号隔开"
+
+  CourseTableDateSegmentList:
+    type: "object"
+    properties:
+      segment:
+        type: integer
+        description: "节次"
+      startTime:
+        type: string
+        description: "开始时间"
+      endTime:
+        type: string
+        description: "结束时间"
+
+  TestPaperResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 试卷id
+      name:
+        type: string
+        description: 试卷名称
+      courseResourceId:
+        type: string
+        description: 资源id
+      courseStructureId:
+        type: string
+        description: 课程结构id
+
+  RealTimeSchedule:
+    type: object
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "当前课表详情id"
+      nowCourseName:
+        type: "string"
+        description: "当前课程名称"
+      nowCourseDate:
+        type: "string"
+        description: "当前课程日期"
+      nowCourseWeek:
+        type: "string"
+        description: "当前课程星期"
+      nowCourseRoomName:
+        type: "string"
+        description: "当前课程教室名称"
+      nowCourseCollegeName:
+        type: "string"
+        description: "当前课程学院名称"
+      nowCourseCategoryName:
+        type: "string"
+        description: "当前课程类别名称"
+      nowCourseCategoryId:
+        type: "string"
+        description: "当前课程类别Id"
+      nowCourseSection:
+        type: "string"
+        description: "当前课程节次，如：1,2"
+      nowCourseWeekly:
+        type: "string"
+        description: "周次"
+      nowCourseSectionTime:
+        type: "string"
+        description: "当前课程节次时间，如：08:00-10:00"
+      nowCourseTeacherName:
+        type: "string"
+        description: "当前课程老师名称"
+      nowCourseGroupName:
+        type: "string"
+        description: "当前课程分组名称"
+      nowCourseGroupCount:
+        type: "string"
+        description: "当前课程分组总人数"
+      nowProjectName:
+        type: string
+        description: "当前课表项目名称，多个使用逗号隔开"
+      nextCourseName:
+        type: "string"
+        description: "下一节课程名称"
+      nextCourseTime:
+        type: "string"
+        description: "下一节课程节次时间（如：11:45-12:30）"
+      nextCourseTeacherName:
+        type: "string"
+        description: "下一节课程老师名称"
+      nextCourseSegment:
+        type: string
+        description: "下节课的节次信息"
+      nextProjectName:
+        type: string
+        description: "下节课表项目名称，多个使用逗号隔开"
+
+  CourseInfoPageVo:
+    type: "object"
+    properties:
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      total:
+        type: "integer"
+        description: "总条数"
+      page:
+        type: 'integer'
+        description: '当前页'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+      courseInfoVos:
+        type: "array"
+        items:
+          $ref: '#/definitions/CourseInfoVo'
+
+  CourseInfoVo:
+    type: "object"
+    properties:
+      studentType:
+        type: "integer"
+        description: "开课类型"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+
+  FoundationCoursePageVo:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      FoundationCourseList:
+        type: array
+        items:
+          $ref: '#/definitions/FoundationCourseVo'
+
+  FoundationCourseVo:
+    type: object
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+
+  CourseInfosTO:
+    type: object
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeName:
+        type: string
+        description: '学院名称'
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      collegeId:
+        type: "string"
+        description: "学院编号"
+
+  CourseData:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseTypeId:
+        type: "string"
+        description: "课程类型id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      collegeId:
+        type: "string"
+        description: "学院编号"
+      collegeName:
+        type: "string"
+        description: "所在学院名称"
+
+  CourseResourceInfoVo:
+    type: "object"
+    properties:
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      operatorId:
+        type: "string"
+        description: "操作人Id"
+      operatorName:
+        type: "string"
+        description: "操作人姓名"
+
+  CollegeCourseResource:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      teacherId:
+        type: "string"
+        description: "老师ID"
+      teacherName:
+        type: "string"
+        description: "老师名称"
+
+  TeachingCourseInfo:
+    properties:
+      courseId:
+        type: 'string'
+        description: '课程Id'
+      versionId:
+        type: string
+        description: '版本Id'
+      courseCode:
+        type: 'string'
+        description: '课程编号'
+      courseName:
+        type: 'string'
+        description: '课程名称'
+      courseTeachingTeamId:
+        type: 'string'
+        description: '课程教学团队Id'
+      courseStructureInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseStructureInfo'
+
+  CourseStructureInfo:
+    properties:
+      courseStructureId:
+        type: 'string'
+        description: '课程结构id'
+      parentId:
+        type: 'string'
+        description: '父id'
+      courseStructureName:
+        type: 'string'
+        description: '课程结构名称'
+      showOrder:
+        type: 'integer'
+        description: '排序字段'
+      childStructureList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseStructureInfo'
+
+  TeacherCourseResource:
+    type: "object"
+    properties:
+      studentType:
+        type: "integer"
+        description: "开课类型"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseSource:
+        type: integer
+        description: "课程来源 0：对接；1：新增"
+      courseCollegeId:
+        type: "string"
+        description: "课程学院id"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      courseCollegeCode:
+        type: "string"
+        description: "课程学院编号"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teachingClassCount:
+        type: "integer"
+        description: "教学班个数"
+      teachingClassStudentCount:
+        type: "integer"
+        description: "教学班学生个数"
+      totalClassHour:
+        type: "integer"
+        description: "总课时"
+      completeClassHour:
+        type: "integer"
+        description: "完成课时"
+      teachingClassName:
+        description: "上课班级列表"
+        type: "array"
+        items:
+          properties:
+            source:
+              type: "string"
+              description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+            teachingClassId:
+              type: "string"
+              description: "上课班级Id"
+            teachingClassName:
+              type: "string"
+              description: "上课班级"
+            teachingClassNo:
+              type: "string"
+              description: "上课班级编号"
+            teachingClassMembers:
+              type: "integer"
+              description: "上课班级人数"
+            courseTableId:
+              type: "string"
+              description: "主课表id"
+            studentType:
+              type: "integer"
+              description: "课程开课类型： 0：本科生 1：研究生"
+            teachingClassTeacherName:
+              type: "string"
+              description: "上课老師"
+            classNickName:
+              type: "string"
+              description: "班级昵称"
+            classCompositionName:
+              type: "string"
+              description: "班级组成名称"
+            courseTableCollegeId:
+              type: "string"
+              description: "开课学院id"
+            courseTableCollegeName:
+              type: "string"
+              description: "开课学院名称"
+            groupAttributeValue:
+              type: "integer"
+              description: "班级属性编号"
+            groupAttributeName:
+              type: "integer"
+              description: "班级属性名称"
+
+  CourseTableDetailSegmentVo:
+    type: object
+    properties:
+      segment:
+        type: "integer"
+        description: "节次"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+
+  PolymerizeCourseInfoParam:
+    type: "object"
+    properties:
+      termBaseModelList:
+        type: array
+        description: "学期基本模型列表"
+        items:
+          $ref: "#/definitions/TermBaseModel"
+      collegeIds:
+        type: "string"
+        description: "学院ids(逗号分隔)"
+      studentTypes:
+        type: "string"
+        description: "学生类型（学生类型拼接(逗号分隔,0-本科生，1-研究生),'' or null-全部）"
+
+  PolymerizeCourseInfoModel:
+    type: "object"
+    properties:
+      termId:
+        type: "string"
+        description: "学期id"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeId:
+        type: "string"
+        description: "开课学院id"
+      collegeCode:
+        type: "string"
+        description: "开课学院编号"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+
+  TermBaseModel:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+
+  CourseImageInfoVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      innerIp:
+        type: "string"
+        description: "内网ip"
+      outerIp:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+
+  CourseImageInfoQueryParam:
+    type: "object"
+    properties:
+      courseIds:
+        type: "string"
+        description: "课程id(多个,拼接)"
+
+  CourseTableDetailTimeVo:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+
+  CurrentTimeStatisticsModel:
+    type: "object"
+    properties:
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      isInClassCourseTable:
+        type: integer
+        description: "是否存在正在上课课表 0:否；1：是"
+      inClassCourseTableSegment:
+        type: integer
+        description: "正在上课课表节次"
+      inClassCourseTableSegmentStartTime:
+        type: string
+        description: "正在上课课表节次开始时间"
+      inClassCourseTableSegmentEndTime:
+        type: string
+        description: "正在上课课表节次结束时间"
+      inClassCourseTableDetailCount:
+        type: integer
+        description: "正在上课课表数"
+      historyCourseTableDetailCount:
+        type: integer
+        description: "当前时间之前今天课表数"
+      courseTableDetailIdList:
+        type: "array"
+        description: "课表明细id列表"
+        items:
+          type: "string"
+
+  CurrentTimeStatisticsParam:
+    type: "object"
+    properties:
+      isDistinguishCourseStudentType:
+        type: "string"
+        description: "是否需要区分授课学生类型（0或null-不区分，1-区分）"
+      courseStudentTypeIds:
+        type: "string"
+        description: "授课学生类型Ids（逗号分隔）"
+      courseTableCollegeIdList:
+        type: "array"
+        description: "开课学院id列表"
+        items:
+          type: "string"
+      courseIdList:
+        type: "array"
+        description: "课程id列表"
+        items:
+          type: "string"
+      roomIdList:
+        type: "array"
+        description: "教室id列表"
+        items:
+          type: "string"
+
+  CourseTableDetailStatusResource:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      courseTableDetailStatus:
+        type: "integer"
+        description: "课表明细状态 0:已结束；1:进行中；2:未开始;3:不存在"
+      hasLive:
+        type: "boolean"
+        description: "是否直播 0:否；1:是"
+      roomId:
+        type: "string"
+        description: "教室id"
+
+  WaitAttendClassCourseTableDetailParam:
+    type: "object"
+    properties:
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      roomIdList:
+        type: "array"
+        description: "教室id列表"
+        items:
+          type: string
+      collegeIdList:
+        type: "array"
+        description: "教室id列表"
+        items:
+          type: string
+      isDistinguishCourseStudentType:
+        type: "string"
+        description: "是否需要区分授课学生类型"
+      courseStudentTypes:
+        type: "string"
+        description: "授课学生类型，多个使用逗号隔开"
+      onlyGraduateCourse:
+        type: "integer"
+        description: "是否研究生（1-是，其他不作为查询条件）"
+
+  CourseTableDetailResourceModel:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表详情id"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      segmentStartTime:
+        type: "string"
+        description: "开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "结束时间"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      groupId:
+        type: "string"
+        description: "分组id"
+      groupName:
+        type: "string"
+        description: "分组名称"
+      groupStudentCount:
+        type: "integer"
+        description: "分组学生数"
+      roomIds:
+        type: "string"
+        description: "教室id，多个使用逗号隔开"
+      roomNames:
+        type: "string"
+        description: "教室名称，多个使用逗号隔开"
+      segments:
+        type: "string"
+        description: "节次(多个,拼接)"
+      teacherIds:
+        type: "string"
+        description: "教师id，多个使用逗号隔开"
+      teacherNos:
+        type: "string"
+        description: "教师编号，多个使用逗号隔开"
+      teacherNames:
+        type: "string"
+        description: "教师名称，多个使用逗号隔开"
+      courseTableCollegeId:
+        type: "string"
+        description: "开课学院id"
+      courseTableCollegeName:
+        type: "string"
+        description: "开课学院名称"

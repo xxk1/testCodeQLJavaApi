@@ -1,0 +1,106 @@
+swagger: "2.0"
+info:
+  description: "课程管理接口文档"
+  version: "1.0.0"
+  title: "课程管理接口文档API"
+host: "http://192.168.1.34"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+    /course/teachingMaterial/upload:
+      post:
+        tags:
+          - "CourseTeachingMaterial"
+        summary: "上传课程教材"
+        description: "1.云课堂教师端-课程建设使用"
+        operationId: "uploadTeachingMaterial"
+        produces:
+          - "application/json"
+        parameters:
+          - name: "fileInfo"
+            in: "body"
+            description: "上传文件信息"
+            required: true
+            schema:
+              $ref: "#/definitions/CourseTeachingMaterialFileInfo"
+          - name: "validCode"
+            type: "string"
+            in: "query"
+            description: "验证码：&signKey=123123(md5加密)"
+            required: true
+        responses:
+          "200":
+            description: "上传成功"
+          400:
+            description: "参数不正确"
+            schema:
+              $ref: "#/definitions/ErrorResult"
+          403:
+            description: "验证码错误"
+            schema:
+              $ref: "#/definitions/ErrorResult"
+          404:
+            description: "未找到资源信息"
+            schema:
+              $ref: "#/definitions/ErrorResult"
+          409:
+            description: "业务数据错误"
+            schema:
+              $ref: "#/definitions/ErrorResult"
+          500:
+            description: "服务器异常"
+
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseTeachingMaterialFileInfo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程ID"
+      versionId:
+        type: "string"
+        description: "课程版本ID"
+      fileDisplayName:
+        type: string
+        description: "文件显示名称"
+      fileRealName:
+        type: string
+        description: "文件存储名称"
+      fileType:
+        type: string
+        description: "文件类型（即文件后缀）"
+      innerUrl:
+        type: string
+        description: "内网地址"
+      outerUrl:
+        type: string
+        description: "外网地址"
+      filePath:
+        type: string
+        description: "文件路径"
+      fileSize:
+        type: string
+        description: "文件大小"
+      operatorId:
+        type: string
+        description: "操作人ID"
+      operatorName:
+        type: string
+        description: "操作人名称"
+      operatorNo:
+        type: string
+        description: "操作人编号"
+

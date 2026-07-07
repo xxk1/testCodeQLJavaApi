@@ -1,0 +1,2395 @@
+swagger: "2.0"
+info:
+  description: "知识图谱相关接口"
+  version: "1.0.0"
+  title: "知识图谱相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /courseknowledgegraph/{courseId}:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id获取该课程对应知识节点树形结构"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphTree
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeGraphNodeTreeModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-新增知识图谱知识节点"
+      description: "调用方：1、老师端"
+      operationId: createCourseKnowledgeGraphNode
+      parameters:
+        - name: "courseKnowledgeGraphNodeData"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeData"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/{courseKnowledgeGraphNodeId}:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和课程知识图谱知识节点id删除对应知识节点、子节点以及对应关系"
+      description: "调用方：1、老师端"
+      operationId: deleteCourseKnowledgeGraphNode
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          required: true
+          type: "string"
+        - name: "courseKnowledgeGraphNodeId"
+          in: "path"
+          description: "课程知识图谱知识点id"
+          required: true
+          type: "string"
+        - name: "courseKnowledgeGraphId"
+          in: "path"
+          description: "课程知识图谱id"
+          required: true
+          type: "string"
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodeinfo:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id获取知识节点详情信息"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphNodeInfo
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeGraphNodeModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/node:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id修改知识节点对应基本信息"
+      description: "调用方：1、老师端"
+      operationId: updateCourseKnowledgeGraphNode
+      parameters:
+        - name: "courseKnowledgeGraphNodeParam"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeParam"
+
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeGraphNodeModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/noderelationships:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id获取知识节点相关关系列表"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphNodeRelationshipList
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeGraphNodeRelationshipResource'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/noderelationship/{courseKnowledgeGraphNodeId}/{relationshipId}:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和关系id删除对应关系"
+      description: "调用方：1、老师端"
+      operationId: deleteCourseKnowledgeGraphNodeRelationship
+      parameters:
+        - name: "relationshipId"
+          in: "path"
+          description: "关系id"
+          required: true
+          type: "string"
+        - name: "courseKnowledgeGraphNodeId"
+          in: "path"
+          description: "课程知识点id"
+          required: true
+          type: "string"
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：relationshipId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/noderelationship:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据相关信息创建对应节点关系"
+      description: "调用方：1、老师端"
+      operationId: createCourseKnowledgeGraphNodeRelationship
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeRelationshipParam"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点关系参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeRelationshipParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodefiles:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id获取学习材料列表"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphNodeFileList
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeFileModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id保存学习材料"
+      description: "调用方：1、老师端"
+      operationId: createCourseKnowledgeGraphNodeFileList
+      parameters:
+        - name: "courseKnowledgeGraphNodeFileParam"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点学习材料参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeFileParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodefile/{nodeFileId}:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据节点学习材料id删除对应学习材料"
+      description: "调用方：1、老师端"
+      operationId: deleteCourseKnowledgeGraphNodeFile
+      parameters:
+        - name: "nodeFileId"
+          in: "path"
+          description: "节点学习材料id"
+          required: true
+          type: "string"
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：nodeFileId=?&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodefile/reorder:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据节点id拖动学习材料排序"
+      description: "调用方：1、老师端"
+      operationId: reorderCourseKnowledgeGraphNodeResource
+      parameters:
+        - name: "nodeFileReorderParam"
+          in: "body"
+          description: "节点文件重新排序参数"
+          required: true
+          schema:
+            $ref: "#/definitions/NodeFileReorderParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/list:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id获取对应节点和关系列表"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphClassifyResource
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphClassifyResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/importolddata:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-历史课程知识结构数据导入图谱"
+      description: "调用方：1、老师端"
+      operationId: importKnowledgeStructure
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/sort:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-知识图谱排序修改"
+      description: "调用方：1、老师端"
+      operationId: courseKnowledgeGraphSort
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          required: true
+          type: "string"
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeTreeModel"
+          in: "body"
+          description: "课程知识图谱树形结构参数"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeTreeModel"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraphclass:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "新增/修改知识图谱公开班级"
+      description: "1.云课堂老师端-我的课程知识图谱功能使用"
+      operationId: addOrUpdateCourseKnowledgeGraphClass
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码&signKey=123123
+          type: string
+          required: true
+        - name: courseKnowledgeGraphInfo
+          in: body
+          required: true
+          description: "退回信息"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphInfo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "查看知识图谱公开班级"
+      description: "1.云课堂老师端-我的课程知识图谱功能使用"
+      operationId: getCourseKnowledgeGraphClassList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码courseId=?&signKey=123123
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: courseName
+          in: query
+          description: 课程名称
+          type: string
+          required: true
+        - name: schoolYear
+          in: query
+          description: 开课学年
+          type: string
+          required: true
+        - name: term
+          in: query
+          description: 开课学期
+          type: integer
+          required: true
+
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ClassVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/ispublic:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "判断学生所在教学班是否公开知识图谱"
+      description: "1.云课堂学生端-我的课程知识图谱功能使用"
+      operationId: checkCourseKnowledgeGraphPublicStatus
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码courseId=?&signKey=123123
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: schoolYear
+          in: query
+          description: 开课学年
+          type: string
+          required: true
+        - name: term
+          in: query
+          description: 开课学期
+          type: integer
+          required: true
+        - name: groupIds
+          in: query
+          description: 班级id，多个用“,”隔开
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "boolean"
+            description: "判断是否公开知识图谱"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodequestions:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id获取关联题目列表"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphNodeQuestionList
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/QuestionLibraryResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和节点id批量保存知识点和题目关系"
+      description: "调用方：1、老师端"
+      operationId: createCourseKnowledgeGraphNodeQuestionList
+      parameters:
+        - name: "courseKnowledgeGraphNodeQuestionParam"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点题目参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeQuestionParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /questionlibrary/courseknowledgegraph/contact:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id和知识点id批量保存知识点和题目关系"
+      description: "调用方：1、老师端"
+      operationId: createCourseKnowledgeGraphNodeQuestionList
+      parameters:
+        - name: "questionKnowledgePointVo"
+          in: 'body'
+          required: true
+          description: "新增知识点和题目参数"
+          schema:
+            $ref: "#/definitions/QuestionKnowledgePointVo"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgegraph/{courseId}/nodequestion/{courseKnowledgeGraphNodeId}/{questionId}:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id、知识点id和题目id删除对应知识点和题目关系"
+      description: "调用方：1、老师端"
+      operationId: deleteCourseKnowledgeGraphNodeQuestion
+      parameters:
+
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "path"
+          description: "课程知识点id"
+          required: true
+          type: "string"
+        - name: "questionId"
+          in: "path"
+          description: "题目id"
+          required: true
+          type: "string"
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：relationshipId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodequestion/{questionId}/nodeinfos:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-知识点题目关系根据题目id获取知识节点基本信息列表"
+      description: "调用方：1、老师端"
+      operationId: getNodeBasicInfoListByQuestionId
+      parameters:
+        - name: "questionId"
+          in: "path"
+          description: "题目id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：questionId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeBasicInfo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/deletenodequestions:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-知识点题目关系根据题目id列表删除对应知识点题目关系信息"
+      description: "调用方：1、老师端"
+      operationId: deleteNodeQuestionByQuestionIdList
+      parameters:
+        - name: "questionIdList"
+          in: "body"
+          required: true
+          description: "题目id列表"
+          schema:
+            type: array
+            items:
+              type: string
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/historydatapushkafka:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-知识点历史数据推送kafka"
+      description: "调用方：1、老师端"
+      operationId: historyDataPushKafka
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodeinfos:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据条件查询知识图谱相关节点信息"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgeGraphCorrelationNodeInfoList
+      parameters:
+        - name: "courseKnowledgeGraphNodeQueryInfoParam"
+          in: 'body'
+          required: true
+          description: "新增知识图谱节点题目参数"
+          schema:
+            $ref: "#/definitions/CourseKnowledgeGraphNodeQueryInfoParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphCorrelationNodeInfo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgegraph/batchcopyquestionsnodestonewquestions:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "批量题库新题目复制原题目与知识点关系保存接口"
+      description: "调用方：1、云课堂老师端-共享题库-引用至我的题库（内部使用）"
+      operationId: "batchCopyQuestionKnowledgeGraphNodeToNewQuestion"
+      parameters:
+        - name: "saveParam"
+          in: 'body'
+          required: true
+          description: "保存参数"
+          schema:
+            $ref: "#/definitions/CourseQuestionToNewQuestionKnowledgeGraphParam"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/nodevideoinfotexts:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据相关信息获取智能资源列表"
+      description: "调用方：1、学生端"
+      operationId: getCourseKnowledgeGraphNodeVideoInfoTextList
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphNodeId"
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "schoolYear"
+          in: "query"
+          description: "学年"
+          type: "string"
+          required: true
+        - name: "term"
+          in: "query"
+          description: "学期"
+          type: "integer"
+          required: true
+        - name: "groupId"
+          in: "query"
+          description: "班级id"
+          type: "string"
+          required: true
+        - name: "similarityScore"
+          in: query
+          description: "相似度分数"
+          type: "number"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeVideoInfoTextModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseKnowledgeGraphNodeId}/videoinfotexts:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据视频id和知识点id获取智能资源列表"
+      description: "调用方：1、学生端"
+      operationId: getFilterCourseKnowledgeGraphNodeVideoInfoTextList
+      parameters:
+        - name: "courseKnowledgeGraphNodeId"
+          in: "path"
+          description: "课程知识图谱知识点id"
+          required: true
+          type: "string"
+        - name: "videoInfoId"
+          in: "query"
+          description: "视频信息id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeVideoInfoTextModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/{courseId}/historyversions:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程id获取该课程历史版本列表"
+      description: "调用方：1、老师端"
+      operationId: getHistoryVersionCourseKnowledgeGraphList
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphVersionModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/history:
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据课程知识图谱id获取历史知识图谱信息"
+      description: "调用方：1、老师端"
+      operationId: getHistoryCourseKnowledgeGraphNodeTreeModel
+      parameters:
+        - name: "courseKnowledgeGraphDomainId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeGraphNodeTreeModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /courseknowledgegraph/replyversion:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据courseKnowledgeGraphDomainId恢复版本"
+      description: "调用方：1、老师端"
+      operationId: replyHistoryCourseKnowledgeGraphDomain
+      parameters:
+        - name: "accessUserId"
+          in: "query"
+          description: "访问用户id"
+          type: "string"
+          required: true
+        - name: "accessUserName"
+          in: "query"
+          description: "访问用户名称"
+          type: "string"
+          required: true
+        - name: "courseKnowledgeGraphDomainId"
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseKnowledgeGraphDomainId=xxx&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgegraph/courseresource:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据知识点关联课程资源"
+      description: "调用方：1、老师端"
+      operationId: addCourseKnowledgePointCourseResource
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（ &signKey=123123）
+          type: string
+          required: true
+        - name: "resourcePointVo"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/KnowledgePointCourseResourceVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-根据知识点id获取课程资源列表"
+      description: "调用方：1、老师端"
+      operationId: getCourseKnowledgePointCourseResourceList
+      parameters:
+        - name: "knowledgePointId"
+          in: "query"
+          description: "知识点id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResourceVo"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgegraph/courseresource/cancellink:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-取消备课资源关联知识点"
+      description: "调用方：1、老师端-知识图谱"
+      operationId: cancelCourseKnowledgePointCourseResource
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: "knowledgePointId"
+          in: query
+          description: "知识点id"
+          type: string
+          required: true
+        - name: "resourceId"
+          in: query
+          description: "资源id"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgegraph/export/toexcel:
+    post:
+      tags:
+        - "CourseKnowledgeGraph"
+      summary: "接口-导出课程知识图谱"
+      description: "调用方：1、老师端-知识图谱"
+      operationId: exportCourseKnowledgeGraphToExcel
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CourseKnowledgeGraphNodeTreeModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      knowledgeNodeLevelIndex:
+        type: "integer"
+        description: "知识节点级别编号"
+      knowledgeNodeLevelName:
+        type: "integer"
+        description: "知识节点级别名称"
+      sort:
+        type: "integer"
+        description: "排序"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      subsetCourseKnowledgeGraphNodeTreeList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeTreeModel"
+  CourseKnowledgeGraphNodeData:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+      parentCourseKnowledgeGraphNodeId:
+        type: "string"
+        description: "父课程知识图谱节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+  CourseKnowledgeGraphNodeModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      contentDetail:
+        type: "string"
+        description: "内容详情"
+      levelTypeList:
+        type: array
+        description: "级别类型列表"
+        items:
+          $ref: "#/definitions/LevelTypeModel"
+      contentGenerationModeIndex:
+        type: "integer"
+        description: "内容生成模式编号 0:手动录入 1:AI生成"
+
+  LevelTypeModel:
+    type: "object"
+    properties:
+      levelTypeIndex:
+        type: "integer"
+        description: "级别类型编号"
+      knowledgeNodeName:
+        type: "string"
+        description: "级别类型名称"
+      select:
+        type: "boolean"
+        description: "选中状态"
+  CourseKnowledgeGraphNodeParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      courseKnowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      levelTypeIndex:
+        type: "integer"
+        description: "级别类型编号"
+      contentDetail:
+        type: "string"
+        description: "内容详情"
+
+  CourseKnowledgeGraphNodeRelationshipResource:
+    type: "object"
+    properties:
+      preposeKnowledgeGraphNodeList:
+        type: array
+        description: "前置关系知识节点列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeVo"
+      postposeKnowledgeGraphNodeList:
+        type: array
+        description: "后置关系知识节点列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeVo"
+      relevanceKnowledgeGraphNodeList:
+        type: array
+        description: "关联关系知识节点列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeVo"
+
+  CourseKnowledgeGraphNodeVo:
+    type: "object"
+    properties:
+      knowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "课程知识图谱节点名称"
+      relationshipId:
+        type: "integer"
+        description: "关系id"
+      relationshipCreateTimestamp:
+        type: "integer"
+        format: int64
+        description: "关系创建时间戳"
+  CourseKnowledgeGraphNodeRelationshipParam:
+    type: "object"
+    properties:
+      knowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      preKnowledgeGraphNodeId:
+        type: "string"
+        description: "前置课程知识图谱节点id"
+      postKnowledgeGraphNodeId:
+        type: "string"
+        description: "后置课程知识图谱节点id"
+      relevanceKnowledgeGraphNodeId:
+        type: "string"
+        description: "关联课程知识图谱节点id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+  CourseKnowledgeGraphNodeFileModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "附件信息id"
+      resourceTypeIndex:
+        type: "integer"
+        description: "文件类型序号"
+      resourceTypeName:
+        type: "string"
+        description: "文件类型名称"
+      resourceName:
+        type: "string"
+        description: "文件显示名称"
+      fileRealName:
+        type: "string"
+        description: "文件存储名称"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      innerUrl:
+        type: "string"
+        description: "内网地址"
+      outerUrl:
+        type: "string"
+        description: "外网地址"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileSize:
+        type: "string"
+        description: "文件大小"
+      transcodeStatus:
+        type: "integer"
+        description: "转码状态：0:不转码;1:转码中;2:转码成功;3:转码失败"
+      sort:
+        type: "integer"
+        description: "顺序"
+      initialCreatorId:
+        type: "string"
+        description: "初始创建人id"
+      initialCreatorName:
+        type: "string"
+        description: "初始创建人姓名"
+  CourseKnowledgeGraphNodeFileParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      knowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+      courseKnowledgeGraphNodeFileResourceList:
+        type: array
+        description: "知识节点列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeFileResource"
+  CourseKnowledgeGraphNodeFileResource:
+    type: "object"
+    properties:
+      resourceName:
+        type: "string"
+        description: "文件显示名称"
+      fileRealName:
+        type: "string"
+        description: "文件存储名称"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      innerUrl:
+        type: "string"
+        description: "内网地址"
+      outerUrl:
+        type: "string"
+        description: "外网地址"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileSize:
+        type: "string"
+        description: "文件大小"
+  NodeFileReorderParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      knowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+      needToBeMovedNodeFileId:
+        type: "string"
+        description: "被移动的节点文件ID"
+      targetLocationBeforeNodeFileId:
+        type: "string"
+        description: "目标位置前节点文件ID"
+      targetLocationAfterNodeFileId:
+        type: "string"
+        description: "目标位置后节点文件ID"
+  CourseKnowledgeGraphClassifyResource:
+    type: "object"
+    properties:
+      courseKnowledgeGraphNodeList:
+        type: array
+        description: "知识节点列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeBaseModel"
+      parentChildKnowledgeGraphRelationshipList:
+        type: array
+        description: "父子知识节点关系列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphRelationshipModel"
+      frontRearKnowledgeGraphRelationshipList:
+        type: array
+        description: "前后置知识节点关系列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphRelationshipModel"
+      relevanceKnowledgeGraphRelationshipList:
+        type: array
+        description: "关联知识节点关系列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphRelationshipModel"
+  CourseKnowledgeGraphRelationshipModel:
+    type: "object"
+    properties:
+      startNodeId:
+        type: "string"
+        description: "开始节点id"
+      endNodeId:
+        type: "string"
+        description: "结束节点id"
+      relationshipId:
+        type: "integer"
+        description: "关系id"
+  CourseKnowledgeGraphNodeBaseModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      knowledgeNodeLevelIndex:
+        type: "integer"
+        description: "知识节点级别编号"
+      knowledgeNodeLevelName:
+        type: "integer"
+        description: "知识节点级别名称"
+      sort:
+        type: "integer"
+        description: "排序"
+  CourseKnowledgeGraphInfo:
+    type: object
+    properties:
+      creatorId:
+        type: string
+        description: "操作人Id"
+      creatorName:
+        type: string
+        description: "操作人姓名"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      schoolYear:
+        type: string
+        description: "开课学年"
+      term:
+        type: integer
+        description: "开课学期"
+      courseKnowledgeGraphClassVoList:
+        type: array
+        items:
+          $ref: "#/definitions/ClassVo"
+  ClassVo:
+    type: object
+    properties:
+      groupId:
+        type: string
+        description: "班级id"
+      groupName:
+        type: string
+        description: "班级名称"
+      publicStatus:
+        type: boolean
+        description: "公开状态"
+
+  CourseKnowledgeGraphNodeQuestionParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      knowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱节点id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      accessUserId:
+        type: "string"
+        description: "访问用户id"
+      accessUserName:
+        type: "string"
+        description: "访问用户名称"
+      questionIdList:
+        type: array
+        description: "题目id列表"
+        items:
+          type: "string"
+  QuestionLibraryResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "题目id"
+      questionStem:
+        type: string
+        description: "题干"
+      questionStemText:
+        type: string
+        description: "题干（不包含富文本样式）"
+      questionTypeName:
+        type: string
+        description: "题目类型名称 "
+      questionTypeIndex:
+        type: integer
+        description: "题目类型 0：单选；1：多选；2：判断；3：填空；4：简答"
+      questionComplexityName:
+        type: string
+        description: "题目难易度名称"
+      questionComplexityIndex:
+        type: integer
+        description: "题目难易度 0：简单；1：一般；2：困难"
+      questionAnalysis:
+        type: string
+        description: "题目解析"
+      creatorId:
+        type: string
+        description: "创建人id"
+      creatorName:
+        type: string
+        description: "创建人姓名"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      courseCode:
+        type: string
+        description: "课程编号"
+      courseStructureId:
+        type: string
+        description: "章节id"
+      checkQuestionSort:
+        type: boolean
+        description: "是否区分答案先后顺序"
+      checkTextTransform:
+        type: boolean
+        description: "是否区分大小写字段"
+      checkFuzzyMatching:
+        type: boolean
+        description: "答案是否模糊匹配"
+      questionFileList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionFileResource'
+      optionList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionOptionResource'
+      showOrder:
+        type: integer
+        description: "展示顺序"
+  QuestionFileResource:
+    type: object
+    properties:
+      fileRealName:
+        type: string
+        description: "文件实际名"
+      fileSavedName:
+        type: string
+        description: "文件保存名"
+      filepath:
+        type: string
+        description: "文件路径"
+      innerServerIp:
+        type: string
+        description: "内网IP"
+      outerServerIp:
+        type: string
+        description: "外网IP"
+      fileType:
+        type: string
+        description: "文件类型"
+      fileSize:
+        type: number
+        description: "文件大小"
+      source:
+        type: integer
+        description: "文件所属 0：题干；1：解析"
+      order:
+        type: integer
+        description: "文件在内容中的排序"
+  QuestionOptionResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "选项id"
+      content:
+        type: string
+        description: "选项内容(类型为填空题时，选项内容传入数组格式字符串：'[{“答案一”},{“答案二”}]')"
+      order:
+        type: integer
+        description: "排序"
+      rightAnswer:
+        type: boolean
+        description: "是否正确答案"
+      optionFileList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionOptionFileResource'
+  QuestionOptionFileResource:
+    type: object
+    properties:
+      fileRealName:
+        type: string
+        description: "文件实际名"
+      fileSavedName:
+        type: string
+        description: "文件保存名"
+      filepath:
+        type: string
+        description: "文件路径"
+      innerServerIp:
+        type: string
+        description: "内网IP"
+      outerServerIp:
+        type: string
+        description: "外网IP"
+      fileType:
+        type: string
+        description: "文件类型"
+      fileSize:
+        type: number
+        description: "文件大小"
+      order:
+        type: integer
+        description: "文件在内容中的排序"
+  CourseKnowledgeGraphNodeBasicInfo:
+    type: object
+    properties:
+      knowledgeNodeId:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      knowledgeNodeLevelIndex:
+        type: "integer"
+        description: "知识节点级别编号"
+      knowledgeNodeLevelName:
+        type: "string"
+        description: "知识节点级别名称"
+  CourseKnowledgeGraphNodeQueryInfoParam:
+    type: object
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      queryType:
+        type: "integer"
+        description: "搜索类型(0:精确搜索;1:模糊搜索)"
+      searchParams:
+        type: "string"
+        description: "查询条件:知识节点名称"
+  CourseKnowledgeGraphCorrelationNodeInfo:
+    type: object
+    properties:
+      grandParentKnowledgeNodeId:
+        type: "string"
+        description: "父父节点id"
+      grandParentKnowledgeNodeName:
+        type: "string"
+        description: "父父节点名称"
+      parentKnowledgeNodeId:
+        type: "string"
+        description: "父节点id"
+      parentKnowledgeNodeName:
+        type: "string"
+        description: "父节点名称"
+      childKnowledgeNodeId:
+        type: "string"
+        description: "子节点id"
+      childKnowledgeNodeName:
+        type: "string"
+        description: "子节点名称"
+      childKnowledgeNodeLevel:
+        type: "integer"
+        description: "子节点级别"
+      childKnowledgeNodeSort:
+        type: "integer"
+        description: "子节点排序"
+
+  CourseQuestionToNewQuestionKnowledgeGraphParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      userId:
+        type: "string"
+        description: "用户id"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      questionIdList:
+        type: array
+        description: "题目对应列表"
+        items:
+          $ref: '#/definitions/QuestionMapVo'
+
+  QuestionMapVo:
+    type: "object"
+    properties:
+      sourceQuestionId:
+        type: "string"
+        description: "原题库题目id"
+      newQuestionId:
+        type: "string"
+        description: "新题库题目id"
+
+  CourseKnowledgeGraphNodeVideoInfoTextModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "唯一id"
+      videoInfoId:
+        type: "string"
+        description: "视频信息id"
+      textDataSourceIndex:
+        type: "integer"
+        description: "文本数据来源编号(0:ppt识别;1:语言转写识别)"
+      textDataSourceName:
+        type: "string"
+        description: "文本数据来源名称(0:ppt识别;1:语言转写识别)"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teacherIds:
+        type: "string"
+        description: "课表明细老师id(多个时\",\"分割)"
+      teacherNos:
+        type: "string"
+        description: "课表明细老师编号(多个时\",\"分割)"
+      teacherNames:
+        type: "string"
+        description: "课表明细老师姓名(多个时\",\"分割)"
+      videoDate:
+        type: "string"
+        description: "视频日期"
+      segment:
+        type: "integer"
+        description: "节次(第几节次)"
+      innerIp:
+        type: "string"
+        description: "内网IP"
+      outerIp:
+        type: "string"
+        description: "外网IP"
+      thumbnailPath:
+        type: "string"
+        description: "缩略图路径"
+      knowledgeNodeId:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      textContent:
+        type: "string"
+        description: "文本内容"
+      startTimestamp:
+        type: "integer"
+        description: "开始时间戳"
+      endTimestamp:
+        type: "integer"
+        description: "结束时间戳"
+  CourseKnowledgeGraphVersionModel:
+    type: "object"
+    properties:
+      courseKnowledgeGraphDomainId:
+        type: "string"
+        description: "课程知识图谱id"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      nodeCount:
+        type: "integer"
+        description: "知识点个数"
+      shipCount:
+        type: "integer"
+        description: "关系个数"
+      showOrder:
+        type: "integer"
+        description: "排序"
+      versionLabel:
+        type: "string"
+        description: "版本标签"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+
+  KnowledgePointCourseResourceVo:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: "操作人id"
+      userName:
+        type: string
+        description: "操作人姓名"
+      knowledgePointId:
+        type: string
+        description: "资源id"
+      courseResourceIdList:
+        type: array
+        items:
+          type: string
+
+  CourseResourceVo:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源id"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      resourceType:
+        type: "integer"
+        description: "资源类型(0-课件 1-视频 2-测验)"
+      resourceSize:
+        type: "string"
+        description: "资源大小"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+      modifierName:
+        type: "string"
+        description: "更新人名称"
+      modifierId:
+        type: "string"
+        description: "更新人id"
+      innerIp:
+        type: "string"
+        description: "内网ip"
+      outerIp:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      isPublic:
+        type: "integer"
+        description: "是否公开 0 不公开 1公开"
+      questionNum:
+        type: "integer"
+        description: "题目数量"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情id"
+      fileSavedName:
+        type: "string"
+        description: "资源名称(上传名称)"
+      fileSize:
+        type: "string"
+        description: "资源大小(上传)"
+      resourceReferences:
+        type: "integer"
+        description: "资源引用次数(个人引用次数)"
+      resourceOtherReferences:
+        type: "integer"
+        description: "资源引用次数(他人引用次数)"
+      resourceNum:
+        type: "integer"
+        description: "资源内容数量"
+      courseId:
+        type: "string"
+        description: "课程id"
+      creatorId:
+        type: "string"
+        description: "创建人id"
+      sourceType:
+        type: "integer"
+        description: "资源来源类型"
+      transcodeStatus:
+        type: "integer"
+        description: "转码状态：0:不转码;1:转码中;2:转码成功;3:转码失败"
+      knowledgePointList:
+        type: array
+        items:
+          $ref: "#/definitions/KnowledgePointResource"
+        description: "知识点集合"
+      initialCreatorId:
+        type: "string"
+        description: "初始创建人id"
+      initialCreatorName:
+        type: "string"
+        description: "初始创建人姓名"
+  KnowledgePointResource:
+    type: object
+    properties:
+      pointId:
+        type: string
+        description: "知识点id"
+      pointName:
+        type: string
+        description: "知识点名称"
+  QuestionKnowledgePointVo:
+    type: object
+    properties:
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      questionId:
+        type: string
+        description: "题目id"
+      pointIdList:
+        type: array
+        items:
+          type: string

@@ -1,0 +1,124 @@
+swagger: "2.0"
+info:
+  title: 课程版本信息相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /coursestructure/generatebycourseknowledgestructure:
+    post:
+      tags:
+        - "CourseStructure"
+      summary: "根据课程知识结构生成教学内容"
+      description: "1.云课堂老师端-课程建设使用"
+      operationId: generateCourseStructureByCourseknowledgeStructure
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: versionId
+          in: query
+          description: 版本id
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseresource/knowledgepoint:
+    post:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "资源关联知识点"
+      description: "1.云课堂老师端-课程建设使用"
+      operationId: addCourseResourceKnowledgePoint
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: "resourcePointVo"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CourseResourceKnowledgePointVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseResourceKnowledgePointVo:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: "操作人id"
+      userName:
+        type: string
+        description: "操作人姓名"
+      resourceId:
+        type: string
+        description: "资源id"
+      pointIdList:
+        type: array
+        items:
+          $ref: "string"

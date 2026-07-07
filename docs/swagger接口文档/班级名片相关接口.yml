@@ -1,0 +1,111 @@
+swagger: "2.0"
+info:
+  description: "班级名片相关接口"
+  version: "1.0.0"
+  title: "班级名片相关接口Api"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+
+  "/groupcard":
+    post:
+      tags:
+        - "GroupCard"
+      summary: "扫码加入班级"
+      description: "小程序调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupCardData"
+          in: "body"
+          description: "学生信息"
+          schema:
+            $ref: "#/definitions/GroupCardData"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: "OK"
+        '400':
+          description: "参数不正确"
+        '403':
+          description: "解密错误"
+        '404':
+          description: "未找到班级信息"
+        '500':
+          description: "服务器异常"
+
+  "/groupcard/{groupId}/studentcount":
+    get:
+      tags:
+        - "GroupCard"
+      summary: "获取班级人数"
+      description: "互动课堂、PTT插件使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          type: "string"
+          in: "path"
+          description: "班级Id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：groupId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            $ref: "#/definitions/GroupMemberVo"
+        '400':
+          description: "参数不正确"
+        '403':
+          description: "解密错误"
+        '404':
+          description: "未找到班级人员信息"
+        '500':
+          description: "服务器异常"
+
+definitions:
+
+  GroupCardData:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "班级Id"
+      userId:
+        type: "string"
+        description: "用户Id"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      userNo:
+        type: "string"
+        description: "用户编号"
+      administrativeClassName:
+        type: "string"
+        description: "行政班"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  GroupMemberVo:
+    type: "object"
+    properties:
+      studentCount:
+        type: "integer"
+        description: "学生人数"
+
+
+

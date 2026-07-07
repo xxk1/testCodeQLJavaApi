@@ -1,0 +1,380 @@
+swagger: "2.0"
+info:
+  description: "教学活动素材接口文档"
+  version: "1.0.0"
+  title: "教学活动素材接口文档API"
+host: "192.168.0.100:8088"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/teachingactivity/statistic":
+    post:
+      tags:
+        - "TeachingActivity"
+      summary: "教学活动素材统计分页查询列表"
+      description: "1.云课堂管理端-教学活动素材分页统计"
+      operationId: "teachingActivityStatistic"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "statisticQueryParam"
+          in: "body"
+          description: "教学活动素材统计查询参数"
+          required: true
+          schema:
+            $ref: '#/definitions/TeachingActivityStatisticQueryParam'
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeachingActivityStatisticResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+  "/teachingactivity/teacheractivitystatistic":
+    get:
+      tags:
+        - "TeachingActivity"
+      summary: "统计教师和对应活动数量"
+      description: "1.云课堂管理端-活动素材详情柱状统计图"
+      operationId: "teacherActivityStatistic"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeacherActivityStatistic"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/teachingactivity/activitytypestatistic":
+    get:
+      tags:
+        - "TeachingActivity"
+      summary: "统计活动类型和对应数量"
+      description: "1.云课堂管理端-活动素材详情饼状统计图"
+      operationId: "activityTypeStatistic"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ActivityTypeStatistic"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/teachingactivity/{courseId}":
+    post:
+      tags:
+        - "TeachingActivity"
+      summary: "活动列表"
+      description: "1.云课堂管理端-活动列表"
+      operationId: "courseActivityList"
+      parameters:
+        - in: "body"
+          name: "activityListQueryParam"
+          description: "统计查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/ActivityListQueryParam"
+        - name: "courseId"
+          type: "string"
+          in: "path"
+          description: "课程id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseActivityList"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  '/teachingactivity/getactivitytypes':
+    get:
+      tags:
+        - "TeachingActivity"
+      summary: "获取所有的活动类型接口"
+      description: "1.云课堂管理端-获取所有的活动类型"
+      operationId: "getActivityTypes"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeachingActivityTypes"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  TeachingActivityTypes:
+    type: "array"
+    items:
+      $ref: '#/definitions/TeachingActivityType'
+
+  TeachingActivityType:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "类型名称"
+      index:
+        type: "integer"
+        description: "类型索引"
+
+  CourseActivityList:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      courseResourceList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseActivityVo"
+
+  CourseActivityVo:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源id"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      resourceType:
+        type: "integer"
+        description: "资源类型(2-测验 4-主题)"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+      modifierName:
+        type: "string"
+        description: "更新人名称"
+      isPublic:
+        type: "integer"
+        description: "是否公开 0 不公开 1公开"
+      resourceReferences:
+        type: "integer"
+        description: "资源引用次数"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情id"
+
+  ActivityListQueryParam:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      resourceType:
+        type: "integer"
+        description: "资源类型(2-测验,4-主题)"
+      resourceName:
+        type: "string"
+        description: "活动名称"
+      modifierName:
+        type: "string"
+        description: "教师名称"
+
+  ActivityTypeStatistic:
+    type: "array"
+    items:
+      $ref: "#/definitions/ActivityTypeStatisticVO"
+
+  ActivityTypeStatisticVO:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        description: "活动数量"
+      name:
+        type: "string"
+        description: "活动类型"
+
+  TeacherActivityStatistic:
+    type: "object"
+    properties:
+      teacherNameList:
+        type: "array"
+        items:
+          type: "string"
+        description: "老师姓名"
+      resourceNumList:
+        type: "array"
+        items:
+          type: "string"
+        description: "老师素材数量"
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  TeachingActivityStatisticQueryParam:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      sort:
+        type: "string"
+        description: "ASC:升序排列 DESC:降序排列"
+      sortType:
+        type: "integer"
+        description: "排序方式 0:默认按照课程编号 1：按活动总数 2：考核测验 3：讨论主题"
+      collegeId:
+        type: "string"
+        description: "学院ID"
+      courseNameOrNo:
+        type: "string"
+        description: "课程名称"
+
+  TeachingActivityStatisticResult:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      teachingActivityStatisticList:
+        type: "array"
+        items:
+          $ref: "#/definitions/TeachingActivityStatisticVo"
+
+  TeachingActivityStatisticVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程ID"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseCollege:
+        type: "string"
+        description: "所属学院"
+      collegeId:
+        type: "string"
+        description: "学院ID"
+      allCount:
+        type: "integer"
+        description: "活动总数"
+      testCount:
+        type: "integer"
+        description: "考核测验"
+      themeCount:
+        type: "integer"
+        description: "讨论主题"

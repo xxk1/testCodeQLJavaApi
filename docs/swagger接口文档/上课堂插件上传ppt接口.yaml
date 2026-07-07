@@ -1,0 +1,212 @@
+swagger: "2.0"
+info:
+  title: "courseApi文档"
+  version: "1.0.0"
+  description: "备课版PPT插件上传功能文档"
+host: "192.168.1.57:8977"
+basePath: "/v1"
+schemes:
+  - "http"
+  - "https"
+paths:
+          
+  /preparelesson/savepptfileinfo:
+    post:
+      tags:
+        - "PrepareLessonPlugin"
+      summary: "保存老师课件信息到备课包"
+      description: "备课版PPT插件使用"
+      operationId: "savePptFileInfo"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - in: "body"
+          name: "PptTeachingContentResource"
+          description: "ppt上传备课包信息"
+          required: true
+          schema:
+            $ref: '#/definitions/PptTeachingContentResource'
+      responses:
+        '200':
+          description: "成功"
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到     
+        '409':
+          description: 数据保存异常    
+
+  /preparelesson/getcoursestructures:
+    get:
+      tags:
+        - "PrepareLessonPlugin"
+      summary: "获取老师教学团队下课程，结构源"
+      description: "备课版PPT插件使用"
+      operationId: "getCourseStructures"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "用户id"
+          required: true
+          type: "string"      
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码userId=&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingCourseInfo"
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到   
+          
+  /preparelesson/checksamenameresource:
+    get:
+      tags:
+        - "PrepareLessonPlugin"
+      summary: "检查课程结构下该老师是否存在重名的PPT（私有）"
+      description: "备课版PPT插件使用"
+      operationId: "checkSameNameResource"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "用户Id"
+          required: true
+          type: "string"   
+        - name: "fileRealName"
+          in: "query"
+          description: "文件名称"
+          required: true
+          type: "string"  
+        - name: "fileType"
+          in: "query"
+          description: "文件类型"
+          required: true
+          type: "string"            
+        - name: "courseStructureId"
+          in: "query"
+          description: "课程结构Id"
+          required: true
+          type: "string"      
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码userId=&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+              $ref: "#/definitions/CheckResourceResult"
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到            
+          
+definitions:
+
+  PptTeachingContentResource:
+    properties:
+      userId:
+        type: 'string'
+        description: '用户Id'
+      userName:
+        type: 'string'
+        description: '用户姓名'
+      courseStructureId:
+        type: 'string'
+        description: '课程结构Id'
+      fileRealName:
+        type: 'string'
+        description: '上传文件名称'
+      fileSavedName:
+        type: 'string'
+        description: '课程名称'  
+      intranetFilePath:
+        type: "string"
+        description: "内网文件Ip"
+      outerNetFilePath:
+        type: "string"
+        description: "外网文件Ip"
+      filePath:
+        type: "string"
+        description: "文件路径"         
+      fileType:
+        type: "string"
+        description: "文件类型"          
+      fileSize:
+        type: "integer"
+        description: "文件大小" 
+      resourceType:
+        type: "integer"
+        description: "资源类型"
+      isCover:
+        type: "boolean"
+        description: "是否覆盖"
+        default: true
+
+
+  TeachingCourseInfo:
+    properties:
+      courseId:
+        type: 'string'
+        description: '课程Id'
+      versionId:
+        type: string
+        description: '版本Id'
+      courseCode:
+        type: 'string'
+        description: '课程编号'
+      courseName:
+        type: 'string'
+        description: '课程名称'
+      courseTeachingTeamId:
+        type: 'string'
+        description: '课程教学团队Id'        
+      courseStructureInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseStructureInfo' 
+          
+  CourseStructureInfo:
+    properties:
+      courseStructureId:
+        type: 'string'
+        description: '课程结构id'
+        
+      parentId:
+        type: 'string'
+        description: '父id'
+      courseStructureName:
+        type: 'string'
+        description: '课程结构名称'
+      showOrder:
+        type: 'integer'
+        description: '排序字段'        
+      childStructureList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseStructureInfo' 
+        
+  CheckResourceResult:
+    properties:
+      hasSameNameFile:
+        type: 'integer'
+        description: '0:有重名文件，1：没有重名文件'

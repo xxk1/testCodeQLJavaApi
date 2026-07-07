@@ -1,0 +1,75 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "矿大课程数量统计相关接口"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+# 协议类型
+schemes:
+  - "https"
+  - "http"
+# 资源访问地址描述
+paths:
+  # v1
+  "/coursetablenownum":
+    get:
+      tags:
+        - "CourseTableNowNum"
+      summary: "获取开课课程数数量"
+      description: "矿大门户数量统计使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: false
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "MD5加密验证字符串 &signKey=123123"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+        403:
+          description: "解密验证失败"
+        404:
+          description: "未找到数量信息"
+        500:
+          description: "服务器异常"
+
+  "/collagetablenownum":
+    get:
+      tags:
+        - "CollageTableNowNum"
+      summary: "获取开课课程数数量"
+      description: "矿大门户数量统计使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "MD5加密验证字符串 &signKey=123123"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+        403:
+          description: "解密验证失败"
+        404:
+          description: "未找到数量信息"
+        500:
+          description: "服务器异常"
+

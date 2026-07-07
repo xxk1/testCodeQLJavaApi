@@ -1,0 +1,683 @@
+swagger: "2.0"
+info:
+  title: 课程统计相关接口接口文档.yaml
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /api/v1
+schemes:
+  - https
+  - http
+paths:
+
+  /coursestatistics:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "课程信息统计"
+      description: "1.大数据平台-整体数据使用；2.大数据平台-课程画像使用"
+      operationId: "getCourseStatistics"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "dimension"
+          type: integer
+          description: "统计维度 0:课程属性（必修；选修）；1:学生类别（本科；研究）"
+          in: query
+          required: true
+        - name: "schoolYear"
+          type: string
+          description: "学年"
+          in: query
+          required: false
+        - name: "term"
+          type: string
+          description: "学期"
+          required: false
+          in: query
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: "#/definitions/CourseStatisticsResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseCountstatistics:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "根据学年学期和课程类型统计学期开课的课程数"
+      description: "根据学年学期和课程类型统计学期开课的课程数"
+      operationId: "getCourseCountStatistics"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "courseType"
+          type: integer
+          description: "0:理论课，1：实验课"
+          in: query
+          required: true
+        - name: "schoolYear"
+          type: string
+          description: "学年"
+          in: query
+          required: true
+        - name: "term"
+          type: integer
+          description: "学期"
+          required: true
+          in: query
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: "integer"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseresource/statistics:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "课程资源统计信息"
+      description: "1.大数据平台-资源总数统计使用"
+      operationId: getCourseResourceStatistics
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: "#/definitions/CourseResourceStatisticsResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseresource/detail/statistics:
+    get:
+      tags:
+        - "CourseResourceStatistics"
+      summary: "课程资源统计明细接口"
+      description: "1.大数据平台-课程资源分类统计"
+      operationId: getCourseResourceDetailStatistics
+      parameters:
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseResourceDetailStatisticsVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseresource/use/statistics:
+    get:
+      tags:
+        - "CourseResourceStatistics"
+      summary: "课程资源使用统计接口"
+      description: "1.大数据平台-资源使用情况统计使用"
+      operationId: getCourseResourceUseStatistics
+      parameters:
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseResourceUseStatisticsResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /course/{courseId}/totalnumber:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "课程教学数据选课人数及开班数量统计"
+      description: "1.云课堂老师端-课程教学数据统计使用"
+      operationId: getCoursePeopleNumber
+      parameters:
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码courseId=?&signKey=123123(md5加密)"
+          required: true
+        - name: "courseId"
+          type: string
+          description: "课程ID"
+          in: path
+          required: true
+        - name: "schoolYear"
+          type: string
+          description: "学年"
+          in: query
+          required: true
+        - name: "term"
+          type: string
+          description: "学期"
+          required: true
+          in: query
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseStatisticsPeopleNumberVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /coursebuild/statistics:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "课程建设完成情况统计接口"
+      description: "1.大数据平台-课程建设完成情况使用"
+      operationId: getCourseBuildStatistics
+      parameters:
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseBuildStatisticsResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /course/statistics/version:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "课程版本统计"
+      description: "1.云课堂：课程画像-课程整体数据使用"
+      operationId: getCourseStatisticsVersion
+      parameters:
+        - name: "courseId"
+          in: "query"
+          type: "string"
+          description: "课程ID"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+         responses:
+                200:
+                  description: "成功"
+                  schema:
+                    type: array
+                    items:
+                      $ref: "#/definitions/CourseStatisticsVersionVo"
+                400:
+                  description: "参数不正确"
+                  schema:
+                    $ref: '#/definitions/ErrorResult'
+                403:
+                  description: "验证码错误"
+                  schema:
+                    $ref: '#/definitions/ErrorResult'
+                500:
+                  description: "服务器异常"
+
+
+
+  /courseProject/statistics:
+    get:
+      tags:
+        - "CourseProjectStatistics"
+      summary: "开授实验课程所涉及的实验项目数"
+      description: "开授实验课程所涉及的实验项目数"
+      operationId: getCourseProjectStatistics
+      parameters:
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+        - name: "schoolYear"
+          type: string
+          description: "学年"
+          in: query
+          required: true
+        - name: "term"
+          type: integer
+          description: "学期"
+          required: true
+          in: query
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseStatisticsVersionVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  /course/statistics/teachresource:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "统计课程下老师上传的资源以及使用次数"
+      description: "1.云课堂：课程画像-课程整体数据使用"
+      operationId: getCourseStatisticsTeachResource
+      parameters:
+        - name: "courseId"
+          in: "query"
+          type: "string"
+          description: "课程ID"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseStatisticsTeachResourceVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  /course/statistics/teachresourcenum:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "统计指定版本下资源占比以及数量"
+      description: "1.云课堂：课程画像-课程整体数据使用"
+      operationId: getCourseStatisticsTeachResourceNum
+      parameters:
+        - name: "courseId"
+          in: "query"
+          type: "string"
+          description: "课程ID"
+          required: true
+        - name: "versionId"
+          in: "query"
+          type: "string"
+          description: "版本ID"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseStatisticsResourceVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  /course/statistics/knowledge:
+    get:
+      tags:
+        - "CourseStatistics"
+      summary: "统计指定版本下知识点数量"
+      description: "1.云课堂：课程画像-课程整体数据使用"
+      operationId: getCourseStatisticsKnowledge
+      parameters:
+        - name: "courseId"
+          in: "query"
+          type: "string"
+          description: "课程ID"
+          required: true
+        - name: "versionId"
+          in: "query"
+          type: "string"
+          description: "版本ID"
+          required: true
+        - name: "validCode"
+          in: "query"
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseStatisticsKnowledgeVo"
+            type: "integer"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  CourseStatisticsResource:
+    type: object
+    properties:
+      totalNum:
+        type: integer
+        description: "总数"
+      resourceList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseStatisticsDetailResource"
+
+  CourseStatisticsDetailResource:
+    type: object
+    properties:
+      typeName:
+        type: string
+        description: "类型名称"
+      typeNum:
+        type: integer
+        description: "类型数量"
+
+  CourseStatisticsPeopleNumberVo:
+    type: object
+    properties:
+      teacherNumber:
+        type: integer
+        description: "选课教师数"
+      studentNumebr:
+        type: integer
+        description: "选课学生数"
+      classNumebr:
+        type: integer
+        description: "开班数量"
+
+  CourseResourceStatisticsResource:
+    type: object
+    properties:
+      totalNum:
+        type: integer
+        description: "总数"
+      teachingContentNum:
+        type: integer
+        description: "教学内容数"
+      teachingActivityNum:
+        type: integer
+        description: "教学活动数"
+
+  CourseResourceDetailStatisticsVo:
+    type: object
+    properties:
+      totalNum:
+        type: integer
+        description: "资源累计总数"
+      typeList:
+        type: array
+        items:
+          $ref: "#/definitions/ResourceTypeDetailStatisticsVo"
+
+  ResourceTypeDetailStatisticsVo:
+    type: object
+    properties:
+      typeName:
+        type: string
+        description: "类型名称"
+      typeNum:
+        type: integer
+        description: "类型数量"
+
+  CourseResourceUseStatisticsResource:
+    type: object
+    properties:
+      resourceBrowsingNum:
+        type: integer
+        description: "资源浏览量"
+      resourceDownloadNum:
+        type: integer
+        description: "resourceDownloadNum"
+      resourceQuoteNum:
+        type: integer
+        description: "资源引用数量"
+
+  CourseBuildStatisticsResource:
+    type: object
+    properties:
+      completeRate:
+        type: number
+        description: "完成率"
+      rateGrowth:
+        type: number
+        description: "完成率较昨日增长"
+      buildCourseNum:
+        type: integer
+        description: "集体备课课程数"
+      courseTeamNum:
+        type: integer
+        description: "教学团队数"
+      a:
+        type: array
+        items:
+          $ref: string
+  CourseStatisticsVersionVo:
+    type: object
+    properties:
+      versionNum:
+        type: string
+        description: "版本号"
+      resourceNum:
+        type: number
+        description: "教学资源数"
+      activityNum:
+        type: number
+        description: "货送资源数"
+      teamMemberNum:
+        type: integer
+        description: "团队成员数"
+  CourseStatisticsTeachResourceVo:
+    type: object
+    properties:
+      teacherName:
+        type: string
+        description: "老师名称"
+      teacherId:
+        type: string
+        description: "老师账号ID"
+      jobTitle:
+        type: string
+        description: "职称"
+      avatarPath:
+        type: "string"
+        description: "头像路径"
+      avatarInnerUrl:
+        type: string
+        description: "头像内网地址"
+      avatarOuterUrl:
+        type: string
+        description: "头像外网地址"
+      collegeId:
+        type: string
+        description: "学院id"
+      schoolName:
+        type: string
+        description: "学校名称"
+      resourceNum:
+        type: string
+        description: "资源数量"
+      useNum:
+        type: string
+        description: "使用数量"
+  CourseStatisticsResourceVo:
+    type: object
+    properties:
+      assessmentTest:
+        type: string
+        description: "考核测验数量"
+      discussTheme:
+        type: string
+        description: "讨论主题数量"
+      coursewareResource:
+        type: string
+        description: "课件资源数量"
+      videoResource:
+        type: "string"
+        description: "视频资源数量"
+      imgResource:
+        type: string
+        description: "图片资源数量"
+      totalResource:
+        type: string
+        description: "资源总数"
+      topTen:
+        type: array
+        items:
+          $ref: "#/definitions/CourseStatisticsResourceTopVo"
+  CourseStatisticsKnowledgeVo:
+    type: object
+    properties:
+      knowledgeNum:
+        type: string
+        description: "知识点已使用数量"
+      konwledgeTotal:
+        type: string
+        description: "知识点总数"
+      topThree:
+        type: array
+        items:
+          $ref: "#/definitions/CourseStatisticsKnowledgeTopVo"
+  CourseStatisticsKnowledgeTopVo:
+    type: object
+    properties:
+      knowledgeContent:
+        type: string
+        description: "知识点文案"
+      konwledgeRelationNum:
+        type: string
+        description: "知识点关联数量"
+  CourseStatisticsResourceTopVo:
+    type: object
+    properties:
+      resourceName:
+        type: string
+        description: "资源名称"
+      updateTime:
+        type: string
+        description: "更新时间"
+      updateName:
+        type: string
+        description: "更新人名称"
+      updateId:
+        type: string
+        description: "更新人ID"

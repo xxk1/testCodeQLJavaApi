@@ -1,0 +1,107 @@
+swagger: "2.0"
+info:
+  description: "课程管理/备课包资源引用接口文档"
+  version: "1.0.0"
+  title: "课程管理/备课包资源引用接口文档API"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/resourcereferences":
+    post:
+      tags:
+        - "ResourceReferences"
+      summary: "接口-更新下载资源引用次数"
+      description: "1.云课堂老师端课程管理,备课包使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "resourceIds"
+          in: "query"
+          description: "资源Id,多个以‘,’分割"
+          type: "string"
+          required: true
+        - name: "quotePeopleId"
+          in: "query"
+          description: "引用人id"
+          type: "string"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /resource/references/updatebyresourcedetail:
+     post:
+       tags:
+         - "ResourceReferences"
+       summary: "根据资源详情id更新资源引用数量"
+       description: "1.互动课堂-发起分组讨论使用"
+       operationId: updateReferenceNumByResourceDetailId
+       parameters:
+         - name: "resourceDetailId"
+           in: "query"
+           description: "资源详情Id"
+           type: "string"
+           required: true
+         - name: "validCode"
+           type: "string"
+           in: "query"
+           description: "验证码：resourceDetailId={}&signKey=123123(md5加密)"
+           required: true
+       responses:
+         200:
+           description: "成功"
+         400:
+           description: "参数不正确"
+           schema:
+             $ref: "#/definitions/ErrorResult"
+         403:
+           description: "验证码错误"
+           schema:
+             $ref: "#/definitions/ErrorResult"
+         404:
+           description: "未找到资源信息"
+           schema:
+             $ref: "#/definitions/ErrorResult"
+         409:
+           description: "业务数据错误"
+           schema:
+             $ref: "#/definitions/ErrorResult"
+         500:
+           description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"

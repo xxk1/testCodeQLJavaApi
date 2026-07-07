@@ -1,0 +1,185 @@
+swagger: "2.0"
+info:
+  description: "教研室相关接口"
+  version: "1.0.0"
+  title: "courseApi文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /teachingresearchsection:
+    post:
+      tags:
+        - "teachingResearchSection"
+      summary: "新增/修改教研室"
+      description: "1、云课堂管理端教研室管理调用"
+      parameters:
+        - name: "teachingResearchSectionVo"
+          in: 'body'
+          required: true
+          description: "新增/修改的教研室信息"
+          schema:
+            $ref: '#/definitions/TeachingResearchSectionVo'
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "错误的请求"
+        409:
+          description: "自定义返回信息"
+        403:
+          description: "验证信息错误"
+        500:
+          description: "服务器异常"
+
+    get:
+      tags:
+        - "teachingResearchSection"
+      summary: "获取教研室列表"
+      description: "1、云课堂管理端教研室管理调用"
+      parameters:
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: true
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeachingResearchSectionPage"
+        400:
+          description: "错误的请求"
+        403:
+          description: "验证信息错误"
+        500:
+          description: "服务器异常"
+  /teachingresearchsection/delete:
+    post:
+      tags:
+        - "teachingResearchSection"
+      summary: "接口-删除教研室"
+      description: "1.云课堂管理端教研室管理调用"
+      parameters:
+        - name: "id"
+          in: "query"
+          type: "string"
+          required: true
+          description: "教研室id"
+        - name: "validCode"
+          in: "query"
+          description: "id=?&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        404:
+          description: "未找到项目分类信息"
+        500:
+          description: "服务器异常"
+definitions:
+  TeachingResearchSectionVo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "教研室id"
+      userId:
+        type: "string"
+        description: "用戶id"
+      userName:
+        type: "string"
+        description: "用戶姓名"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      teachingResearchName:
+        type: "string"
+        description: "教研室名称"
+      teachingResearchCourseVoList:
+        type: "array"
+        description: "教研室课程列表"
+        items:
+          $ref: "#/definitions/TeachingResearchCourseVo"
+  TeachingResearchCourseVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+  TeachingResearchSectionPage:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      teachingResearchSectionResourceList:
+        type: "array"
+        items:
+          $ref: '#/definitions/TeachingResearchSectionResource'
+  TeachingResearchSectionResource:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "教研室id"
+      teachingResearchName:
+        type: "string"
+        description: "教研室名称"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      teachingResearchCourseVoList:
+        type: "array"
+        description: "教研室课程列表"
+        items:
+          $ref: '#/definitions/TeachingResearchCourseVo'
+
+
+
+        
+        
+        

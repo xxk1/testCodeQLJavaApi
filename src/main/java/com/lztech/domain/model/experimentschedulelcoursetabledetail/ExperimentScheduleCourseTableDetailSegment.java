@@ -1,0 +1,30 @@
+package com.lztech.domain.model.experimentschedulelcoursetabledetail;
+
+import com.lztech.domain.model.segment.Segment;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "tb_experiment_schedule_course_table_detail_segment")
+public class ExperimentScheduleCourseTableDetailSegment {
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    protected String id;
+
+    /**
+     * 课表明细Id
+     */
+    @ManyToOne
+    @JoinColumn(name = "experiment_schedule_course_table_detail_id")
+    private ExperimentScheduleCourseTableDetail experimentScheduleCourseTableDetail;
+
+    @ManyToOne
+    @JoinColumns({@JoinColumn(name = "build_ID", referencedColumnName = "buildID"), @JoinColumn(name = "segment", referencedColumnName = "segment")})
+    private Segment segment;
+}

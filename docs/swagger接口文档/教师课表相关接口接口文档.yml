@@ -1,0 +1,99 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取课程信息的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /teacher/{id}/courseTableDetail:
+    post:
+      tags:
+        - "TeacherCourseTableDetail"
+      summary: "获取教师课表详情"
+      description: "教师端使用"
+      operationId: "getTeacherCourseTableDetail"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "教师Id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码id={}&signKey=123123"
+          required: true
+          type: "string"
+        - name: "param"
+          in: "body"
+          description: "请求参数"
+          required: true
+          schema:
+            $ref: "#/definitions/TeacherCourseTableDetailParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeacherCourseTableDetailBaseResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+  TeacherCourseTableDetailParam:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      type:
+        type: "integer"
+        description: "类型 0:全部；1：未上课的"
+
+  TeacherCourseTableDetailBaseResource:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表详情Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      roomId:
+        type: "string"
+        description: "教室Id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      segments:
+        type: "string"
+        description: "上课节次"
+      segmentStartTime:
+        type: "string"
+        description: "上课开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "上课结束时间"

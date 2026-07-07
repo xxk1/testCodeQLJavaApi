@@ -1,0 +1,1 @@
+ALTER TABLE tb_course_knowledge_graph_node_video_info_text MODIFY  text_content LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '文本内容';

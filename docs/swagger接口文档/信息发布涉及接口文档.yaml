@@ -1,0 +1,209 @@
+swagger: "2.0"
+info:
+  title: "teachingApi文档"
+  version: "1.0.0"
+  description: "获取课程信息的接口文档"
+host: "192.168.1.105:8080"
+basePath: /v1
+schemes:
+  - "https"
+  - "http"
+paths:
+
+  /coursetables/coursetableinfolist:
+    get:
+      tags:
+        - CourseTableResource
+      summary: 信息发布获取课表信息
+      description: 信息发布服务项目调用
+      operationId: getCourseTableInfoListResource
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseInfoSource
+          in: query
+          description: "0:数据对接；1:系统录入；2:外部导入；3:自主开班；4:备课夹新建课程；5:二次排课（注：参数为空则查询全部）"
+          required: false
+          type: integer
+        - name: validCode
+          in: query
+          description: "验证码（&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CourseTableInfoResource'
+        '400':
+          description: 参数不正确
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '403':
+          description: 解密验证失败
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '404':
+          description: 未找到课程信息
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '500':
+          description: 服务器异常
+
+  /coursetables/coursetablebyroomidandnowtime:
+    get:
+      tags:
+        - CourseTableResource
+      summary: 信息发布获取教室当前时间课表信息
+      description: 小程调用
+      operationId: getCourseTableByRoomIdAndNowTime
+      produces:
+        - "application/json"
+      parameters:
+        - name: courseInfoSource
+          in: query
+          description: "0:数据对接；1:系统录入；2:外部导入；3:自主开班；4:备课夹新建课程；5:二次排课（注：参数为空则查询全部）"
+          required: false
+          type: integer
+        - name: roomId
+          in: query
+          description: "教室Id"
+          required: true
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码（&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CourseTableInfoByRoomIdAndNowResource'
+        '400':
+          description: 参数不正确
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '403':
+          description: 解密验证失败
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '404':
+          description: 未找到课程信息
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '500':
+          description: 服务器异常
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+
+
+  CourseTableInfoResource:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "主课表id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表详情id"
+      startTime:
+        type: "string"
+        description: "课表开始时间 格式：HH:mm"
+      endTime:
+        type: "string"
+        description: "课表结束时间 格式：HH:mm"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseDate:
+        type: "string"
+        description: "上课时间 格式：yyyy-MM-dd"
+      roomId:
+        type: "string"
+        description: "上课教室id"
+      roomName:
+        type: "string"
+        description: "上课教室名称"
+      courseName:
+        type: string
+        description: "课程名称"
+      courseId:
+        type: string
+        description: "课程id"
+      segment:
+        type: "string"
+        description: "节次(多个“,”隔开)"
+      className:
+        type: "string"
+        description: "上课班级"
+      segmentList:
+        description: "节次列表"
+        type: array
+        items:
+          properties:
+            segment:
+              type: integer
+              description: "节次"
+            startTime:
+              type: string
+              description: "开始时间（ 格式：HH:mm）"
+            endTime:
+              type: string
+              description: "结束时间（ 格式：HH:mm）"
+
+
+  CourseTableInfoByRoomIdAndNowResource:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表详情id"
+      courseType:
+        type: "string"
+        description: "课表类型名称"
+      studentCount:
+        type: "string"
+        description: "学生数量"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseDate:
+        type: "string"
+        description: "上课时间 格式：yyyy-MM-dd"
+      roomId:
+        type: "string"
+        description: "上课教室id"
+      roomName:
+        type: "string"
+        description: "上课教室名称"
+      courseName:
+        type: string
+        description: "课程名称"
+      collegeName:
+        type: string
+        description: "学院名称"
+      segmentList:
+        type: "string"
+        description: "节次(多个“,”隔开)"
+      className:
+        type: "string"
+        description: "上课班级"

@@ -1,0 +1,201 @@
+swagger: "2.0"
+info:
+  description: "督导听课接口文档"
+  version: "1.0.0"
+  title: "督导听课接口文档API"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/coursetable/page":
+    post:
+      tags:
+        - "Evaluation"
+      summary: "督导有评价权限的当天已上过或者正在上课的课表分页查询"
+      description: "小程序督导听课-随堂评教"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "SuperviseEvaluationResource"
+          in: "body"
+          description: "督导听课信息"
+          required: true
+          schema:
+            $ref: '#/definitions/SuperviseEvaluationResource'
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/SuperviseCourseTablePage"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+  "/politicalcourse/coursetable/page":
+    post:
+      tags:
+        - "Evaluation"
+      summary: "思政课督导有评价权限的当天已上过或者正在上课的课表分页查询"
+      description: "小程序督导听课-思政课听课"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "SuperviseEvaluationResource"
+          in: "body"
+          description: "督导听课信息"
+          required: true
+          schema:
+            $ref: '#/definitions/SuperviseEvaluationResource'
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/SuperviseCourseTablePage"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+definitions:
+  SuperviseEvaluationResource:
+    type: "object"
+    properties:
+      roomId:
+        type: "string"
+        description: "教室id"
+      searchStr:
+        type: "string"
+        description: "老师或课程名"
+      page:
+        type: "integer"
+        description: "当前页"
+      pageSize:
+        type: "integer"
+        description: "每页个数"
+      courseTableIds:
+        type: "string"
+        description: "课表ids"
+      collegeIds:
+        type: "string"
+        description: "学院ids"
+      courseStudentTypes:
+        type: "string"
+        description: "授课学生类型"
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      superviseCollegeType:
+        type: integer
+        description: "督导听课查询学类型 0：授课教师学院；1：开课学院"
+      isNeedFilterPoliticalCourse:
+        type: boolean
+        description: "是否需要过滤思政课"
+      relatedScheduleTypes:
+        type: "string"
+        description: "关联课表类型"
+
+  SuperviseCourseTablePage:
+    type: object
+    properties:
+      pageNum:
+        type: integer
+        description: '总页数'
+        example: '10'
+      totalCount:
+        type: integer
+        description: '总数量'
+        example: '10'
+      courseTableList:
+        type: array
+        items:
+          $ref: '#/definitions/SuperviseCourseTable'
+
+  SuperviseCourseTable:
+    type: object
+    properties:
+      studentType:
+        type: integer
+        description: "开课类型"
+      segment:
+        type: string
+        description: "节次"
+      courseName:
+        type: string
+        description: "课程名称"
+      courseId:
+        type: string
+        description: "课程id"
+      courseTableDetailId:
+        type: string
+        description: "课表id"
+      teachingClassName:
+        type: string
+        description: "上课班级"
+      teachingClassId:
+        type: string
+        description: "班级id"
+      teachingClassStudentCount:
+        type: integer
+        description: "班级学生人数"
+      roomName:
+        type: string
+        description: "上课教室"
+      roomId:
+        type: string
+        description: "上课教室Id"
+      teacherInfo:
+        type: array
+        items:
+          $ref: '#/definitions/teacherInfo'
+      collegeId:
+        type: string
+        description: '学院id'
+      collegeName:
+        type: string
+        description: '学院名称'
+      courseAttrName:
+        type: string
+        description: '课程属性名称'
+      schoolYear:
+        type: string
+        description: '学年'
+      term:
+        type: integer
+        description: '学期'
+  teacherInfo:
+    type: object
+    properties:
+      teacherName:
+        type: string
+        description: "老师姓名"
+      teacherId:
+        type: string
+        description: "老师ID"
+      teacherNo:
+        type: string
+        description: "老师工号"
+      teacherCollegeId:
+        type: string
+        description: "老师所属学院ID"
+      teacherCollegeName:
+        type: string
+        description: "老师所属学院姓名"
+
+

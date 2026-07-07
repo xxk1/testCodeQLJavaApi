@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "教学班信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/groupInfo":
+    get:
+      tags:
+        - "Group"
+      summary: "获取教学班信息"
+      description: "数据对接使用  "
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupNo"
+          type: "string"
+          in: "query"
+          description: "分组编号"
+        - name: "groupName"
+          type: "string"
+          in: "query"
+          description: "分组名称"
+        - name: "creatorName"
+          type: "string"
+          in: "query"
+          description: "创建人名称"
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          description: '当前页'
+          required: true
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "MD5加密验证字符串 &signKey=123123"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/GroupVo"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到教学班信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  /groupmember/group:
+    get:
+      tags:
+        - "Group"
+      description: "根据分组成员信息获取组信息"
+      summary: "根据分组成员信息获取组信息"
+      operationId: "getGroupByGroupMember"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "studentId"
+          type: "string"
+          in: "query"
+          description: "学生ID"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "MD5加密验证字符串 &signKey=123123"
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: false
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GroupResourceVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+  GroupVo:
+    type: "object"
+    properties:
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      total:
+        type: 'integer'
+        description: '总条数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      groupResourcesList:
+        type: array
+        items:
+          $ref: '#/definitions/GroupResourceVo'
+  GroupResourceVo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "主键ID"
+      groupNo:
+        type: "string"
+        description: "分组编号"
+      groupName:
+        type: "string"
+        description: "组名称"
+      createTime:
+        type: "string"
+        description: "创建时间"
+      createName:
+        type: "string"
+        description: "创建人"
+      modifierId:
+        type: "string"
+        description: "修改人ID"
+      modifierName:
+        type: "string"
+        description: "修改人姓名"
+      modifierTime:
+        type: "string"
+        description: "修改时间"
+      source:
+        type: "string"
+        description: "数据来源"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,253 @@
+swagger: "2.0"
+info:
+  title: "courseApi文档"
+  version: "1.0.0"
+  description: "教学报告相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/teachingreports/offeringcourseinfo":
+    post:
+      tags:
+        - "TeachingReport"
+      summary: "根据学院和学期获取学院开课基础信息接口编写"
+      description: "使用方：1、云课堂听查课端 教学报告 教学数据总览"
+      operationId: "getTeachingReportOfferingCourseInfo"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          type: "string"
+          description: "验证码：&signKey=123123(md5加密)"
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "查询参数"
+          schema:
+            $ref: '#/definitions/OfferingCourseRequest'
+      responses:
+        200:
+          description: '成功'
+          schema:
+            $ref: '#/definitions/OfferCourseInfoVo'
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/teachingreports/courseresourcesstatistics":
+    post:
+      tags:
+        - "TeachingReport"
+      summary: "根据教学报告参数统计对应资源个数、上传老师列表、资源占用"
+      description: "使用方：1、云课堂听查课端-教学报告-教学数据总览-教学资源统计"
+      operationId: "getCourseResourceStatistics"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          type: "string"
+          description: "验证码：&signKey=123123(md5加密)"
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "查询参数"
+          schema:
+            $ref: '#/definitions/OfferingCourseRequest'
+      responses:
+        200:
+          description: '成功'
+          schema:
+            $ref: '#/definitions/TeachingReportCourseResourceStatisticsVo'
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/teachingreports/courseresourcecollegestatistics":
+    post:
+      tags:
+        - "TeachingReport"
+      summary: "根据教学报告参数统计对应学院老师备课包资源数据"
+      description: "使用方：1、内部调用"
+      operationId: "getCourseResourceCollegeStatisticsList"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          type: "string"
+          description: "验证码：&signKey=123123(md5加密)"
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "查询参数"
+          schema:
+            $ref: '#/definitions/CollegeTeacherResourceStatisticsRequest'
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CourseResourceCollegeStatisticsModel'
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  OfferingCourseRequest:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期（格式：yyyy-MM-dd）"
+      endDate:
+        type: "string"
+        description: "结束日期（格式：yyyy-MM-dd）"
+      studentType:
+        type: "string"
+        description: "学生类型：不填为全部，0=本科生，1=研究生"
+      colleges:
+        type: "array"
+        items:
+          $ref: "#/definitions/OfferingCourseCollegeRequest"
+  OfferingCourseCollegeRequest:
+    type: "object"
+    properties:
+      collegeId:
+        type: "string"
+        description: "学院id"
+  OfferCourseInfoVo:
+    type: "object"
+    properties:
+      courseNumber:
+        type: "string"
+        description: "开课课程数"
+      teacherNumber:
+        type: "string"
+        description: "授课教师数"
+      totalSegmentNumber:
+        type: "string"
+        description: "上课总学时"
+      groupNumber:
+        type: "string"
+        description: "上课班级数"
+      studentNumber:
+        type: "string"
+        description: "上课学生数"         
+  TeachingReportCourseResourceStatisticsVo:
+    type: "object"
+    properties:
+      courseResourceNum:
+        type: "integer"
+        description: "课程资源个数"
+      joinTeacherNumber:
+        type: "integer"
+        description: "参与老师个数"
+      teacherTotalNumber:
+        type: "integer"
+        description: "老师总个数"
+      resourceReferenceNum:
+        type: "integer"
+        description: "资源参与个数"
+      teachingCourseWareNum:
+        type: "integer"
+        description: "教学课件个数"
+      microVideoNum:
+        type: "integer"
+        description: "视频个数"
+      imageNum:
+        type: "integer"
+        description: "图片个数"
+      classTestNum:
+        type: "integer"
+        description: "测验个数"
+      knowledgePointNum:
+        type: "integer"
+        description: "知识点个数"
+      themeNum:
+        type: "integer"
+        description: "主题个数"
+      teacherList:
+        type: "array"
+        description: "课程资源统计教师列表"
+        items:
+          $ref: "#/definitions/CourseResourceStatisticsTeacherVo"
+  CourseResourceStatisticsTeacherVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      uploadType:
+        type: "integer"
+        description: "上传状态：0 未上传，已上传"
+  CollegeTeacherResourceStatisticsRequest:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期（格式：yyyy-MM-dd）"
+      endDate:
+        type: "string"
+        description: "结束日期（格式：yyyy-MM-dd）"
+  CourseResourceCollegeStatisticsModel:
+    type: "object"
+    properties:
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseResourceTeacherStatisticsList:
+        type: "array"
+        description: "课程资源教师统计列表"
+        items:
+          $ref: "#/definitions/CourseResourceTeacherStatisticsModel"
+  CourseResourceTeacherStatisticsModel:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      resourceNum:
+        type: "string"
+        description: "资源个数"

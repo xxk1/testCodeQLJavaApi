@@ -1,0 +1,129 @@
+swagger: "2.0"
+info:
+  title: 课程章节对应相关接口接口文档
+  description: 课程章节对应相关接口接口文档
+  version: 1.0.0
+host: www
+schemes:
+  - https
+  - http
+basePath: /api/v1
+paths:
+  /course/structure/mapping:
+    post:
+      tags:
+        - CourseStructureMapping
+      summary: 课程章节对应相关接口
+      description: "1.云课堂教师端使用"
+      operationId: createCourseStructureMapping
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+         - name: param
+           in: body
+           description: 课程章节对应关系
+           required: true
+           schema:
+            $ref: '#/definitions/CourseStructureMappingParam'
+         - name: validCode
+           in: query
+           description: 验证码 &signKey=123123
+           required: true
+           type: string
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /course/structure/mapping/list:
+    get:
+      tags:
+        - CourseStructureMapping
+      summary: 课程章节对应关系列表
+      description: "1.云课堂教师端使用"
+      operationId: getCourseStructureMappingList
+      produces:
+        - application/json
+      parameters:
+         - name: courseId
+           in: query
+           description: 课程id
+           required: true
+           type: string
+         - name: versionId
+           in: query
+           description: 版本id
+           required: true
+           type: string
+         - name: validCode
+           in: query
+           description: 验证码 &signKey=123123
+           required: true
+           type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/CourseStructureMappingDetailResource'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CourseStructureMappingParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+      versionId:
+        type: "string"
+        description: "版本id"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      mappingList:
+        type: "array"
+        items:
+          $ref: '#/definitions/CourseStructureMappingDetailResource'
+  CourseStructureMappingDetailResource:
+    type: "object"
+    properties:
+      ocrStructureId:
+        type: "string"
+        description: "OCR识别的章节id"
+      courseStructureId:
+        type: "string"
+        description: "课程章节id"
+

@@ -1,0 +1,243 @@
+swagger: "2.0"
+info:
+  title: 学习资源智能推荐相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /courseresource/intelligent/recommendation/term:
+    get:
+      tags:
+        - "CourseResourceIntelligentRecommendation"
+      summary: "获取课程资源智能推荐列表学期信息"
+      description: "1.云课堂老师端-课程建设使用"
+      operationId: getCourseResourceIntelligentRecommendationTermList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: courseVersionId
+          in: query
+          description: 课程版本id
+          type: string
+          required: false
+        - name: courseKnowledgeGraphNodeId
+          in: "query"
+          description: "课程知识图谱知识点id"
+          type: "string"
+          required: true
+        - name: courseKnowledgeGraphId
+          in: "query"
+          description: "课程知识图谱id"
+          type: "string"
+          required: true
+        - name: similarityScore
+          in: query
+          description: 相似性分数
+          type: number
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResourceIntelligentRecommendationTermResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseresource/intelligent/recommendation/nodevideoinfotexts:
+    post:
+      tags:
+        - "CourseResourceIntelligentRecommendation"
+      summary: "获取课程资源智能推荐列表节点视频信息文本"
+      description: "1.云课堂老师端-课程建设使用"
+      operationId: getCourseResourceIntelligentRecommendationNodeVideoInfoTexts
+      parameters:
+          - name: validCode
+            in: query
+            description: 验证码（&signKey=123123）
+            type: string
+            required: true
+          - name: queryParams
+            in: body
+            description: "查询参数"
+            required: true
+            schema:
+              $ref: "#/definitions/CourseResourceIntelligentRecommendationQueryParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeVideoInfoTextModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseResourceIntelligentRecommendationTermResource:
+    type: object
+    properties:
+      schoolYear:
+        type: string
+        description: "学年"
+      term:
+        type: integer
+        description: "学期"
+      teacherList :
+        type: array
+        items:
+          $ref: "#/definitions/CourseResourceIntelligentRecommendationTermTeacherResource"
+  CourseResourceIntelligentRecommendationTermTeacherResource:
+    type: object
+    properties:
+      teacherId:
+        type: string
+        description: "教师id"
+      teacherName:
+        type: string
+        description: "教师名称"
+      teacherNo:
+        type: string
+        description: "教师工号"
+
+  CourseKnowledgeGraphNodeVideoInfoTextModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "唯一id"
+      videoInfoId:
+        type: "string"
+        description: "视频信息id"
+      textDataSourceIndex:
+        type: "integer"
+        description: "文本数据来源编号(0:ppt识别;1:语言转写识别)"
+      textDataSourceName:
+        type: "string"
+        description: "文本数据来源名称(0:ppt识别;1:语言转写识别)"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teacherIds:
+        type: "string"
+        description: "课表明细老师id(多个时\",\"分割)"
+      teacherNos:
+        type: "string"
+        description: "课表明细老师编号(多个时\",\"分割)"
+      teacherNames:
+        type: "string"
+        description: "课表明细老师姓名(多个时\",\"分割)"
+      videoDate:
+        type: "string"
+        description: "视频日期"
+      segment:
+        type: "integer"
+        description: "节次(第几节次)"
+      innerIp:
+        type: "string"
+        description: "内网IP"
+      outerIp:
+        type: "string"
+        description: "外网IP"
+      thumbnailPath:
+        type: "string"
+        description: "缩略图路径"
+      knowledgeNodeId:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      textContent:
+        type: "string"
+        description: "文本内容"
+      highLightTextContent:
+        type: "string"
+        description: "高亮文本内容"
+
+      startTimestamp:
+        type: "integer"
+        description: "开始时间戳"
+      endTimestamp:
+        type: "integer"
+        description: "结束时间戳"
+      similarityScore:
+        type: "number"
+        description: "相似性分数"
+
+  CourseResourceIntelligentRecommendationQueryParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseKnowledgeGraphNodeId:
+        type: "string"
+        description: "课程知识图谱知识点id"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teacherIds:
+        type: "string"
+        description: "教师id,多个用逗号分隔"
+      similarityScore:
+        type: "number"
+        description: "相似性分数"
+

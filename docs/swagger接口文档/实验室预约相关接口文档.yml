@@ -1,0 +1,198 @@
+swagger: "2.0"
+info:
+  description: "互动课堂——实验室预约接口文档"
+  version: "1.0.0"
+  title: "实验室预约接口文档API"
+host: "192.168.1.105:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "http"
+paths:
+
+  /projects:
+    get:
+      tags:
+        - "projects"
+      summary: "获取所有项目"
+      description: "云课堂web"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            description: "所有项目列表"
+            type: "array"
+            items:
+              $ref: "#/definitions/ProjectVo"
+        400:
+          description: "客户端错误"
+        500:
+          description: "服务器异常"
+        403:
+          description: "验证码错误"
+
+
+  /initialsortprojects:
+    get:
+      tags:
+        - "projects"
+      summary: "获取所有项目(中文首字母排序)"
+      description: "1、云课堂管理端"
+      operationId: "getInitialSortProjects"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            description: "所有项目列表"
+            type: "array"
+            items:
+              $ref: "#/definitions/ProjectVo"
+        400:
+          description: "客户端错误"
+        500:
+          description: "服务器异常"
+        403:
+          description: "验证码错误"
+
+  '/projects/projectIds':
+    get:
+      tags:
+        - 'projects'
+      summary: '根据项目id获取项目信息'
+      description: '云课堂web'
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串(&signKey=123123)'
+        - in: 'query'
+          name: 'projectIds'
+          type: 'string'
+          description: '项目id，多个用逗号'
+          required: true
+      responses:
+        200:
+          description: "操作成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ProjectVo"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+
+
+
+  /projects/courseid:
+    get:
+      tags:
+        - 'projects'
+      summary: '根据课程id获取项目信息'
+      description: '云课堂web'
+      operationId: getProjectsByCourseId
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'courseId不为空：MD5加密验证字符串(courseId={}&signKey=123123)；courseId为空：MD5加密验证字符串(&signKey=123123)'
+        - in: 'query'
+          name: 'courseId'
+          type: 'string'
+          description: '课程Id'
+          required: false
+      responses:
+        200:
+          description: "操作成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ProjectVo"
+        400:
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        403:
+          description: 传入的加密参数未通过验证
+        404:
+          description: 资源路径参数对应的资源未找到
+        500:
+          description: 文件操作IO异常等
+  /project/bookableprojects:
+    get:
+      tags:
+        - "projects"
+      summary: "获取所有可预约项目"
+      description: "云课堂web"
+      operationId: getBookableprojects
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: startTime
+          in: query
+          description: 开始时间
+          required: true
+          type: string
+        - name: endTime
+          in: query
+          description: 结束时间
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            description: "所有可预约项目目列表"
+            type: "array"
+            items:
+              $ref: "#/definitions/ProjectVo"
+        400:
+          description: "客户端错误"
+        500:
+          description: "服务器异常"
+        403:
+          description: "验证码错误"
+
+definitions:
+  ProjectVo:
+    type: "object"
+    properties:
+      projectId:
+        type: "string"
+        description: "项目id"
+      projectCode:
+        type: "string"
+        description: "项目编号"
+      projectName:
+        type: "string"
+        description: "项目名称"
+      projectCourseId:
+        type: "string"
+        description: "预约项目所属课程id"
+      projectCourseName:
+        type: "string"
+        description: "预约项目所属课程名称"

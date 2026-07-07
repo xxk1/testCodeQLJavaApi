@@ -1,0 +1,648 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "专业、行政班接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/majors":
+    post:
+      tags:
+        - "MajorResource"
+      summary: "保存专业信息"
+      description: "数据对接使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "majors"
+          in: "body"
+          required: true
+          description: "专业列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/MajorInfo"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/administrativeclass":
+    post:
+      tags:
+        - "AdministrativeClassResource"
+      summary: "保存行政班"
+      description: "数据对接使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "administrativeClasses"
+          in: "body"
+          required: true
+          description: "行政班列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/AdministrativeClassInfo"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - "AdministrativeClassResource"
+      summary: "获取行政班列表信息"
+      description: "1、学业支持"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 &signKey=123123"
+        - in: "query"
+          name: "teacherId"
+          required: false
+          type: string
+          description: "老师Id"
+      responses:
+        200: # 在200 情况下的返回值和注释
+          description: "成功"
+          schema:
+            $ref: "#/definitions/AdministrativeClassVo"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        404:
+          description: "资源不存在"
+        500:
+          description: "服务器异常"
+
+  "/administrativeclass/{teacherId}":
+    get:
+      tags:
+        - "AdministrativeClassResource"
+      summary: "根据老师id获取行政班列表信息"
+      description: "1、听查课端"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teacherId"
+          in: path
+          description: "老师id"
+          type: string
+          required: true
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 teacherId=?&signKey=123123"
+      responses:
+        200: # 在200 情况下的返回值和注释
+          description: "成功"
+          schema:
+            $ref: "#/definitions/AdministrativeClassInfoVo"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        404:
+          description: "资源不存在"
+        500:
+          description: "服务器异常"
+  "/administrativeclass/groups":
+    post:
+      tags:
+        - "AdministrativeClassResource"
+      summary: "保存行政班教学班关系"
+      description: "数据对接使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "administrativeClassGroups"
+          in: "body"
+          required: true
+          description: "行政班教学班关系列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/AdministrativeClassGroupInfo"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/classes/coursetables/page":
+    post:
+      tags:
+        - "AdministrativeClassAndTeachingClass"
+      summary: "班级课表查询"
+      description: "调用方 小程序 班级课表查询"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'administrative'
+          schema:
+            $ref: "#/definitions/AdministrativeVo"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 (&signKey=123123)"
+
+      responses:
+        200:
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/ClassCourseTablePage"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        404:
+          description: "未找到班级课表"
+        500:
+          description: "服务器异常"
+
+  "/classes/coursetables/statistics":
+    post:
+      tags:
+        - "AdministrativeClassAndTeachingClass"
+      summary: "班级课表查询统计接口"
+      description: "小程序班级课表查询统计接口"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'administrative'
+          schema:
+            $ref: "#/definitions/AdministrativeVo"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 (&signKey=123123)"
+
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CourseTypeCountResource'
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        404:
+          description: "未找到班级课表"
+        500:
+          description: "服务器异常"
+
+  /v1/classes/major:
+    get:
+      tags:
+        - AdministrativeClassAndTeachingClass
+      summary: 获取专业信息
+      description: ""
+      operationId: classesMajorGet
+      produces:
+        - '*/*'
+      parameters:
+        - name: collegeId
+          in: query
+          description: 学院id
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: MD5加密验证字符串(&signKey=123123)
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: year
+          in: query
+          description: 年级
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MajorResource'
+        '400':
+          description: 参数异常
+        '403':
+          description: 验证码错误
+        '404':
+          description: 未找到专业信息
+        '500':
+          description: 服务器异常
+      deprecated: false
+  "/administrativeclasslist":
+    get:
+      tags:
+        - "AdministrativeClassResource"
+      summary: "根据学院id和班级名称模糊查询获取行政班列表信息"
+      description: "期末评教查看学生完成统计调用"
+      operationId: "getAdministrativeClassList"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 collegeId=?&signKey=123123"
+        - in: "query"
+          name: "collegeId"
+          required: true
+          type: string
+          description: "学院id"
+        - in: "query"
+          name: "className"
+          required: true
+          type: string
+          description: "行政班名称"
+      responses:
+        200: # 在200 情况下的返回值和注释
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/AdministrativeClassResourceVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+  MajorInfo:
+    type: "object"
+    properties:
+      majorId:
+        type: "string"
+        description: "专业id"
+      majorName:
+        type: "string"
+        description: "专业名称"
+      year:
+        type: "string"
+        description: "年度"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+  AdministrativeClassInfo:
+    type: "object"
+    properties:
+      className:
+        type: "string"
+        description: "行政班名称"
+      classId:
+        type: "string"
+        description: "行政班Id"
+      year:
+        type: "string"
+        description: "年级"
+      majorId:
+        type: "string"
+        description: "专业id"
+      majorName:
+        type: "string"
+        description: "专业名称"
+      gradeMajorCode:
+        type: "string"
+        description: "年度专业代码"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      schoolSystem:
+        type: "string"
+        description: "学制"
+      studentNum:
+        type: "string"
+        description: "学生人数"
+  AdministrativeClassGroupInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "id"
+      className:
+        type: "string"
+        description: "行政班名称"
+      classId:
+        type: "string"
+        description: "行政班Id"
+      groupNo:
+        type: "string"
+        description: "组号"
+      year:
+        type: "string"
+        description: "年级"
+      majorId:
+        type: "string"
+        description: "专业Id"
+      teacherId:
+        type: "string"
+        description: "老师Id"
+      teacherName:
+        type: "string"
+        description: "老师名称"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      studentNum:
+        type: "string"
+        description: "学生人数"
+
+  AdministrativeVo:
+    type: 'object'
+    properties:
+      studentType:
+        type: 'integer'
+        description: '开课类型'
+      year:
+        type: 'string'
+        description: '年级'
+      collegeId:
+        type: 'string'
+        description: '学院id'
+      page:
+        type: 'integer'
+        description: '当前页'
+      rows:
+        type: 'integer'
+        description: '每页数量'
+      majorId:
+        type: 'string'
+        description: '专业id'
+      administrativeClass:
+        type: 'string'
+        description: '班级名称'
+      segment:
+        type: 'integer'
+        description: '节次'
+      week:
+        type: 'integer'
+        description: '周次'
+      weekNum:
+        type: 'integer'
+        description: '周几'
+
+  ClassCourseTablePage:
+    type: object
+    properties:
+      pageNum:
+        type: integer
+        description: '总页数'
+        example: '10'
+      totalCount:
+        type: integer
+        description: '总数量'
+        example: '10'
+      courseTableList:
+        type: array
+        items:
+          $ref: '#/definitions/ClassCourseTable'
+
+  ClassCourseTable:
+    type: object
+    properties:
+      week:
+        type: string
+        description: '第几周'
+      segment:
+        type: string
+        description: '第几节次'
+      weekDay:
+        type: string
+        description: '星期几'
+      weekType:
+        type: string
+        description: '单双周'
+      courseDate:
+        type: string
+        description: '上课日期'
+      courseType:
+        type: integer
+        enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        description: '课程类型 0：理论课 1：实验课 2：体育课 3：外语课'
+      courseName:
+        type: string
+        description: "课程名称"
+      courseId:
+        type: string
+        description: "课程id"
+      courseTableId:
+        type: string
+        description: "课程表id"
+      teachingClassName:
+        type: string
+        description: "上课班级"
+      teachingClassId:
+        type: string
+        description: "班级id"
+      studentNumber:
+        type: integer
+        description: "上课人数"
+      roomId:
+        type: string
+        description: "教室id"
+      roomName:
+        type: string
+        description: "上课教室"
+      courseAttr:
+        type: integer
+        enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        description: "0 :必修 1: 选修 2：公选 3：指选 4：国际课 5：双学位 6：其他"
+      courseAttrName:
+        type: string
+        description: "课程种类名称"
+      teacherName:
+        type: string
+        description: "多个老师使用“,” 隔开 "
+      teacherId:
+        type: string
+        description: "多个老师使用“,” 隔开"
+      collgegId:
+        type: string
+        description: '学院id'
+      collegeName:
+        type: string
+        description: '学院名称'
+
+  CourseTypeCountResource:
+    type: object
+    properties:
+      englishCount:
+        type: integer
+        description: '外语课数量'
+      experimentCount:
+        type: integer
+        description: '实验课数量'
+      sportsCount:
+        type: integer
+        description: '体育课数量'
+      theoryCount:
+        type: integer
+        description: '理论课数量'
+
+  MajorResource:
+    type: object
+    properties:
+      checked:
+        type: boolean
+        description: 是否选择
+      id:
+        type: string
+        description: 专业id
+      majorName:
+        type: string
+        description: 专业名称
+  AdministrativeClassVo:
+    type: "object"
+    properties:
+      id:
+        type: string
+        description: "id"
+      teacherId:
+        type: string
+        description: "老师id"
+      className:
+        type: string
+        description: "班级名称"
+      year:
+        type: string
+        description: "年级"
+      collegeCode:
+        type: string
+        description: "学院编号"
+      collegeName:
+        type: string
+        description: "学院名称"
+      majorId:
+        type: string
+        description: "专业id"
+      majorCode:
+        type: string
+        description: "专业代码"
+      majorName:
+        type: string
+        description: "专业名称"
+  AdministrativeClassInfoVo:
+    type: "object"
+    properties:
+      id:
+        type: string
+        description: "id"
+      counsellorId:
+        type: string
+        description: "辅导员Id"
+      counsellorNo:
+        type: string
+        description: "辅导员工号"
+      counsellorName:
+        type: string
+        description: "辅导员姓名"
+      className:
+        type: string
+        description: "班级名称"
+      year:
+        type: string
+        description: "年级"
+      collegeId:
+        type: string
+        description: "学院id"
+      collegeName:
+        type: string
+        description: "学院名称"
+      majorId:
+        type: string
+        description: "专业id"
+      majorCode:
+        type: string
+        description: "专业代码"
+      majorName:
+        type: string
+        description: "专业名称"
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  AdministrativeClassResourceVo:
+    type: "object"
+    properties:
+      className:
+        type: "string"
+        description: "行政班名称"
+      classId:
+        type: "string"
+        description: "行政班Id"

@@ -1,0 +1,488 @@
+swagger: "2.0"
+info:
+  title: 课程开课以及项目相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /
+schemes:
+  - https
+  - http
+paths:
+  /teacher/coursetable/groupandproject:
+    get:
+      tags:
+        - "TeacherCourseTable"
+      summary: "获取教师下课程以及开课班级以及课程项目"
+      description: "1.云课堂教师端-同伴互评使用"
+      operationId: getTeacherCourseTableGroupAndProject
+      parameters:
+        - name: "schoolYear"
+          in: query
+          description: 学年
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+        - name: userId
+          in: query
+          description: 老师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: 加密验证码userId=?&signKey=123123
+          required: true
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TeacherPeerReviewCourseResource"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  "/terminalevaluation/courseinfos":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学年学期获取开课信息"
+      description: "期末评教对接使用"
+      operationId: "getCourseInfosBySchoolYearAndTerm"
+      parameters:
+        - in: "query"
+          name: "schoolYear"
+          required: false
+          type: "string"
+          description: "学年"
+        - in: "query"
+          name: "term"
+          required: false
+          type: "string"
+          description: "学期"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/CourseInfoModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/termrunning/studentmembernum":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学年学期,课程，学期获取开课人数"
+      description: "云课堂：课程画像-课程整体数据使用"
+      operationId: "getStudentMemberNum"
+      parameters:
+        - in: "query"
+          name: "schoolYear"
+          required: false
+          type: "string"
+          description: "学年"
+        - in: "query"
+          name: "term"
+          required: false
+          type: "string"
+          description: "学期"
+        - in: "query"
+          name: "courseId"
+          required: true
+          type: "string"
+          description: "课程ID"
+        - in: "query"
+          name: "groupId"
+          required: true
+          type: string
+          description: "班级ID"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/MemberNumVo'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/termrunning/runningnum":
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学年学期,课程，学期获取运行数据"
+      description: "云课堂：课程画像-课程整体数据使用"
+      operationId: "getTermRunningNums"
+      parameters:
+        - in: "body"
+          name: "termResources"
+          description: "学期列表"
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TermResource'
+        - in: "query"
+          name: "courseId"
+          required: true
+          type: "string"
+          description: "课程id"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            $ref: '#/definitions/TermRunningModel'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/terminalevaluation/courseinfocodes":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学年学期获取满足评教的开课信息"
+      description: "期末评教对接使用"
+      operationId: "getCourseInfoCodes"
+      parameters:
+        - in: "query"
+          name: "schoolYear"
+          required: false
+          type: "string"
+          description: "学年"
+        - in: "query"
+          name: "term"
+          required: false
+          type: "string"
+          description: "学期"
+        - in: "query"
+          name: "classTime"
+          required: false
+          type: "integer"
+          description: "课次数"
+        - in: "query"
+          name: "courseCompletionStatus"
+          required: true
+          type: "boolean"
+          description: "课次结课状态"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/CourseInfoCode'
+
+  "/getcoursetableidsbycollegeids":
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学院id查询所有的开课ID"
+      description: "学业支持：挂科总览按开课学院汇总使用"
+      operationId: "getCourseTableIdsByCollegeIds"
+      parameters:
+        - in: "body"
+          name: "collegeIds"
+          description: "学院ID列表"
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: 'String'
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: array
+            items:
+              $ref: 'String'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/getcoursetableinfobycollegeids":
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "根据学院id查询所有的开课信息"
+      description: "学业支持：挂科总览按开课学院汇总使用"
+      operationId: "getCourseTableInfoByCollegeIds"
+      parameters:
+        - in: "body"
+          name: "collegeIds"
+          description: "学院ID列表"
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: 'String'
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CourseTableIdAndNameInfo'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  CourseTableIdAndNameInfo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "id"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  TeacherPeerReviewCourseResource:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      projectList:
+        type: "array"
+        description:  "课程项目列表"
+        items:
+          $ref: "#/definitions/TeacherPeerReviewProjectResource"
+      groupList:
+        type: "array"
+        description: "组列表"
+        items:
+          $ref: "#/definitions/TeacherPeerReviewGroupResource"
+
+  TeacherPeerReviewProjectResource:
+    type: object
+    properties:
+      projectId:
+        type: string
+        description: "项目id"
+      projectCode:
+        type: string
+        description: "项目编码"
+      projectName:
+        type: string
+        description: "项目名称"
+  TeacherPeerReviewGroupResource:
+    type: object
+    properties:
+      groupId:
+        type: string
+        description: "组id"
+      groupNo:
+        type: string
+        description: "组编号"
+      groupName:
+        type: string
+        description: "组名称"
+  CourseInfoModel:
+    type: "object"
+    properties:
+      courseInfoId:
+        type: "string"
+        description: "开课id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      teacherId:
+        type: "string"
+        description: "开课老师id"
+      teacherName:
+        type: "string"
+        description: "开课老师名称"
+      teacherNo:
+        type: "string"
+        description: "开课老师工号"
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "integer"
+        description: "学期"
+      teachingClassId:
+        type: "string"
+        description: "班级id"
+      teachingClassName:
+        type: "string"
+        description: "教学班名称"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      weekType:
+        type: "string"
+        description: "单/双周"
+      courseId:
+        type: "string"
+        description: "大课id"
+      courseType:
+        type: "integer"
+        description: "课程类别0：理论课，1：实验课"
+      courseInfoCode:
+        type: "string"
+        description: "开课通知单号"
+      freshmanSeminar:
+        type: "integer"
+        description: "新生研讨课判断"
+      noticeCategory:
+        type: "string"
+        description: "通知单类型"
+      auxiliaryName:
+        type: "string"
+        description: "辅助名称"
+  MemberNumVo:
+    type: "object"
+    properties:
+      memberNUm:
+        type: integer
+        description: "去重后学生人数"
+  TermResource:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "string"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      description:
+        type: "string"
+        description: "学期描述"
+  TermRunningModel:
+    type: "object"
+    properties:
+      openClassNum:
+        type: "string"
+        description: "开班总数"
+      serviceTeacherNum:
+        type: "string"
+        description: "服务教师总数"
+      servicestudentNum:
+        type: "string"
+        description: "服务学生总数"
+  CourseInfoCode:
+    type: "object"
+    properties:
+      courseInfoCode:
+        type: "string"
+        description: "开课通知单号"

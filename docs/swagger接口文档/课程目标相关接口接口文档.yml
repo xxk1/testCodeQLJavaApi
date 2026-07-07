@@ -1,0 +1,472 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "课程目标管理接口文档"
+  description: >
+    本接口用于能力图谱模块中课程目标的管理，
+    支持新增、编辑、删除、拖拽排序、查询功能。
+
+host: localhost:8080
+basePath: /api/v1
+schemes:
+  - http
+  - https
+paths:
+  /courseObjectives:
+    get:
+      tags:
+        - CourseObjective
+      summary: 查询课程目标列表
+      description: 1.云课堂教师端使用
+      operationId: queryCourseObjective
+      parameters:
+        - name: courseId
+          in: query
+          required: true
+          type: string
+          description: 课程ID
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 courseId={}&signKey=123123(md5加密)
+      responses:
+        200:
+          description: 查询成功
+          schema:
+            $ref: '#/definitions/CourseObjectiveMainInfo'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+    post:
+      tags:
+        - CourseObjective
+      summary: 新增课程目标
+      description: 1.云课堂教师端使用
+      operationId: createCourseObjective
+      parameters:
+        - in: body
+          name: param
+          required: true
+          schema:
+            $ref: '#/definitions/CourseObjectiveCreateRequest'
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码  &signKey=123123(md5加密)
+      responses:
+        200:
+          description: 新增成功
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseObjectives/{id}/modify:
+    post:
+      tags:
+        - CourseObjective
+      summary: 编辑课程目标
+      description: 1.云课堂教师端使用
+      operationId: modifyCourseObjective
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: 课程目标ID
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CourseObjectiveUpdateRequest'
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 id={}&signKey=123123(md5加密)
+      responses:
+        200:
+          description: 修改成功
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseObjectives/{id}/delete:
+    post:
+      tags:
+        - CourseObjective
+      summary: 删除课程目标
+      description: 1.云课堂教师端使用
+      operationId: deleteCourseObjective
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 课程目标ID
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 id={}&signKey=123123(md5加密)
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CourseObjectiveUpdateRequest'
+      responses:
+        200:
+          description: 删除成功
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  /courseObjectives/sort:
+    post:
+      tags:
+        - CourseObjective
+      summary: 拖拽排序
+      description: 1.云课堂教师端使用
+      operationId: sortCourseObjective
+      parameters:
+        - in: body
+          name: param
+          required: true
+          schema:
+            $ref: '#/definitions/CourseObjectiveSortRequest'
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 courseId={}&signKey=123123(md5加密)
+          required: true
+      responses:
+        200:
+          description: 排序更新成功
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseObjectives/{id}/related/knowledgeGraphNode:
+    post:
+      tags:
+        - CourseObjective
+      summary: 课程目标关联图谱
+      description: 1.云课堂教师端使用
+      operationId: relatedCourseObjectiveKnowledgeGraphNode
+      parameters:
+        - in: body
+          name: param
+          required: true
+          schema:
+            $ref: '#/definitions/CourseObjectiveRelatedKnowledgeGraphNodeRequest'
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 id={}&signKey=123123(md5加密)
+          required: true
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 课程目标ID
+      responses:
+        200:
+          description: 关联图谱成功
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseObjectives/{id}/KnowledgeGraphNode:
+    get:
+      tags:
+        - CourseObjective
+      summary: 获取课程目标关联图谱
+      description: 1.云课堂教师端使用
+      operationId: getCourseObjectiveRelatedKnowledgeGraphNode
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 课程目标ID
+        - name: validCode
+          in: query
+          type: string
+          description: 验证码 id={}&signKey=123123(md5加密)
+          required: true
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: '#/definitions/CourseObjectiveRelatedKnowledgeGraphNodeResult'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  CourseObjectiveCreateRequest:
+    type: object
+    required:
+      - courseId
+      - name
+    properties:
+      courseId:
+        type: string
+        description: 课程ID
+      name:
+        type: string
+        description: 课程目标名称（必填）
+      content:
+        type: string
+        description: 课程目标简介（选填）
+      operatorId:
+        type: string
+        description: 创建人ID
+      operatorNo:
+        type: string
+        description: 创建人编号
+      operatorName:
+        type: string
+        description: 创建人名称
+
+  CourseObjectiveUpdateRequest:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 课程目标ID
+      name:
+        type: string
+        description: 新的课程目标名称
+      content:
+        type: string
+        description: 新的课程目标简介
+      operatorId:
+        type: string
+        description: 创建人ID
+      operatorNo:
+        type: string
+        description: 创建人编号
+      operatorName:
+        type: string
+        description: 创建人名称
+  CourseObjectiveSortRequest:
+    type: object
+    required:
+      - courseId
+      - sortList
+    properties:
+      courseId:
+        type: string
+        description: 课程ID
+      sortList:
+        type: array
+        description: 排序信息列表
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: 课程目标ID
+            showOrder:
+              type: integer
+              description: 新的显示顺序
+
+  CourseObjectiveMainInfo:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: 课程ID
+      objectiveCount:
+        type: integer
+        description: 课程目标数量
+      totalRelatedKnowledgePointNum:
+        type: integer
+        description: 关联知识点数量
+      objectiveList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseObjectiveResponse'
+  CourseObjectiveResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 课程目标ID
+      name:
+        type: string
+        description: 课程目标名称
+      content:
+        type: string
+        description: 课程目标简介
+      showOrder:
+        type: integer
+        description: 显示顺序
+      relatedKnowledgePointNum:
+        type: integer
+        description: 关联知识点数量
+  CourseObjectiveRelatedKnowledgeGraphNodeRequest:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: 课程ID
+      courseKnowledgeGraphId:
+        type: string
+        description: 课程图谱ID
+      operatorId:
+        type: string
+        description: 创建人ID
+      operatorNo:
+        type: string
+        description: 创建人编号
+      operatorName:
+        type: string
+        description: 创建人名称
+      courseObjectiveId:
+        type: string
+        description: 课程目标ID
+      relatedKnowledgePointList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseObjectiveRelatedKnowledgePoint'
+  CourseObjectiveRelatedKnowledgePoint:
+    type: object
+    properties:
+      knowledgePointId:
+        type: string
+        description: 知识点ID
+      knowledgePointName:
+        type: string
+        description: 知识点名称
+      createTime:
+        type: string
+        description: 创建时间
+      knowledgeNodeLevelIndex:
+        type: integer
+        description: 知识点层级索引
+      knowledgeNodeLevelName:
+        type: string
+        description: 知识点层级名称
+
+  CourseObjectiveRelatedKnowledgeGraphNodeResult:
+    type: object
+    properties:
+      courseKnowledgeGraphId:
+        type: string
+        description: 课程图谱ID
+      courseObjectiveId:
+        type: string
+        description: 课程目标ID
+      relatedKnowledgePointNum:
+        type: integer
+        description: 关联知识点数量
+      relatedKnowledgePointList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseObjectiveRelatedKnowledgePoint'
+      parentChildKnowledgeGraphRelationshipList:
+        type: array
+        description: "父子知识节点关系列表"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphRelationshipModel"
+      nodeList:
+        type: array
+        items:
+          $ref: '#/definitions/CourseKnowledgeGraphNodeTreeModel'
+
+  CourseKnowledgeGraphRelationshipModel:
+    type: "object"
+    properties:
+      startNodeId:
+        type: "string"
+        description: "开始节点id"
+      endNodeId:
+        type: "string"
+        description: "结束节点id"
+      relationshipId:
+        type: "integer"
+        description: "关系id"
+  CourseKnowledgeGraphNodeTreeModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      knowledgeNodeLevelIndex:
+        type: "integer"
+        description: "知识节点级别编号"
+      knowledgeNodeLevelName:
+        type: "integer"
+        description: "知识节点级别名称"
+      sort:
+        type: "integer"
+        description: "排序"
+      courseKnowledgeGraphId:
+        type: "string"
+        description: "课程知识图谱id"
+      subsetCourseKnowledgeGraphNodeTreeList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeTreeModel"

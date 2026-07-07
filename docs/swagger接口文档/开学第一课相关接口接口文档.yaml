@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  title: 开学第一课相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+paths:
+
+  /coursetable/firstcoursetabledetail:
+    get:
+      tags:
+        - "CourseTableDetail"
+      operationId: getClassTermFirstCourseTable
+      summary: "获取班级开学第一课课程课表信息"
+      description: "云课堂服务-同步班级开学第一课信息"
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（groupId={}&signKey=123123）
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ClassFirstCourseTableInfo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到此班级方案"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  ClassFirstCourseTableInfo:
+    type: object
+    properties:
+      groupId:
+        type: string
+        description: "组id"
+      groupName:
+        type: string
+        description: "组名"
+      groupMember:
+        type: integer
+        description: "班级人数"
+      courseName:
+        type: string
+        description: "课程名称"
+      courseCode:
+        type: string
+        description: "课程编码"
+
+      courseTableId:
+        type: string
+        description: "开课id"
+      courseTableDetailId:
+        type: string
+        description: "第一堂课课表id"
+      courseDate:
+        type: string
+        description: "上课日期"
+      segments:
+        type: string
+        description: "节次信息"
+      segmentStartTime:
+        type: string
+        description: "节次开始时间"
+      segmentEndTime:
+        type: string
+        description: "节次结束时间"
+      roomId:
+        type: string
+        description: "教室id"
+      roomName:
+        type: string
+        description: "教室名称"
+      roomCode:
+        type: string
+        description: "教室code "
+      teacherIds:
+        type: string
+        description: "上课教师ids，多个使用”,“隔开"
+      teacherNos:
+        type: string
+        description: "上课教师工号，多个使用”,“隔开"
+      teacherNames:
+        type: string
+        description: "上课教师姓名，多个使用”,“隔开"
+      teacherCollegeIds:
+        type: string
+        description: "上课教师学院ids，多个使用”,“隔开"
+      teacherCollegeNames:
+        type: string
+        description: "上课教师学院名称，多个使用”,“隔开"
+      courseTableCollegeId:
+        type: string
+        description: "开课学院id"
+      courseTableCollegeName:
+        type: string
+        description: "开课学院名称"
+      schoolYear:
+        type: string
+        description: "学年"
+      term:
+        type: integer
+        description: "学期"

@@ -1,0 +1,104 @@
+swagger: "2.0"
+info:
+  description: "巡检监控系统-查询节次课表"
+  version: "1.0.0"
+  title: "相关接口API"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  # v1
+  '/coursetable/segment':
+    get:
+      tags:
+        - "CourseTable"
+      summary: "查询节次课表"
+      description: "巡检监控系统调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SegmentDataResource"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到节次课表信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+  '/segment/defaultbuildingsegment':
+    get:
+      tags:
+        - "RoomSegmentTask"
+      summary: "获取默认楼栋节次"
+      description: "巡检监控系统调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NowSegment"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到节次课表信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+definitions:
+  SegmentDataResource:
+    type: "object"
+    properties:
+      segment:
+        type: "string"
+        description: "节次"
+      counts:
+        type: "string"
+        description: "课表数"
+      roomIdCount:
+        type: "string"
+        description: "教室个数"
+      repetitions:
+        type: "string"
+        description: "重复课表"
+  NowSegment:
+    type: object
+    properties:
+      buildId:
+        type: string
+        description: "楼栋Id"
+      buildName:
+        type: string
+        description: "楼栋名称"
+      segment:
+        type: integer
+        description: "节次"
+      startTime:
+        type: string
+        description: "开始时间"
+      endTime:
+        type: string
+        description: "结束时间"

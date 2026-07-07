@@ -1,0 +1,197 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取助教课程的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  /assistantcourse/teachercourselist:
+    post:
+      tags:
+        - "CourseTableResource"
+      summary: "根据老师Ids和课程ids和学期查询课表信息"
+      description: "云课堂学生端助教课程使用"
+      operationId: "getAssistantTeacherCourseTableList"
+      produces:
+        - "application/json"
+      parameters:
+        - name: validCode
+          in: query
+          description: 加密验证码&signKey=123123
+          required: true
+          type: string
+        - in: "body"
+          name: "assistantCourseParam"
+          description: "助教课程入参"
+          required: true
+          schema:
+            $ref: "#/definitions/AssistantCourseParam"
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AssistantCourseVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  AssistantCourseParam:
+    type: "object"
+    properties:
+      courseStudentTypes:
+        type: "string"
+        description: "允许的授课学生类型的开课"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teacherAndCourseList:
+        type: "array"
+        description: "教师和课程信息"
+        items:
+          $ref: "#/definitions/TeacherAndCourse"
+  TeacherAndCourse:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      teacherId:
+        type: "string"
+        description: "教师id"
+      teacherNo:
+        type: "string"
+        description: "教师工号"
+      teacherName:
+        type: "string"
+        description: "教师姓名"
+      roleId:
+        type: "string"
+        description: "角色id"
+
+  AssistantCourseVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "教师id"
+      teacherName:
+        type: "string"
+        description: "教师姓名"
+      CourseResourceList:
+        type: "array"
+        description: "课程信息"
+        items:
+          $ref: "#/definitions/CourseResource"
+  CourseResource:
+    type: "object"
+    properties:
+      roleId:
+        type: "string"
+        description: "角色id"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseSource:
+        type: integer
+        description: "课程来源 0：对接；1：新增"
+      courseCollegeId:
+        type: "string"
+        description: "课程学院id"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      courseCollegeCode:
+        type: "string"
+        description: "课程学院编号"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      teacherId:
+        type: "string"
+        description: "教师id"
+      teacherNo:
+        type: "string"
+        description: "教师工号"
+      teacherName:
+        type: "string"
+        description: "教师姓名"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teachingClassName:
+        description: "上课班级列表"
+        type: "array"
+        items:
+          properties:
+            source:
+              type: "string"
+              description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+            teachingClassId:
+              type: "string"
+              description: "上课班级Id"
+            teachingClassName:
+              type: "string"
+              description: "上课班级"
+            teachingClassNo:
+              type: "string"
+              description: "上课班级编号"
+            teachingClassMembers:
+              type: "integer"
+              description: "上课班级人数"
+            courseTableId:
+              type: "string"
+              description: "主课表id"
+            teachingClassTeacherName:
+              type: "string"
+              description: "上课老師"
+            classNickName:
+              type: "string"
+              description: "班级昵称"
+            classCompositionName:
+              type: "string"
+              description: "班级组成名称"
+            courseTableCollegeId:
+              type: "string"
+              description: "开课学院id"
+            courseTableCollegeName:
+              type: "string"
+              description: "开课学院名称"
+

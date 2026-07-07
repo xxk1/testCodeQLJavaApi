@@ -1,0 +1,48 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取班级信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  '/builds':
+    get:
+      tags:
+        - "buildings"
+      summary: "获取楼栋信息"
+      description: "获取楼栋信息,云课堂管理端获取节次信息时使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码&signKey=123123(md5加密)"
+          type: "string"
+
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Buildings"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+# 资源属性描述,接口返回,参数等公共引用
+definitions:
+  Buildings:
+    type: object
+    properties:
+      buildId:
+        type: string
+        description: '楼栋id'
+      buildName:
+        type: string
+        description: '楼栋名称'

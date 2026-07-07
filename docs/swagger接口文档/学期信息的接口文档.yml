@@ -1,0 +1,540 @@
+swagger: "2.0"
+info:
+  title: "courseApi文档"
+  version: "1.0.0"
+  description: "学期信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  # v1
+  "/terms/nowterm":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取当前学期"
+      description: "小程序使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/terms/nowornextterm":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取当前学期或下一学期"
+      description: "数据对接使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  # v1
+  "/terms/termResource":
+    get:
+      tags:
+        - "TermResource"
+      summary: "老师：获取当前学期和下一个学期,学生：获取当前学期,默认获取当前学期与下一个学期"
+      description: ""
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "source"
+          in: "query"
+          description: "请求来源(1:老师:获取前2个学期、当前学期、后1个学期,0:学生:当前学期,不传:当前学期与下一个学期)"
+          type: "string"
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/terms/fivetermresource":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取当前学期和之前5个学期"
+      operationId: "getFiveTermsTermResource"
+      description: ""
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  # v1
+  "/terms":
+    post:
+      tags:
+        - "TermResource"
+      summary: "保存学期"
+      description: "数据对接使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "terms"
+          in: "body"
+          required: true
+          description: "学期列表"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取所有学期信息"
+      description: "1、学业支持"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermModel"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        404:
+          description: "资源不存在"
+        500:
+          description: "服务器异常"
+  "/terms/termList":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取所有学期信息"
+      description: ""
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/termWeeks":
+    get:
+      tags:
+        - "TermWeeks"
+      summary: "获取学期周次、节次信息"
+      description: "云录播调用"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+          required: true
+        - in: "query"
+          name: "buildingId"
+          required: false
+          type: string
+          description: "buildingId"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TermWeekResource"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证失败"
+        404:
+          description: "未找到学期周次、节次信息"
+        500:
+          description: "服务器异常"
+
+  "/terms/nowandlastterm":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取当前学期和上一个学期"
+      description: "教学中心实验室预约记录查询调用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/terms/nowandlastthreeterm":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取当前和之前最近三个学期"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到学期数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/terms/termtypes":
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取学期类型列表"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermTypeResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到数据"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/term":
+    post:
+      tags:
+        - "TermResource"
+      summary: "保存/修改学期"
+      description: "1、云课堂管理端"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "termResource"
+          in: "body"
+          required: true
+          description: "学期参数"
+          schema:
+            $ref: "#/definitions/TermResource"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "插入字段异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+  /term/recent:
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取最近的学期的信息"
+      description: "1.小程序管理端-获取学年学期使用,2.web端老师端，学生端，获取学年学期使用"
+      operationId: getRecentTerm
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "previousTermNum"
+          in: query
+          description: "之前学期数量 查询当前日期所在学期之前的学期数量 为null时则为0"
+          type: integer
+          required: false
+        - name: "futureTermNum"
+          in: query
+          description: "之后学期数量 查询当前日期所在学期之后的学期数量 为null时则为0"
+          type: integer
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TermVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /term:
+    get:
+      tags:
+        - "TermResource"
+      summary: "获取指定学期信息"
+      description: "1、老师端过程性评价-手动更新使用"
+      operationId: "getTerm"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "schoolYear"
+          in: "query"
+          description: "学年"
+          type: "string"
+          required: true
+        - name: "term"
+          in: "query"
+          description: "学期"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TermResource"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  TermResource:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "string"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      description:
+        type: "string"
+        description: "学期描述"
+
+  TermWeekResource:
+    type: "object"
+    properties:
+      nameList:
+        type: "array"
+        items:
+          type: "array"
+          items:
+            type: "string"
+      indexList:
+        type: "array"
+        items:
+          type: "array"
+          items:
+            type: "integer"
+  TermModel:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "string"
+        description: "学期"
+      schoolYearTermNickName:
+        type: "string"
+        description: "学年学期昵称"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      whetherCurrentTerm:
+        type: "string"
+        description: "是否为本学期"
+      termName:
+        type: "string"
+        description: "学期名称: yyyy-yyyy 第几学期"
+  TermVo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      schoolYear:
+        type: "string"
+        description: "学年: yyyy-yyyy"
+      term:
+        type: "string"
+        description: "学期"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      description:
+        type: "string"
+        description: "学期描述"
+      termType:
+        type: integer
+        description: "学期类型 0：之前学期；1：当前学期；2：之后学期"
+  TermTypeResource:
+    type: "object"
+    properties:
+      termTypeId:
+        type: "integer"
+        description: "学期类型id"
+      termtypeName:
+        type: "string"
+        description: "学期类型名称"

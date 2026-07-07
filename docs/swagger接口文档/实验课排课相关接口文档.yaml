@@ -1,0 +1,695 @@
+swagger: "2.0"
+info:
+  title: "courseApi文档"
+  version: "1.0.0"
+  description: "实验课排课相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+  "/experimentschedulecoursetabledetails/datadockingcoursetabledetails":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据条件获取可以进行实验课排课的数据对接课表列表"
+      description: "1、云课堂管理端"
+      operationId: "getDataDockingCourseTableDetailPageResource"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: 'body'
+          required: true
+          name: 'experimentScheduleObtainDataParam'
+          schema:
+            $ref: "#/definitions/ExperimentScheduleObtainDataParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/DataDockingCourseTableDetailPageResource"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+  "/experimentschedulecoursetabledetails/import":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据条件导入可以进行实验课排课的数据对接课表"
+      description: "1、云课堂管理端"
+      operationId: "importExperimentScheduleCourseTableDetails"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: 'body'
+          required: true
+          name: 'experimentScheduleObtainDataParam'
+          schema:
+            $ref: "#/definitions/ExperimentScheduleObtainDataParam"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+
+  "/experimentschedulecoursetabledetails/push":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据条件发布该实验课排课"
+      description: "1、云课堂管理端"
+      operationId: "pushExperimentScheduleCourseTableDetail"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: 'body'
+          required: true
+          name: 'experimentScheduleCourseTableDetailPushParam'
+          schema:
+            $ref: "#/definitions/ExperimentScheduleCourseTableDetailPushParam"
+          description: "发布实验课排课参数"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ExperimentScheduleCourseTableDetailRelevantResource"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+
+  "/experimentschedulecoursetabledetails/{id}/updateentranceguardgeneratedstatus":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "修改实验排课门禁下发状态"
+      description: "1、云课堂管理端"
+      operationId: "updateEntranceGuardGeneratedStatus"
+      parameters:
+        - name: id
+          description: "实验课表id"
+          type: string
+          required: true
+          in: path
+        - in: "query"
+          name: "entranceGuardGeneratedStatus"
+          required: true
+          type: integer
+          description: "门禁生成状态(0:没有生成;1:生成失败;2:生成成功;3:生成失败，没有门禁设备)"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(id=?&signKey=123123)"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+  "/experimentschedulecoursetabledetails/{id}":
+    get:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据id获取实验排课信息"
+      description: "1、云课堂管理端"
+      operationId: "getExperimentScheduleCourseTableDetailById"
+      parameters:
+        - name: id
+          description: "实验课表id"
+          type: string
+          required: true
+          in: path
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(id=?&signKey=123123)"
+        - in: "query"
+          name: "operatorId"
+          required: true
+          type: string
+          description: "操作人名称"
+        - in: "query"
+          name: "operatorName"
+          required: true
+          type: string
+          description: "操作人名称"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ExperimentScheduleCourseTableDetailInfoVo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+
+  "/experimentschedulecoursetabledetails/{id}/cancel":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据id取消该实验课排课"
+      description: "1、内部调用"
+      operationId: "cancelExperimentScheduleCourseTableDetailById"
+      parameters:
+        - name: "id"
+          in: "path"
+          type: "string"
+          description: "排课id"
+          required: true
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(id=?&signKey=123123)"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+
+  "/experimentschedulecoursetabledetails/{id}/check":
+    post:
+      tags:
+        - "ExperimentScheduleCourseTableDetails"
+      summary: "根据id和相关条件校验教室是否已被排课"
+      description: "1、内部调用"
+      operationId: "checkExperimentScheduleCourseTableDetailById"
+      parameters:
+        - name: "id"
+          in: "path"
+          type: "string"
+          description: "排课id"
+          required: true
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(id=?&signKey=123123)"
+        - in: 'body'
+          required: true
+          name: 'checkExperimentScheduleCourseTableDetailParam'
+          schema:
+            $ref: "#/definitions/CheckExperimentScheduleCourseTableDetailParam"
+          description: "校验实验课排课参数"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: '#/definitions/CheckExperimentScheduleCourseTableDetailModel'
+        400:
+          description: "参数异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "数据不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  ExperimentScheduleObtainDataParam:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      startDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      roomNameSearchParams:
+        type: "string"
+        description: "教室名称搜索参数"
+      creatorId:
+        type: "string"
+        description: "创建人id"
+      creatorName:
+        type: "string"
+        description: "创建人名称"
+      teacherName:
+        type: "string"
+        description: "任课教师名称"
+      courseName:
+        type: "string"
+        description: "课程名称"
+
+
+
+  DataDockingCourseTableDetailPageResource:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+      pageNum:
+        type: 'integer'
+        description: '当前页码'
+      pageSize:
+        type: 'integer'
+        description: '每页记录数'
+      dataDockingCourseTableDetailList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleUseCourseTableDetailVo'
+
+  ExperimentScheduleUseCourseTableDetailVo:
+    type: "object"
+    properties:
+      week:
+        type: 'string'
+        description: '周次'
+      courseName:
+        type: 'string'
+        description: '课程名称'
+      groupName:
+        type: 'string'
+        description: '班级名称'
+      teacherNames:
+        type: 'string'
+        description: '老师名称(多个,拼接)'
+      courseDate:
+        type: 'string'
+        description: '课表日期'
+      weekNum:
+        type: 'string'
+        description: '星期'
+      segment:
+        type: 'string'
+        description: '节次(多个,拼接)'
+      roomName:
+        type: 'string'
+        description: '教室名称'
+
+  ExperimentScheduleCourseTableDetailPushParam:
+    type: "object"
+    properties:
+      id:
+        type: 'string'
+        description: '实验原始课表明细Id'
+      startSegment:
+        type: 'integer'
+        description: '开始节次'
+      endSegment:
+        type: 'integer'
+        description: '结束节次'
+      courseDate:
+        type: "string"
+        description: '上课日期'
+      creatorId:
+        type: "string"
+        description: '创建人id'
+      creatorName:
+        type: "string"
+        description: '创建人名称'
+      pushType:
+        type: "integer"
+        description: '推送类型（0：新增排课、1：修改排课）'
+      experimentScheduleCourseTableDetailTeacherList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailTeacherVo'
+        description: '老师列表'
+      experimentScheduleCourseTableDetailRoomList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailRoomVo'
+        description: '教室列表'
+      experimentScheduleCourseTableDetailProjectList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailProjectVo'
+        description: '项目列表'
+  ExperimentScheduleCourseTableDetailTeacherVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: 'string'
+        description: '上课老师Id'
+      teacherNo:
+        type: 'string'
+        description: '上课老师工号'
+      teacherName:
+        type: 'string'
+        description: '上课老师名称'
+      teacherCollegeId:
+        type: 'string'
+        description: '上课老师所属学院id'
+      teacherCollegeName:
+        type: 'string'
+        description: '上课老师所属学院名称'
+  ExperimentScheduleCourseTableDetailRoomVo:
+    type: "object"
+    properties:
+      roomId:
+        type: 'string'
+        description: '实验室id'
+      roomCode:
+        type: 'string'
+        description: '实验室编号'
+      roomName:
+        type: 'string'
+        description: '实验室名称'
+      labStudentCount:
+        type: 'integer'
+        description: '实验室学生数量'
+      itemTeacherId:
+        type: 'string'
+        description: '物品准备老师id'
+      itemTeacherNo:
+        type: 'string'
+        description: '物品准备老师工号'
+      itemTeacherName:
+        type: 'string'
+        description: '物品准备老师姓名'
+  ExperimentScheduleCourseTableDetailProjectVo:
+    type: "object"
+    properties:
+      projectId:
+        type: 'string'
+        description: '项目id'
+      projectCode:
+        type: 'string'
+        description: '项目code'
+      projectName:
+        type: 'string'
+        description: '项目名称'
+  ExperimentScheduleCourseTableDetailRelevantResource:
+    type: "object"
+    properties:
+      result:
+        type: boolean
+        description: "是否保存成功"
+      message:
+        type: string
+        description: "备注"
+      baseVo:
+        $ref: '#/definitions/ExperimentScheduleCourseTableDetailBaseVo'
+
+  ExperimentScheduleCourseTableDetailBaseVo:
+    type: "object"
+    properties:
+      id:
+        type: 'string'
+        description: '实验原始课表明细Id'
+      startSegment:
+        type: 'integer'
+        description: '开始节次'
+      endSegment:
+        type: 'integer'
+        description: '结束节次'
+      courseDate:
+        type: "string"
+        description: '上课日期'
+      segmentStartTime:
+        type: "string"
+        description: '节次开始时间'
+      segmentEndTime:
+        type: "string"
+        description: '节次结束时间'
+      experimentScheduleCourseTableDetailTeacherList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailTeacherVo'
+        description: '老师列表'
+      experimentScheduleCourseTableDetailRoomList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailRoomVo'
+        description: '教室列表'
+      experimentScheduleCourseTableDetailProjectList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailProjectVo'
+        description: '项目列表'
+      studentVoList:
+        type: array
+        items:
+          $ref: '#/definitions/StudentVo'
+        description: '项目列表'
+  StudentVo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: '班级id'
+      groupName:
+        type: "string"
+        description: '班级名称'
+      studentId:
+        type: "string"
+        description: '学生ID'
+      studentName:
+        type: "string"
+        description: '学生姓名'
+      studentNo:
+        type: "string"
+        description: '学生学号'
+  ExperimentScheduleCourseTableDetailInfoVo:
+    type: "object"
+    properties:
+      id:
+        type: 'string'
+        description: '实验原始课表明细Id'
+      courseId:
+        type: 'string'
+        description:  '课程id'
+      courseCode:
+        type: 'string'
+        description:  '课程编号'
+      courseName:
+        type: 'string'
+        description:  '课程名称'
+      groupId:
+        type: 'string'
+        description:  '班级id'
+      groupNo:
+        type: 'string'
+        description:  '班级编号'
+      groupName:
+        type: 'string'
+        description:  '班级名称'
+      groupStudentCount:
+        type: 'integer'
+        description: '班级学生数量'
+      startSegment:
+        type: 'integer'
+        description: '开始节次'
+      endSegment:
+        type: 'integer'
+        description: '结束节次'
+      courseDate:
+        type: "string"
+        description: '上课日期'
+      segmentStartTime:
+        type: "string"
+        description: '节次开始时间'
+      segmentEndTime:
+        type: "string"
+        description: '节次结束时间'
+      experimentScheduleCourseTableDetailTeacherList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailTeacherVo'
+        description: '老师列表'
+      experimentScheduleCourseTableDetailRoomList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailRoomVo'
+        description: '教室列表'
+      experimentScheduleCourseTableDetailProjectList:
+        type: array
+        items:
+          $ref: '#/definitions/ExperimentScheduleCourseTableDetailProjectVo'
+
+  CheckExperimentScheduleCourseTableDetailParam:
+    type: "object"
+    properties:
+      startSegment:
+        type: 'integer'
+        description: '开始节次'
+      endSegment:
+        type: 'integer'
+        description: '结束节次'
+      courseDate:
+        type: "string"
+        description: '上课日期'
+      roomIdList:
+        type: array
+        items:
+          type: 'string'
+  CheckExperimentScheduleCourseTableDetailModel:
+    type: "object"
+    properties:
+      checkStatus:
+        type: 'integer'
+        description: '校验状态(0:没有通过;1:通过)'
+      checkRemark:
+        type: 'string'
+        description: '校验备注'
+      roomSegmentTimeList:
+        type: array
+        items:
+          $ref: '#/definitions/RoomSegmentTimeVo'
+
+  RoomSegmentTimeVo:
+    type: "object"
+    properties:
+      roomId:
+        type: 'string'
+        description: '教室id'
+      roomName:
+        type: 'string'
+        description: '教室名称'
+      startSegment:
+        type: 'integer'
+        description: '开始节次'
+      endSegment:
+        type: 'integer'
+        description: '结束节次'
+      segmentStartTime:
+        type: "string"
+        description: '节次开始时间'
+      segmentEndTime:
+        type: "string"
+        description: '节次结束时间'
+
+

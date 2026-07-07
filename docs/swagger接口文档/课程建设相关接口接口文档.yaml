@@ -1,0 +1,212 @@
+swagger: "2.0"
+info:
+  title: "课程建设相关接口接口文档"
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /
+schemes:
+  - https
+  - http
+paths:
+  /user/{id}/courseleader/course:
+    get:
+      tags:
+        - "Course"
+      summary: "获取用户作为课程负责人所管理的课程"
+      description: "1.云课堂教师端-项目配置管理使用"
+      operationId: getUserLeaderCourse
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id={}&signKey=123123(md5加密)"
+          required: true
+        - name: "id"
+          type: string
+          description: "直播讲座id"
+          in: path
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseInfoResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  '/coursecover/upload':
+    post:
+      tags:
+        - "Course"
+      summary: "上传课程封面"
+      description: "云课堂老师端调用"
+      operationId: addOrUpdateCourseCover
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+        - name: "courseCoverVo"
+          in: "body"
+          description: "封面信息"
+          schema:
+            $ref: "#/definitions/CourseCoverVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/courseresource/reorder":
+    post:
+      tags:
+        - "courseResource"
+      summary: "课程建设-资源拖动排序"
+      description: "1.云课堂-老师端-课程建设资源拖动排序"
+      operationId: reorderCourseResource
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "reorderParams"
+          in: "body"
+          description: "重新排序参数"
+          required: true
+          schema:
+            $ref: "#/definitions/ReorderParams"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到题库课程"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseInfoResource:
+    type: object
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseLeaderId:
+        type: "string"
+        description: "课程负责人id"
+      courseLeaderName:
+        type: "string"
+        description: "课程负责人名称"
+      courseSource:
+        type: integer
+        description: "课程来源 0：数据对接；1：课程管理新建"
+      courseClassNum:
+        type: integer
+        description: "课程班级数量 biginteger类型"
+
+  CourseCoverVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      modifierName:
+        type: "string"
+        description: "更新人姓名"
+      modifierId:
+        type: "string"
+        description: "更新人id"
+      fileRealName:
+        type: "string"
+        description: "文件实际名"
+      fileSavedName:
+        type: "string"
+        description: "文件保存名"
+      filepath:
+        type: "string"
+        description: "文件路径"
+      innerServerIp:
+        type: "string"
+        description: "内网IP"
+      outerServerIp:
+        type: "string"
+        description: "外网IP"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      fileSize:
+        type: "string"
+        description: "文件大小"
+  ReorderParams:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "教师id"
+      courseStructureId:
+        type: "string"
+        description: "课程结构id"
+      needToBeMovedResourceId:
+        type: "string"
+        description: "被移动的资源id"
+      targetLocationBeforeResourceId:
+        type: "string"
+        description: "目标位置前资源id"
+      targetLocationAfterResourceId:
+        type: "string"
+        description: "目标位置后资源id"

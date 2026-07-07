@@ -1,0 +1,57 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'war'
+}
+
+group = 'com.lztech'
+version = ''
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    maven { url 'https://maven.aliyun.com/nexus/content/repositories/central/' }
+    mavenCentral()
+
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springframework.boot:spring-boot-starter-amqp')
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+    implementation "net.sf.json-lib:json-lib:2.4:jdk15"
+    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.68'
+
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.apache.poi:poi:4.0.1'
+    implementation 'org.apache.poi:poi-ooxml:4.0.1'
+    implementation 'org.springframework.kafka:spring-kafka'
+    // https://mvnrepository.com/artifact/com.alibaba/easyexcel
+    implementation 'com.alibaba:easyexcel:3.0.5'
+    implementation 'cn.hutool:hutool-all:5.4.7'
+    implementation 'org.neo4j.driver:neo4j-java-driver:4.0.1'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    implementation group: 'com.google.guava', name: 'guava', version: '33.2.0-jre'
+    implementation group: 'com.belerweb', name: 'pinyin4j', version: '2.5.1'
+
+}

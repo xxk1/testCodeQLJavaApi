@@ -1,0 +1,1427 @@
+swagger: "2.0"
+info:
+  title: 学习资源智能推荐相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /api/v1
+schemes:
+  - https
+  - http
+paths:
+  /knowledgeGraph/courseTeachingMaterialFile/aiGen:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: knowledgeGraphAIGenByTeachingMaterial
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: param
+          in: body
+          description: "教材信息"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /knowledgeGraph/knowledgeGraphAIGenByCourseware/aiGen:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据课件AI生成知识图谱"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: knowledgeGraphAIGenByCourseware
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: param
+          in: body
+          description: "教材信息"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenCoursewareParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /knowledgeGraph/knowledgeGraphAIGenByCourseVideo/aiGen:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据课堂实录AI生成知识图谱"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: knowledgeGraphAIGenByCourseVideo
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: param
+          in: body
+          description: "教材信息"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenCourseVideoParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /knowledgeGraph/courseTeachingMaterialFile/aiGen/status:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱状态查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: knowledgeGraphAIGenByTeachingMaterialStatus
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: courseId
+          in: query
+          description: "课程id"
+          required: true
+          type: string
+        - name: stepIndex
+          in: query
+          description: "步骤类型 0:节点生成；1：节点详情生成；2：资源关联"
+          required: false
+          type: integer
+        - name: subTaskId
+          in: query
+          description: "子任务id"
+          required: false
+          type: string
+        - name: masterTaskId
+          in: query
+          description: "任务id"
+          required: false
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialStatusResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到进行中的任务"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/courseTeachingMaterialFile/node:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenByTeachingMaterialNode
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: similarityScore
+          in: query
+          description: "相似度分数"
+          required: false
+          type: number
+        - name: courseId
+          in: query
+          description: "课程id"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialNodeResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到进行中的任务"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/courseTeachingMaterialFile/aiGen/status/modify:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱状态修改"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: modifyKnowledgeGraphAIGenByTeaching
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: param
+          in: body
+          description: "修改参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialStatusModifyParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialAIGenTaskBaseResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到进行中的任务"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/courseMaterialFile/aiGen/subTaskBuild:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点详情任务"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: knowledgeGraphAIGenByTeachingMaterialNodeDetailTask
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: param
+          in: body
+          description: "节点任务详情参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialTaskParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialAIGenTaskBaseResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "任务已存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/courseMaterialFile/aiGen/nodeDetail:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点详情查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenByTeachingMaterialNodeDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: masterTaskId
+          in: query
+          description: "任务id"
+          required: true
+          type: string
+        - name: importantTag
+          in: query
+          description: "重要标签： 0：次要；1：一般；2：重要;3：极其重要"
+          required: false
+          type: integer
+        - name: level
+          in: query
+          description: "层级 1：一级节点；2：二级节点;3：三级节点;4：四级节点;5：五级节点;6：六级节点;7：七级节点;8：八级节点...."
+          required: false
+          type: integer
+        - name: content
+          in: query
+          description: "内容"
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: "页码"
+          required: false
+          type: integer
+        - name: pageSize
+          in: query
+          description: "每页数量"
+          required: false
+          type: integer
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialNodeResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/courseMaterialFile/aiGen/resourceRelatedStatistics:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱资源相关统计"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenByTeachingMaterialResourceRelatedStatistics
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: masterTaskId
+          in: query
+          description: "任务id"
+          required: true
+          type: string
+        - name: subTaskId
+          in: query
+          description: "子任务id"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenRelatedStatisticsResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/nodeDetail:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点详情查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenNodeDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: nodeId
+          in: query
+          description: "节点id"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenTeachingMaterialNodeResourceItem"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/question:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点关联题目查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenNodeQuestion
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenNodeQuestionQueryParam"
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenNodeQuestionPageResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/video:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点关联视频查询"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getKnowledgeGraphAIGenNodeVideo
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenNodeVideoQueryParam"
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/KgAIGenNodeVideoPageResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/import:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱导入"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: importKnowledgeGraphAIGen
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenImportParam"
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /knowledgeGraph/aiGen/{nodeId}/videoinfotexts:
+    get:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "接口-根据视频id和知识点id获取智能资源列表"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: getFilterAIGenNodeVideoInfoTextList
+      parameters:
+        - name: "nodeId"
+          in: "path"
+          description: "知识点id"
+          required: true
+          type: "string"
+        - name: "videoInfoId"
+          in: "query"
+          description: "视频信息id"
+          type: "string"
+          required: true
+        - name: "similarityScore"
+          description: "相似度分数"
+          in: "query"
+          type: "number"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseKnowledgeGraphNodeVideoInfoTextModel"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/modifify:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点修改"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: modifyKnowledgeGraphAIGenNode
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenNodeModifyParam"
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/add:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点添加"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: addKnowledgeGraphAIGenNode
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenNodeAddParam"
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /knowledgeGraph/aiGen/node/sorted:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "根据教材AI生成知识图谱节点排序"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: sortedKnowledgeGraphAIGenNode
+      parameters:
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+        - name: param
+          in: body
+          description: "参数"
+          required: true
+          schema:
+            $ref: "#/definitions/KgAIGenNodeSortedParam"
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "任务不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /knowledgeGraph/aiGen/node/{kgGenNodeId}/delete:
+    post:
+      tags:
+        - "AIKnowledgeGraphGen"
+      summary: "接口-根据id删除一站式AI生成知识图谱的节点"
+      description: "1.云课堂老师端-课程建设知识图谱使用"
+      operationId: deleteKgGenNodeById
+      parameters:
+        - name: "kgGenNodeId"
+          in: "path"
+          description: "知识点id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  KgAIGenTeachingMaterialParam:
+    type: object
+    properties:
+      isReGen:
+        type: boolean
+        description: "是否重新生成"
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      operatorNo:
+        type: string
+        description: "操作人编号"
+      teachingMaterialId:
+        type: string
+        description: "教材id"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+  KgAIGenCoursewareParam:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      coursewareFileList:
+        type: "object"
+        $ref: "#/definitions/CoursewareFileModel"
+      isReGen:
+        type: boolean
+        description: "是否重新生成"
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      operatorNo:
+        type: string
+        description: "操作人编号"
+  CoursewareFileModel:
+    type: object
+    properties:
+      courseResourceId:
+        type: string
+        description: "课件id"
+      courseResourceName:
+        type: string
+        description: "课件名称"
+      fileType:
+        type: string
+        description: "文件类型"
+  KgAIGenCourseVideoParam:
+    type: object
+    properties:
+      isReGen:
+        type: boolean
+        description: "是否重新生成"
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorNo:
+        type: string
+        description: "操作人编号"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      schoolYear:
+        type: string
+        description: "学年"
+      term:
+        type: integer
+        description: "学期"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      groupId:
+        type: string
+        description: "教学班id"
+  KgAIGenTeachingMaterialStatusResource:
+    type: "object"
+    properties:
+      masterTaskId:
+        type: "string"
+        description: "任务id"
+      masterTaskStatus:
+        type: "integer"
+        description: "任务状态 0:未开始 1:进行中 2:已完成 3:失败;4:部分成功；5：用户取消"
+      subTaskStatusList:
+        type: "array"
+        items:
+          $ref: "#/definitions/KgAIGenTeachingMaterialSubTaskStatusResource"
+
+  KgAIGenTeachingMaterialSubTaskStatusResource:
+    type: "object"
+    properties:
+      subTaskId:
+        type: "string"
+        description: "子任务id"
+      kgGenTaskStepCode:
+        type: "integer"
+        description: "步骤类型 0:节点生成；1：节点详情生成；2：资源关联;3: 图谱导入"
+      subTaskStatus:
+        type: "integer"
+        description: "子任务状态 0:未开始 1:进行中 2:已完成 3:失败;4:部分成功;5: 用户放弃；6:用户跳过"
+
+  KgAIGenTeachingMaterialNodeResource:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "页码"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总记录数"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseId:
+        type: "string"
+        description: "课程id"
+      nodeCount:
+        type: "integer"
+        description: "节点数量"
+      relatedVideoClipNum:
+        type: "integer"
+        description: "关联视频片段数量"
+      relatedQuestionNum:
+        type: "integer"
+        description: "关联题数量"
+      kgNode:
+        type: "object"
+        $ref: "#/definitions/KgAIGenTeachingMaterialNodeResourceItem"
+      kgNodeList:
+        type: "array"
+        items:
+          $ref: "#/definitions/KgAIGenTeachingMaterialNodeResourceItem"
+  KgAIGenTeachingMaterialNodeResourceItem:
+    type: "object"
+    properties:
+      kgNodeId:
+        type: "string"
+        description: "节点id"
+      kgNodeName:
+        type: "string"
+        description: "节点名称"
+      level:
+        type: "integer"
+        description: "节点层级"
+      kgNodeImportantTag:
+        type: "string"
+        description: "节点重要标签 0：次要；1：一般；2：重要;3：极其重要"
+      kgNodeContent:
+        type: "string"
+        description: "节点内容"
+      childList:
+        type: "array"
+        items:
+          $ref: "#/definitions/KgAIGenTeachingMaterialNodeResourceItem"
+
+  KgAIGenTeachingMaterialStatusModifyParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人姓名"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+      masterTaskId:
+        type: "string"
+        description: "任务id"
+      subTaskId:
+        type: "string"
+        description: "子任务id"
+      operationType:
+        type: "integer"
+        description: "操作类型 0:用户取消 1:用户跳过 2:用户放弃;3:重新生成"
+
+  KgAIGenTeachingMaterialTaskParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      masterTaskId:
+        type: "string"
+        description: "任务id"
+      operationType:
+        type: "integer"
+        description: "操作类型 0:用户跳过 1:生成"
+      stepCode:
+        type: "integer"
+        description: "步骤类型 0:节点生成；1：节点详情生成；2：资源关联;3: 图谱导入"
+  KgAIGenTeachingMaterialAIGenTaskBaseResource:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      masterTaskId:
+        type: "string"
+        description: "任务id"
+      subTaskId:
+        type: "string"
+        description: "子任务id"
+
+  KgAIGenRelatedStatisticsResource:
+    type: "object"
+    properties:
+      totalVideoNum:
+        type: "integer"
+        description: "视频数量"
+      supportVoiceTranVideoNum:
+        type: "integer"
+        description: "支持语音转换的视频数量"
+      supportVoiceTranVideoTeacherNames:
+        type: "string"
+        description: "支持语音转换的视频老师姓名"
+      relatedVideoClipNum:
+        type: "integer"
+        description: "关联视频片段数量"
+      courseQuestionNum:
+        type: "integer"
+        description: "课程题目数量"
+      courseQuestionTeacherNames:
+        type: "string"
+        description: "课程题目老师姓名"
+      relatedQuestionNum:
+        type: "integer"
+        description: "关联题目数量"
+
+  KgAIGenNodeQuestionQueryParam:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      kgNodeId:
+        type: "string"
+        description: "节点id"
+      teacherId:
+        type: "string"
+        description: "老师id"
+  KgAIGenNodeQuestionPageResource:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "页码"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总记录数"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      questionList:
+        type: "array"
+        items:
+          $ref: "#/definitions/QuestionLibraryResource"
+  QuestionLibraryResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "题目id"
+      questionStem:
+        type: string
+        description: "题干"
+      questionStemText:
+        type: string
+        description: "题干（不包含富文本样式）"
+      questionTypeName:
+        type: string
+        description: "题目类型名称 "
+      questionTypeIndex:
+        type: integer
+        description: "题目类型 0：单选；1：多选；2：判断；3：填空；4：简答"
+      questionComplexityName:
+        type: string
+        description: "题目难易度名称"
+      questionComplexityIndex:
+        type: integer
+        description: "题目难易度 0：简单；1：一般；2：困难"
+      questionAnalysis:
+        type: string
+        description: "题目解析"
+      creatorId:
+        type: string
+        description: "创建人id"
+      creatorName:
+        type: string
+        description: "创建人姓名"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      courseCode:
+        type: string
+        description: "课程编号"
+      courseStructureId:
+        type: string
+        description: "章节id"
+      checkQuestionSort:
+        type: boolean
+        description: "是否区分答案先后顺序"
+      checkTextTransform:
+        type: boolean
+        description: "是否区分大小写字段"
+      checkFuzzyMatching:
+        type: boolean
+        description: "答案是否模糊匹配"
+      questionFileList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionFileResource'
+      optionList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionOptionResource'
+      showOrder:
+        type: integer
+        description: "展示顺序"
+  QuestionFileResource:
+    type: object
+    properties:
+      fileRealName:
+        type: string
+        description: "文件实际名"
+      fileSavedName:
+        type: string
+        description: "文件保存名"
+      filepath:
+        type: string
+        description: "文件路径"
+      innerServerIp:
+        type: string
+        description: "内网IP"
+      outerServerIp:
+        type: string
+        description: "外网IP"
+      fileType:
+        type: string
+        description: "文件类型"
+      fileSize:
+        type: number
+        description: "文件大小"
+      source:
+        type: integer
+        description: "文件所属 0：题干；1：解析"
+      order:
+        type: integer
+        description: "文件在内容中的排序"
+  QuestionOptionResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "选项id"
+      content:
+        type: string
+        description: "选项内容(类型为填空题时，选项内容传入数组格式字符串：'[{“答案一”},{“答案二”}]')"
+      order:
+        type: integer
+        description: "排序"
+      rightAnswer:
+        type: boolean
+        description: "是否正确答案"
+      optionFileList:
+        type: array
+        items:
+          $ref: '#/definitions/QuestionOptionFileResource'
+  QuestionOptionFileResource:
+    type: object
+    properties:
+      fileRealName:
+        type: string
+        description: "文件实际名"
+      fileSavedName:
+        type: string
+        description: "文件保存名"
+      filepath:
+        type: string
+        description: "文件路径"
+      innerServerIp:
+        type: string
+        description: "内网IP"
+      outerServerIp:
+        type: string
+        description: "外网IP"
+      fileType:
+        type: string
+        description: "文件类型"
+      fileSize:
+        type: number
+        description: "文件大小"
+      order:
+        type: integer
+        description: "文件在内容中的排序"
+  KgAIGenNodeVideoQueryParam:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      kgNodeId:
+        type: "string"
+        description: "节点id"
+      teacherId:
+        type: "string"
+        description: "老师id"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+  KgAIGenNodeVideoPageResource:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      totalCount:
+        type: "integer"
+        description: "总记录数"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      videoTextList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseKnowledgeGraphNodeVideoInfoTextModel"
+  CourseKnowledgeGraphNodeVideoInfoTextModel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "唯一id"
+      videoInfoId:
+        type: "string"
+        description: "视频信息id"
+      textDataSourceIndex:
+        type: "integer"
+        description: "文本数据来源编号(0:ppt识别;1:语言转写识别)"
+      textDataSourceName:
+        type: "string"
+        description: "文本数据来源名称(0:ppt识别;1:语言转写识别)"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teacherIds:
+        type: "string"
+        description: "课表明细老师id(多个时\",\"分割)"
+      teacherNos:
+        type: "string"
+        description: "课表明细老师编号(多个时\",\"分割)"
+      teacherNames:
+        type: "string"
+        description: "课表明细老师姓名(多个时\",\"分割)"
+      videoDate:
+        type: "string"
+        description: "视频日期"
+      segment:
+        type: "integer"
+        description: "节次(第几节次)"
+      innerIp:
+        type: "string"
+        description: "内网IP"
+      outerIp:
+        type: "string"
+        description: "外网IP"
+      thumbnailPath:
+        type: "string"
+        description: "缩略图路径"
+      knowledgeNodeId:
+        type: "string"
+        description: "知识节点id"
+      knowledgeNodeName:
+        type: "string"
+        description: "知识节点名称"
+      textContent:
+        type: "string"
+        description: "文本内容"
+      startTimestamp:
+        type: "integer"
+        description: "开始时间戳"
+      endTimestamp:
+        type: "integer"
+        description: "结束时间戳"
+
+  KgAIGenImportParam:
+    type: "object"
+    properties:
+      masterTaskId:
+        type: "string"
+        description: "主任务 id"
+      subTaskId:
+        type: "string"
+        description: "子任务 id"
+      courseId:
+        type: "string"
+        description: "课程 id"
+      operatorId:
+        type: "string"
+        description: "操作人 id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+
+  KgAIGenNodeModifyParam:
+    type: "object"
+    properties:
+      nodeId:
+        type: "string"
+        description: "节点id"
+      modifyType:
+        type: "integer"
+        description: "修改类型(0:修改名称;1:修改描述;2:修改重要层级)"
+      nodeContent:
+        type: "string"
+        description: "修改内容"
+      nodeName:
+        type: "string"
+        description: "修改名称"
+      importantTag:
+        type: "integer"
+        description: "重要标签： 0：次要；1：一般；2：重要;3：极其重要"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+  KgAIGenNodeAddParam:
+    type: "object"
+    properties:
+      masterTaskId:
+        type: "string"
+        description: "主任务 id"
+      subTaskId:
+        type: "string"
+        description: "子任务 id"
+      courseId:
+        type: "string"
+        description: "课程 id"
+      nodeName:
+        type: "string"
+        description: "节点名称"
+      parentNodeId:
+        type: "string"
+        description: "父节点id"
+      chapterContentId:
+        type: "string"
+        description: "章节内容id"
+      sort:
+        type: "integer"
+        description: "排序"
+      level:
+        type: "integer"
+        description: "层级"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+  KgAIGenNodeSortedParam:
+    type: "object"
+    properties:
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+      nodeList:
+        type: "array"
+        items:
+          $ref: "#/definitions/KgAIGenNodeSortedParamNode"
+  KgAIGenNodeSortedParamNode:
+    type: "object"
+    properties:
+      nodeId:
+        type: "string"
+        description: "节点id"
+      parentNodeId:
+        type: "string"
+        description: "父节点id"
+      sort:
+        type: "integer"
+        description: "排序"
+      chapterContentId:
+        type: "string"
+        description: "章节内容id"
+      isSortedNode:
+        type: "boolean"
+        description: "是否排序节点"

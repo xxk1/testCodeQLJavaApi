@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  title: "courseApi文档"
+  version: "1.0.0"
+  description: "专家听课相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/"
+schemes:
+  - "http"
+paths:
+
+  "/v1/expertlisten/curriculum/page":
+    post:
+      tags:
+        - "ExpertInformation"
+      summary: "获取专家听课课表授权列表"
+      description: "1.云课堂听查课端-专家听课-获取专家听课课表授权列表使用"
+      operationId: "getExpertListenCurriculumPage"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: liveCourseParam
+          in: body
+          description: 获取正在直播课程信息入参
+          required: true
+          schema:
+            $ref: "#/definitions/LiveCourseParam"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ExpertListenCurriculumPageVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  LiveCourseParam:
+    type: "object"
+    properties:
+      courseTableCustomIdList:
+        type: array
+        description: "课表自定义id集合（为空则获取全部开课类型为本科的正在直播课表信息）"
+        items:
+          $ref: "string"
+      authorizationScopeType:
+        type: "integer"
+        description: "是否授权全部课程范围,0：授权全部课程范围，1：授权直播课程范围，2：授权点播课程范围"
+      groupIdList:
+        type: "array"
+        description: "班级id集合"
+        items:
+          $ref: "string"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      studentType:
+        type: string
+        description: "课程开课类型（为空则获取全部）：0：本科生 1：研究生"
+      courseName:
+        type: string
+        description: "课程名称，模糊查询"
+      page:
+        type: "integer"
+        description: "当前页"
+      pageSize:
+        type: "integer"
+        description: "每页个数"
+      termIds:
+        type: "string"
+        description: "学期id集合,多个使用逗号隔开"
+  TeacherInfo:
+    type: "object"
+    properties:
+      teacherId:
+        type: string
+        description: "老师id"
+      teacherName:
+        type: string
+        description: "老师姓名"
+      teacherNo:
+        type: string
+        description: "老师编号"
+      teacherTitle:
+        type: string
+        description: "老师职称"
+
+  ExpertListenCurriculumPageVo:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      curriculumList:
+        type: "array"
+        description: "课程集合"
+        items:
+          $ref: "#/definitions/ExpertListenCurriculumVo"
+  ExpertListenCurriculumVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      roomId:
+        type: "string"
+        description: "教室id"
+      courseTableCollegeName:
+        type: "string"
+        description: "开课学院名称"
+      courseTableCollegeId:
+        type: "string"
+        description: "开课学院id"
+      majorName:
+        type: "string"
+        description: "专业组成"
+      teacherInfoList:
+        type: "array"
+        description: "老师信息集合"
+        items:
+          $ref: "#/definitions/TeacherInfo"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseAttrName:
+        type: "string"
+        description: "课程属性名称"
+      courseDate:
+        type: string
+        description: "上课日期"
+      segmentStartTime:
+        type: string
+        description: "节次开始时间"
+      segmentEndTime:
+        type: string
+        description: "节次结束时间"
+      hasLiveBroadcast:
+        type: "string"
+        description: "是否在直播(0:没有;1:有)"
+      courseTableDetailId:
+        type: string
+        description: "课表明细Id"

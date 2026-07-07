@@ -1,0 +1,95 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取课程信息的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/courseTables/teacherclasses":
+    get:
+      tags:
+        - "CourseTableResource"
+      summary: "根据老师Id和学期查询班级信息"
+      description: "云课堂小程序端使用"
+      operationId: "TeacherClassListGet"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "schoolYear"
+          in: "query"
+          description: "学年"
+          required: true
+          type: "string"
+        - name: "term"
+          in: "query"
+          description: "学期"
+          required: true
+          type: "integer"
+        - name: "userId"
+          in: "query"
+          description: "老师Id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码&signKey=123123"
+          required: true
+          type: "string"
+        - name: courseStudentTypes
+          in: query
+          description: 允许的授课学生类型的开课
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingClassVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+  TeachingClassVo:
+    type: "object"
+    properties:
+      source:
+        type: "string"
+        description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+      teachingClassId:
+        type: "string"
+        description: "上课班级Id"
+      teachingClassName:
+        type: "string"
+        description: "上课班级"
+      teachingClassNo:
+        type: "string"
+        description: "上课班级编号"
+      courseTableId:
+        type: "string"
+        description: "课表ID"
+      studentType:
+        type: "integer"
+        description: "开课类型"
+

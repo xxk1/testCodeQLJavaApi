@@ -1,0 +1,204 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取所有教室的节次任务接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+
+  /segments/tasks:
+    get:
+      tags:
+        - "Segments"
+      summary: "接口-获取所有楼栋的节次任务"
+      description: "teachingvideoservice服务使用"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "date"
+          type: "string"
+          description: "指定查询日期（yyyy-MM-dd）,可以为空,如果为空则查询当天的"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "studentType"
+          type: "integer"
+          in: "query"
+          description: "开课类型"
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SegmentTaskResource"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        401:
+          description: "验证失败"
+        404:
+          description: "当前时间不存在课表"
+        500:
+          description: "服务器异常"
+  /segmenttasks:
+    get:
+      tags:
+        - "Segments"
+      summary: "接口-获取所有的节次任务"
+      description: "teachingvideoservice服务使用"
+      operationId: getSegmentTaskList
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "date"
+          type: "string"
+          description: "指定查询日期（yyyy-MM-dd）,可以为空,如果为空则查询当天的"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "studentType"
+          type: "integer"
+          in: "query"
+          description: "开课类型"
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseTableDetailSegment"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        401:
+          description: "验证失败"
+        404:
+          description: "当前时间不存在课表"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  SegmentTaskResource:
+    type: "object"
+    properties:
+      buildId:
+        type: "string"
+        description: "楼栋id"
+      buildName:
+        type: "string"
+        description: "楼栋名称"
+      segment:
+        type: "integer"
+        description: "节次"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间（yyyy-MM-dd HH:mm:ss）"
+      segmentEndTime:
+        type: "string"
+        description: "节次节次时间（yyyy-MM-dd HH:mm:ss）"
+      week:
+        type: integer
+        description: "周次（第几周）"
+      weekNum:
+        type: integer
+        description: "星期几"
+      courseTableDetailSegments:
+        description: "该节次下课表节次信息"
+        type: array
+        items:
+          $ref: "#/definitions/CourseTableDetailSegment"
+
+  CourseTableDetailSegment:
+    type: "object"
+    properties:
+      roomId:
+        type: "string"
+        description: "教室id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      groupId:
+        type: "string"
+        description: "组Id"
+      groupName:
+        type: "string"
+        description: "组名称"
+      week:
+        type: "string"
+        description: "周次"
+      weekNum:
+        type: "integer"
+        description: "周几"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseCode:
+        type: "string"
+        description: "课程编码"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseTableId:
+        type: "string"
+        description: "课表Id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细Id"
+      teacherIds:
+        type: "string"
+        description: "课表明细老师id，多个时,分割"
+      teacherNames:
+        type: "string"
+        description: "课表明细老师姓名，多个时,分割"
+      teacherNos:
+        type: "string"
+        description: "课表明细老师工号，多个时,分割"
+      studentCount:
+        type: "integer"
+        description: "课表学生数"
+      collegeId:
+        type: string
+        description: "学院id"
+      collegeName:
+        type: string
+        description: "学院名称"
+      studentType:
+        type: integer
+        description: "开课类型"
+      sourceDataSource:
+        type: string
+        description: "数据来源"
+      sourceDataSourceName:
+        type: string
+        description: "数据来源名称"

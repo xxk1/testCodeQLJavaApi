@@ -1,0 +1,386 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "班级管理相关接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/groupmanagement":
+    post:
+      tags:
+        - "Group"
+      summary: "班级信息查询"
+      description: "使用方：：1、云课堂管理端-基础数据-班级信息"
+      operationId: "getGroupResourcePage"
+      produces:
+        - application/json
+      parameters:
+        - name: "groupParam"
+          in: "body"
+          description: "查询条件"
+          schema:
+            $ref: "#/definitions/GroupParam"
+          required: true
+        - name: "validCode"
+          in: query
+          description: "加密验证码&signKey=123123"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: 成功
+          schema:
+            $ref: '#/definitions/GroupVoResourcePage'
+        '400':
+          description: 参数不正确
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '403':
+          description: 验证码错误
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '500':
+          description: 服务器异常
+
+  "/v1/groupmembers":
+    get:
+      tags:
+        - "GroupMember"
+      summary: "根据学年学期获取教学班学生列表"
+      description: "期末评教发起评教时调用"
+      produces:
+        - "application/json"
+      operationId: "getGroupMemberResourceList"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码&signKey=123123"
+          type: "string"
+          required: true
+        - in: "query"
+          required: true
+          name: "schoolYear"
+          type: "string"
+          description: "学年"
+        - in: "query"
+          required: true
+          name: "term"
+          type: "string"
+          description: "学期"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/groupMemberResourceVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /v1/groups/importclass:
+    post:
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      summary: 教学班信息批量导入
+      tags:
+        - Group
+      responses:
+        '200':
+          description: 成功
+          schema:
+            $ref: '#/definitions/ImportClassVo'
+        '400':
+          description: 参数异常
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '403':
+          description: 验证码错误
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '500':
+          description: 服务器异常
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        '409':
+          description: 业务异常
+          schema:
+            $ref: '#/definitions/ImportClassVo'
+      operationId: importClass
+      description: 调用方：1、云课堂管理端web端-基础数据管理教学班管理调用
+      parameters:
+        - type: string
+          in: query
+          name: validCode
+          description: 加密验证码&signKey=123123
+          required: true
+        - in: formData
+          type: file
+          name: importFile
+          description: 导入的excel文件
+          required: true
+        - type: string
+          in: query
+          name: operatorid
+          description: 操作人id
+          required: true
+        - type: string
+          in: query
+          name: operatorName
+          description: 操作人姓名
+          required: true
+  "/v1/group/studentid":
+    get:
+      tags:
+        - "Group"
+      summary: "根据学生Id查询教学班信息"
+      description: "获取学生待办接口调用"
+      operationId: "getGroupListByStudentId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "studentId"
+          type: "string"
+          in: "query"
+          description: "学生Id"
+          required: false
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: false
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GroupResourceVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+  GroupParam:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "当前页"
+      pageSize:
+        type: "integer"
+        description: "每页个数"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      groupName:
+        type: "string"
+        description: "组名"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      source:
+        type: "integer"
+        description: "数据来源 0：数据对接，1：手动添加"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      courseNameOrCode:
+        type: "string"
+        description: "课程名称或编号"
+      teacherNameOrCode:
+        type: "string"
+        description: "教师姓名或编号"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别类型id"
+      publicStatus:
+        type: boolean
+        description: "公开状态（true：公开、false：不公开）"
+      groupIds:
+        type: "array"
+        description: "教学班id"
+        items:
+          type: string
+
+
+  GroupVoResourcePage:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+        description: "总个数"
+      page:
+        type: "integer"
+        description: "当前页"
+      pageSize:
+        type: "integer"
+        description: "每页个数"
+      GroupVoResourceList:
+        type: "array"
+        description: "当前页列表数据"
+        items:
+          $ref: "#/definitions/GroupVoResource"
+
+
+  GroupVoResource:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      schoolYearTermNickName:
+        type: "string"
+        description: "学年学期昵称"
+      groupId:
+        type: "string"
+        description: "组id"
+      groupNo:
+        type: "string"
+        description: "组编号"
+      groupName:
+        type: "string"
+        description: "组名"
+      teacherName:
+        type: "string"
+        description: "教师姓名/工号，多个用“、”隔开"
+      courseName:
+        type: "string"
+        description: "课程名称（课程编号）"
+      groupMembersNum:
+        type: integer
+        description: "组成员数量"
+      source:
+        type: string
+        description: "数据来源"
+      classCompositionName:
+        type: string
+        description: "班级组成"
+      modifierName:
+        type: string
+        description: "修改人"
+      collegeName:
+        type: string
+        description: "开课学院名称"
+      courseCategoryName:
+        type: string
+        description: "课程类别名称"
+      publicStatus:
+        type: boolean
+        description: "公开状态（true：公开、false：不公开）"
+
+
+  groupMemberResourceVo:
+    type: object
+    properties:
+      administrativeClassName:
+        type: string
+        description: "行政班名称"
+      teachingClassId:
+        type: string
+        description: "教学班Id"
+      teachingClassName:
+        type: string
+        description: "教学班名称"
+      studentId:
+        type: string
+        description: "学生Id"
+      studentNo:
+        type: string
+        description: "学生学号"
+      studentName:
+        type: string
+        description: "用户姓名"
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+  ImportClassVo:
+    title: ImportClassVo
+    x-stoplight:
+      id: 8b17b02addedf
+    type: object
+    description: 批量导入班级自定义异常返回值
+    properties:
+      successRows:
+        type: integer
+        description: 成功条数
+      errorRows:
+        type: integer
+        description: 异常条数
+      errorInfo:
+        type: array
+        description: 异常信息详情
+        items:
+          type: string
+  GroupResourceVo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "主键ID"
+      groupNo:
+        type: "string"
+        description: "分组编号"
+      groupName:
+        type: "string"
+        description: "组名称"
+      createTime:
+        type: "string"
+        description: "创建时间"
+      createName:
+        type: "string"
+        description: "创建人"
+      modifierId:
+        type: "string"
+        description: "修改人ID"
+      modifierName:
+        type: "string"
+        description: "修改人姓名"
+      modifierTime:
+        type: "string"
+        description: "修改时间"
+      source:
+        type: "string"
+        description: "数据来源"

@@ -1,0 +1,1 @@
+alter table tb_course_resource_knowledge_point ADD column course_knowledge_graph_domain_id varchar(255);

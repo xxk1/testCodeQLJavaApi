@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  title: 课程完成度相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /coursecompletion:
+    get:
+      tags:
+        - "CourseCompletion"
+      summary: "获取课程完成度接口"
+      description: "1.云课堂教师端：课程建设使用"
+      operationId: getCourseCompletion
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseIds
+          description: "课程ids"
+          type: string
+          required: true
+          in: query
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseCompletionResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /coursecompletion/detail:
+    get:
+      tags:
+        - "CourseCompletion"
+      summary: "获取课程完成度详情"
+      description: "1.云课堂教师端：课程建设使用"
+      operationId: getCourseCompletionDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（courseId={}&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          description: "课程id"
+          type: string
+          required: true
+          in: query
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseCompletionDetailResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseCompletionResource:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: "课程id"
+      completion:
+        type: number
+        description: "完成度"
+
+  CourseCompletionDetailResource:
+    type: object
+    properties:
+      contentTypeValue:
+        type: string
+        description: "完成度类型值"
+      contentTypeName:
+        type: string
+        description: "完成度类型名称"
+      showOrder:
+        type: integer
+        description: "排序"
+      typeParentName:
+        type: string
+        description: "类型父级名称"
+      isCompleted:
+        type: boolean
+        description: "是否完成"

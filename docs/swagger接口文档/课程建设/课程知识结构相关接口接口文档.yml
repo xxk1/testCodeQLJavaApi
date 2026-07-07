@@ -1,0 +1,447 @@
+swagger: "2.0"
+info:
+  title: 课程知识结构相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /courseknowledgestructure:
+    post:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "新增课程知识结构"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: insertCourseKnowledgestructure
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: structureVo
+          in: "body"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeStructureVo'
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+    get:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "获取课程知识结构信息"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: getCourseKnowledgeStructure
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: 课程id
+          type: string
+          required: true
+        - name: versionId
+          in: query
+          description: 版本id
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseKnowledgeStructureResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgestructure/{id}/update:
+    post:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "更新课程知识结构"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: updateCourseKnowledgestructure
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: "id"
+          in: path
+          description: "知识结构id"
+          type: string
+          required: true
+        - name: structureVo
+          in: "body"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeStructureVo'
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgestructure/{id}/delete:
+    post:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "删除课程知识结构"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: deleteCourseKnowledgestructure
+      parameters:
+        - name: structureVo
+          in: "body"
+          schema:
+            $ref: '#/definitions/CourseKnowledgeStructureVo'
+          required: true
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: "id"
+          in: path
+          description: "知识结构id"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  /courseknowledgestructure/sort:
+    post:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "课程知识结构排序"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: updateCourseKnowledgestructureSort
+      parameters:
+        - name: "courseId"
+          type: string
+          description: "课程id"
+          in: query
+          required: true
+        - name: "versionId"
+          type: string
+          description: "版本id"
+          in: query
+          required: true
+        - name: validCode
+          type: string
+          description: "验证码（courseId={}&signKey=123123）"
+          in: query
+          required: true
+        - name: "operatorId"
+          in: query
+          description: "操作人id"
+          type: string
+          required: true
+        - name: "operatorName"
+          in: query
+          description: "操作人姓名"
+          required: true
+          type: string
+        - name: structureVoList
+          in: body
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/CourseKnowledgeStructureSortVo'
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /courseknowledgepoint/resource:
+    get:
+      tags:
+        - "CourseKnowledgeStructure"
+      summary: "获取课程知识点及其下教学资源信息"
+      description: "1.云课堂教师端-课程建设使用"
+      operationId: getCourseKnowledgePointResource
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: "课程id"
+          type: string
+          required: false
+        - name: versionId
+          in: query
+          description: "版本id"
+          type: string
+          required: false
+        - name: pointId
+          in: query
+          description: "知识点id"
+          type: string
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseKnowledgePointResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseKnowledgeStructureVo:
+    type: object
+    properties:
+      content:
+        type: string
+        description: "知识结构内容"
+      structureType:
+        type: integer
+        description: "知识结构类型"
+      courseId:
+        type: string
+        description: "课程id"
+      versionId:
+        type: string
+        description: "版本id"
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      parentId:
+        type: string
+        description: "父级id"
+      knowledgePointList:
+        type: array
+        items:
+          $ref: "string"
+
+  CourseKnowledgeStructureResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "知识结构id"
+      content:
+        type: string
+        description: "知识结构内容"
+      structureType:
+        type: integer
+        description: "知识结构类型"
+      showOrder:
+        type: integer
+        description: "排序字段"
+      childList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseKnowledgeStructureResource"
+
+  CourseKnowledgeStructureSortVo:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "知识结构id"
+      childIdList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseKnowledgeStructureSortVo"
+
+  CourseKnowledgePointResource:
+    type: object
+    properties:
+      pointId:
+        type: string
+        description: "知识点id"
+      pointContent:
+        type: string
+        description: "知识点内容"
+      resourceList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseResourceVo"
+
+  CourseResourceVo:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源id"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      resourceType:
+        type: "integer"
+        description: "资源类型(0-课件 1-视频 2-测验)"
+      resourceSize:
+        type: "string"
+        description: "资源大小"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+      modifierName:
+        type: "string"
+        description: "更新人名称"
+      modifierId:
+        type: "string"
+        description: "更新人id"
+      innerIp:
+        type: "string"
+        description: "内网ip"
+      outerIp:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      isPublic:
+        type: "integer"
+        description: "是否公开 0 不公开 1公开"
+      questionNum:
+        type: "integer"
+        description: "题目数量"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情id"
+      fileSavedName:
+        type: "string"
+        description: "资源名称(上传名称)"
+      fileSize:
+        type: "string"
+        description: "资源大小(上传)"
+      resourceReferences:
+        type: "integer"
+        description: "资源引用次数(个人引用次数)"
+      resourceOtherReferences:
+        type: "integer"
+        description: "资源引用次数(他人引用次数)"

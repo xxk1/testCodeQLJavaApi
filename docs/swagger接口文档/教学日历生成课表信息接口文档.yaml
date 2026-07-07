@@ -1,0 +1,243 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "课表信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/coursetabledetails/teachingcalendar":
+    post:
+      tags:
+        - "CourseTableDetailResource"
+      summary: "保存教学日历课表明细"
+      description: "1.云课堂二次排课使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+        - name: "courseTableDetails"
+          in: "body"
+          required: true
+          description: "课表详情"
+          schema:
+            $ref: "#/definitions/TeachingCalendarCourseTableDetail"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/CourseTableSimpleVo'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到此课表信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+        409:
+          description: 校验未通过
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ErrorResult'
+  "/coursetabledetails/{courseTableDetailId}/room/{id}/itemteacher":
+    post:
+      tags:
+        - "CourseTableDetailResource"
+      summary: "1.更新二次排课物品准备老师信息"
+      description: "1.二次排课分配其他时更新物品准备老师"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "id={}&signKey=123123"
+          type: "string"
+          required: true
+        - name: "courseTableDetailId"
+          in: path
+          description: "课表详情id"
+          required: true
+          type: string
+        - name: "id"
+          in: path
+          description: "教室id"
+          required: true
+          type: string
+        - name: "labResource"
+          in: "body"
+          required: true
+          schema:
+            $ref: '#/definitions/LabResource'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到此课表详情"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+        409:
+          description: 校验未通过
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ErrorResult'
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  CourseTableSimpleVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "课表id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "组id"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  TeachingCalendarCourseTableDetail:
+    type: object
+    properties:
+      groupId:
+        type: string
+        description: "大组id"
+      week:
+        type: string
+        description: "周"
+      segments:
+        type: string
+        description: "节次信息，多个使用逗号隔开"
+      courseDate:
+        type: string
+        description: "上课日期"
+      sectionMinStartTime:
+        type: string
+        description: "最小节次开始时间 格式：HH:mm"
+      sectionMaxEndTime:
+        type: string
+        description: "最大节次结束时间 格式：HH:mm"
+      projectList:
+        type: array
+        items:
+          $ref: '#/definitions/ProjectResource'
+      labList:
+        type: array
+        items:
+          $ref: '#/definitions/LabResource'
+      teacherList:
+        type: array
+        items:
+          $ref: '#/definitions/TeacherResource'
+
+  ProjectResource:
+    properties:
+      projectId:
+        type: string
+        description: 项目id
+      projectCode:
+        type: string
+        description: 项目code
+      projectName:
+        type: string
+        description: 项目名称
+      projectStatus:
+        type: boolean
+        description: 项目是否存在（true：存在；false：不存在）
+
+  LabResource:
+    properties:
+      roomId:
+        type: string
+        description: 实验室id
+      roomCode:
+        type: string
+        description: 实验室编号
+      roomName:
+        type: string
+        description: 实验室名称
+      labStudentCount:
+        type: integer
+        description: 实验室学生数量
+      itemTeacherId:
+        type: string
+        description: "物品准备老师id"
+      itemTeacherNo:
+        type: string
+        description: "物品准备老师工号"
+      itemTeacherName:
+        type: string
+        description: "物品准备老师姓名"
+      studentList:
+        type: array
+        items:
+          $ref: '#/definitions/TeachingCalendarStudentResource'
+
+  TeacherResource:
+    properties:
+      teacherId:
+        type: string
+        description: 授课老师Id
+      teacherNo:
+        type: string
+        description: 授课老师No
+      teacherName:
+        type: string
+        description: 授课老师名称
+      teacherStatus:
+        type: boolean
+        description: 授课老师是否存在（true：存在；false：不存在）
+
+  TeachingCalendarStudentResource:
+    type: object
+    properties:
+      studentId:
+        type: string
+        description: "学生id"
+      studentNo:
+        type: string
+        description: "学生工号"
+      studentName:
+        type: string
+        description: "学生姓名"
+      
+      
+          

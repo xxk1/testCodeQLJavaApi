@@ -1,0 +1,146 @@
+swagger: "2.0"
+info:
+  description: "项目分类管理相关接口"
+  version: "1.0.0"
+  title: "courseApi文档"
+host: "192.168.1.105:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "http"
+paths:
+  /projectclassifications:
+    get:
+      tags:
+        - "ProjectClassification"
+      summary: "接口-获取所有项目分类"
+      description: "1、云课堂管理端项目分类管理使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ProjectClassificationVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+    post:
+      tags:
+        - "ProjectClassification"
+      summary: "接口-新增项目分类"
+      description: "1.云课堂管理端项目分类管理使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: "classificationResource"
+          in: "body"
+          description: "新增项目分类信息"
+          required: true
+          schema:
+            $ref: '#/definitions/ClassificationResource'
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /projectclassifications/{id}:
+    post:
+      tags:
+        - "ProjectClassification"
+      summary: "接口-删除项目分类"
+      description: "1.云课堂管理端项目分类管理使用"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "id=?&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: "id"
+          in: "path"
+          type: "string"
+          required: true
+          description: "项目分类id"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "未找到项目分类信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+  ErrorResult:
+    type: object
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  ProjectClassificationVo:
+    type: object
+    properties:
+      id:
+        type: "string"
+        description: "项目分类id"
+      classificationName:
+        type: "string"
+        description: "项目分类名称"
+
+  ClassificationResource:
+    type: object
+    properties:
+      userId:
+        type: "string"
+        description: "用户id"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      classificationName:
+        type: "string"
+        description: "分类名称"
+
+
+

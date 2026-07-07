@@ -1,0 +1,945 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取班级信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/teachingclasses":
+    get:
+      tags:
+        - "TeachingClassResource"
+      summary: "根据班级id查询班级信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teachingClassIds"
+          type: "string"
+          in: "query"
+          description: "班级ID,多个用“,”隔开"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TeachingClassResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  '/group':
+    post:
+      tags:
+        - "Group"
+      summary: "修改班级基本信息接口"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'classTeacherResource'
+          schema:
+            $ref: "#/definitions/ClassTeacherResource"
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ClassResource"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到班级信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - Group
+      summary: 班级信息查询
+      description: '1.web学习材料调用 、 2、互动课堂'
+      operationId: groupGet
+      produces:
+        - application/json
+      parameters:
+        - name: courseId
+          in: query
+          description: 课程id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: schoolYear
+          in: query
+          description: 学年
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: teacherId
+          in: query
+          description: 老师Id
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+        - name: validCode
+          in: query
+          description: 加密验证码&signKey=123123
+          required: true
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TeachingClassResource'
+        '400':
+          description: 参数不正确
+        '401':
+          description: 解密验证失败
+        '404':
+          description: 未找到课表信息
+        '500':
+          description: 服务器异常
+      deprecated: false
+
+  '/group/{id}':
+    post:
+      tags:
+        - "Group"
+      summary: "删除班级接口信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "班级id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到班级信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+    get:
+      tags:
+        - Group
+      summary: 根据课程Id查询班级信息
+      description: web云课堂管理端使用
+      operationId: getGroupInfosByCourseId
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: 课程id
+          required: true
+          type: string
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+        - name: schoolYear
+          in: query
+          description: 学年
+          required: true
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码（courseId={}&signKey=123123）"
+          required: true
+          type: string
+        - name: studentType
+          in: query
+          description: 开课类型
+          required: false
+          type: integer
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GroupSimpleInfo"
+        '400':
+          description: 参数异常，接受传入的参数类型不正确、必填参数未填写
+        '403':
+          description: 传入的加密参数未通过验证
+        '404':
+          description: 资源路径参数对应的资源未找到
+        '500':
+          description: 文件操作IO异常等
+
+  '/group/groupmember':
+    get:
+      tags:
+        - "GroupMember"
+      summary: "根据工号/学号、姓名查询班级成员信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userNoOrUserName"
+          type: "string"
+          in: "query"
+          description: "工号/学号、姓名"
+          required: false
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: false
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: false
+        - name: "groupIds"
+          type: "string"
+          in: "query"
+          description: "班级ID,多个用“,”隔开"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码&signKey=123123"
+          type: "string"
+          required: true
+
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: 'array'
+            items:
+              $ref: "#/definitions/GroupStudentPageResource"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到班级成员信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+  '/group/creategroup':
+    post:
+      tags:
+        - "Group"
+      summary: "创建班级接口"
+      description: "互动课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'createGroup'
+          schema:
+            $ref: "#/definitions/CreateGroup"
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/GroupDetails"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到班级信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+  '/groups/groupmembers':
+    post:
+      tags:
+        - "Group"
+      summary: "保存组及组成员"
+      description: "数据对接调用"
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'body'
+          required: true
+          name: 'groups'
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GroupResource"
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+        401:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+  '/groups':
+    get:
+      tags:
+        - "Group"
+      summary: "获取所有组"
+      description: "数据对接调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码（&signKey=123123）"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GroupResource"
+        400:
+          description: "参数不正确"
+        401:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+  '/groups/statistics':
+    get:
+      tags:
+        - "Group"
+      summary: "根据学年学期统计组数量"
+      description: "数据对接调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+        - name: schoolYear
+          in: query
+          description: 学年
+          required: true
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码（&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/GroupStatisticsResource"
+        400:
+          description: "参数不正确"
+        401:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+  '/groups/userstatistics':
+    get:
+      tags:
+        - "Group"
+      summary: "根据学年学期统计当前学期用户总数"
+      description: "1、数据可视化平台使用（本学期教学概览、本学期教学活动三级钻取）"
+      produces:
+        - "application/json"
+      parameters:
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+        - name: schoolYear
+          in: query
+          description: 学年
+          type: string
+          required: true
+        - name: collegeId
+          in: query
+          description: 开课学院id
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码（&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/GroupUserStatisticsResource"
+        400:
+          description: "参数不正确"
+        401:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+  "/classes/year":
+    get:
+      tags:
+        - "AdministrativeClassAndTeachingClass"
+      summary: "获取年级信息"
+      description: "小程序获取年级信息"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+      responses:
+        200:
+          description: '成功'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClassYear'
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        404:
+          description: "未找到年级信息"
+        500:
+          description: "服务器异常"
+
+  "/classes":
+    get:
+      tags:
+        - "AdministrativeClassAndTeachingClass"
+      summary: "获取班级信息"
+      description: "小程序获取班级信息"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 (&signKey=123123)"
+        - in: "query"
+          name: "year"
+          type: string
+          description: "年级"
+        - in: "query"
+          name: "collegeId"
+          type: string
+          description: "学院id"
+        - in: "query"
+          name: "majorId"
+          type: string
+          description: "专业id"
+      responses:
+        200:
+          description: '成功'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AdministrativeClass'
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        404:
+          description: "未找到班级信息"
+        500:
+          description: "服务器异常"
+
+  /v1/class:
+    post:
+      tags:
+        - CourseTeacher
+      summary: 老师添加班级接口信息
+      description: 云课堂调用
+      operationId: classUserIdPost
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: classTeacher
+          description: classTeacher
+          required: true
+          schema:
+            $ref: '#/definitions/ClassTeacher'
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: 参数不正确
+        '403':
+          description: 解密错误
+        '404':
+          description: 未找到上课老师课程信息
+        '500':
+          description: 服务器异常
+      deprecated: false
+  '/groups/basedatas':
+    get:
+      tags:
+        - "Group"
+      summary: "根据学年学期和学院id(多个学院逗号拼接)获取班级信息列表"
+      description: "1、内部调用"
+      operationId: "getCollegeGroupList"
+      produces:
+        - "application/json"
+      parameters:
+        - name: term
+          in: query
+          description: 学期
+          required: true
+          type: integer
+        - name: schoolYear
+          in: query
+          description: 学年
+          type: string
+          required: true
+        - name: collegeIds
+          in: query
+          description: 开课学院id(多个学院逗号拼接)
+          type: string
+          required: true
+        - name: validCode
+          in: query
+          description: "验证码（&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupBaseInfo'
+        400:
+          description: "参数不正确"
+        401:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+definitions:
+  GroupResource:
+    type: "object"
+    properties:
+      groupName:
+        type: "string"
+        description: "组名"
+      groupNo:
+        type: "string"
+        description: "组编号"
+      groupMembersNum:
+        type: integer
+        description: "组成员数量"
+      groupMembers:
+        type: "array"
+        items:
+          $ref: "#/definitions/GroupMemberResource"
+  GroupMemberResource:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        description: "学生id"
+      studentNo:
+        type: "string"
+        description: "学生学号"
+      studentName:
+        type: "string"
+        description: "学生姓名"
+      className:
+        type: "string"
+        description: "行政班名称"
+  TeachingClassResource:
+    type: "object"
+    properties:
+      teachingClassId:
+        type: "string"
+        description: "班级Id"
+      teachingClassName:
+        type: "string"
+        description: "班级名称"
+      teachingClassCode:
+        type: "string"
+        description: "班级编号"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeId:
+        type: "string"
+        description: "学院Id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      courseTableCollegeId:
+        type: "string"
+        description: "开课所属学院Id"
+      courseTableCollegeName:
+        type: "string"
+        description: "开课所属学院名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      description:
+        type: "string"
+        description: "第几学期"
+      term:
+        type: "integer"
+        description: "学期"
+      schoolYearTermNickName:
+        type: "string"
+        description: "学年学期昵称"
+      teachingClassType:
+        type: "integer"
+        description: "班级类型 0:课表班 3:自由班"
+      teachingClassMembers:
+        type: "integer"
+        description: "班级人数"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      classCompositionName:
+        type: "string"
+        description: "班级组成名称"
+      classAttribute:
+        type: integer
+        description: "班级属性 0:理论班；1：实践班；2：理实混合班"
+
+  GroupSimpleInfo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "班级Id"
+      groupName:
+        type: "string"
+        description: "班级名称"
+      groupNo:
+        type: "string"
+        description: "班级编号"
+  GroupBaseInfo:
+    type: "object"
+    properties:
+      groupId:
+        type: "string"
+        description: "班级Id"
+      groupName:
+        type: "string"
+        description: "班级名称"
+      groupNo:
+        type: "string"
+        description: "班级编号"
+      collegeId:
+        type: "string"
+        description: "开课学院id"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+
+  ClassTeacherResource:
+    type: "object"
+    properties:
+      userId:
+        type: "string"
+        description: "老师Id"
+      userName:
+        type: "string"
+        description: "老师姓名"
+      groupId:
+        type: "string"
+        description: "班级Id"
+      groupName:
+        type: "string"
+        description: "班级名称"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      classAttribute:
+        type: integer
+        description: "班级属性 0:理论班；1：实践班；2：理实混合班"
+
+  ClassResource:
+    type: "object"
+    properties:
+      className:
+        type: "string"
+        description: "上课班级名称"
+      classAttribute:
+        type: integer
+        description: "班级属性 0:理论班；1：实践班；2：理实混合班"
+
+  GroupStudentPageResource:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      students:
+        type: array
+        items:
+          $ref: '#/definitions/StudentResource'
+
+  StudentResource:
+    type: "object"
+    properties:
+      userId:
+        type: "string"
+        description: "学生id"
+      openId:
+        type: "string"
+        description: "openId"
+      userName:
+        type: "string"
+        description: "学生姓名"
+      userNo:
+        type: "string"
+        description: "学生学号"
+      classId:
+        type: "string"
+        description: "所属班级Id"
+      className:
+        type: "string"
+        description: "所属班级名称"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      source:
+        type: "integer"
+        description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+      createTime:
+        type: string
+        description: "创建时间；加入班级时间"
+      administrativeClassName:
+        type: "string"
+        description: "行政班名称"
+      studentCollegeId:
+        type: "string"
+        description: "学生学院id"
+      studentCollegeName:
+        type: "string"
+        description: "学生学院名称"
+
+  CreateGroup:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师Id"
+      teacherName:
+        type: "string"
+        description: "老师Name"
+      teacherNo:
+        type: "string"
+        description: "老师No"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      className:
+        type: "string"
+        description: "班级名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "string"
+        description: "学期"
+      collegeId:
+        type: "string"
+        description: "老师所属学院id"
+      collegeName:
+        type: string
+        description: "老师所属学院名称"
+      groupAttribute:
+        type: integer
+        description: "班级属性 0:理论班；1：实践班；2：理实混合班"
+
+
+
+  GroupDetails:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      classId:
+        type: "string"
+        description: "班级Id"
+      className:
+        type: "string"
+        description: "班级名称"
+      classSize:
+        type: "string"
+        description: "班级人数"
+      courseTableId:
+        type: "string"
+        description: "主课表Id"
+      courseTableDetailId:
+        type: "string"
+        description: "课程明细Id"
+  ClassYear:
+    type: object
+    properties:
+      year:
+        type: string
+        description: '年级名称'
+      checked:
+        type: boolean
+        description: "是否选择"
+
+  GroupStatisticsResource:
+    type: object
+    properties:
+      groupCount:
+        type: integer
+        description: '班级总数'
+  GroupUserStatisticsResource:
+    type: object
+    properties:
+      studentCount:
+        type: integer
+        description: '学生总数'
+      teacherCount:
+        type: integer
+        description: '老师总数'
+
+  AdministrativeClass:
+    type: object
+    properties:
+      administrativeClassName:
+        type: string
+        description: "行政班名称"
+      collegeId:
+        type: string
+        description: '所属学院id'
+      collegeName:
+        type: string
+        description: '所属学院名称'
+      majorId:
+        type: string
+        description: '专业id'
+      majorName:
+        type: string
+        description: '专业名称'
+      studentCount:
+        type: integer
+        description: '班级人数'
+      checked:
+        type: boolean
+        description: "是否选择"
+
+  ClassTeacher:
+    type: object
+    properties:
+      classes:
+        type: array
+        items:
+          $ref: '#/definitions/ClassResource'
+      courseCategory:
+        type: string
+        description: 课程类别
+      courseId:
+        type: string
+        description: 课程Id
+      courseName:
+        type: string
+        description: 课程名称
+      courseSegment:
+        type: integer
+        format: int32
+        description: 课次
+      isRecommend:
+        type: integer
+        format: int32
+        description: 是否推荐 0：推荐 1：不推荐
+      schoolYear:
+        type: string
+        description: 学年
+      term:
+        type: integer
+        format: int32
+        description: 学期
+      userId:
+        type: string
+        description: 老师Id
+      userName:
+        type: string
+        description: 老师姓名
+      userNo:
+        type: string
+        description: 老师编号
+      collegeId:
+        type: "string"
+        description: "老师所属学院id"
+      studentType:
+        type: "string"
+        description: "课程开课类型：0：本科生 1：研究生"
+      collegeName:
+        type: string
+        description: "老师所属学院名称"
+      validCode:
+        type: string
+        description: 验证码（&signKey=123123）
+    title: ClassTeacher

@@ -1,0 +1,721 @@
+swagger: "2.0"
+info:
+  title: 课程包相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+  /teachingpackage:
+    post:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "发布课程包"
+      description: "1.云课堂老师端-课程建设-教学内容-发布课程包使用"
+      operationId: addTeachingPackage
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: "teachingPackageVo"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CourseTeachingPackageVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /teachingpackage/packages:
+    get:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "根据名称查找课程包"
+      description: "1.云课堂老师端-课程建设-教学内容-引用课程包使用"
+      operationId: getTeachingPackageByName
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseName
+          in: query
+          description: "课程名称"
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: "课程Id"
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: "用户Id"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingPackageVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /teachingpackage/version:
+    get:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "查找教学包版本"
+      description: "1.云课堂老师端-课程建设-教学内容-发布课程包使用"
+      operationId: getTeachingPackageVersion
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseId
+          in: query
+          description: "课程ID"
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: "用户ID"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingPackageCourseVersionResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /teachingpackage/list:
+    post:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "教学包列表"
+      description: "1.云课堂老师端-课程建设-教学内容-教学包列表"
+      operationId: getTeachingPackageList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: courseIds
+          in: body
+          description: "课程Ids"
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "string"
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          description: '当前页'
+          required: true
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseTeachingPackagePageResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /teachingpackage/{userId}/mylist:
+    get:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "个人空间教学包列表"
+      description: "1.云课堂老师端-个人空间-"
+      operationId: getTeachingPackageMyList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（userId=?&signKey=123123）
+          type: string
+          required: true
+        - name: 'userId'
+          in: 'path'
+          type: 'string'
+          description: "用户Id"
+          required: true
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          description: '当前页'
+          required: true
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseTeachingPackagePageResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  /teachingpackage/{courseId}/detail:
+    get:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "教学包详情"
+      description: "1.云课堂老师端-课程建设-教学内容-教学包列表"
+      operationId: getTeachingPackageDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（courseId=?&signKey=123123）
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: "用户ID"
+          type: string
+          required: true
+        - name: courseId
+          in: path
+          description: "课程Id"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeachingPackageVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /teachingpackage/{courseId}/mydetail:
+    get:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "个人空间教学包详情"
+      description: "1.云课堂老师端-个人空间-教学包详情"
+      operationId: getTeachingPackageMyDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（courseId=?&signKey=123123）
+          type: string
+          required: true
+        - name: userId
+          in: query
+          description: "用户ID"
+          type: string
+          required: true
+        - name: courseId
+          in: path
+          description: "课程Id"
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeachingPackageVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /teachingpackage/packages/quote:
+    post:
+      tags:
+        - "CourseTeachingPackage"
+      summary: "引用课程包"
+      description: "1.云课堂老师端-课程建设-教学内容-引用课程包使用"
+      operationId: quoteTeachingPackage
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: quoteTeachingPackage
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/QuoteTeachingPackageVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CourseTeachingPackagePageResource:
+    type: object
+    properties:
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      total:
+        type: 'integer'
+        description: '总条数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '10'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      CourseTeachingPackageListVo:
+        type: array
+        items:
+          $ref: '#/definitions/CourseTeachingPackageListVo'
+
+
+  CourseTeachingPackageListVo:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "教学包Id"
+      teachingPackageName:
+        type: string
+        description: "课程包名称"
+      courseVersionId:
+        type: string
+        description: "版本ID"
+      courseId:
+        type: string
+        description: "课程ID"
+      courseName:
+        type: string
+        description: "课程名称"
+      visionNumber:
+        type: string
+        description: "版本号"
+      visionTime:
+        type: string
+        description: "版本时间"
+      quoteNum:
+        type: integer
+        description: "引用次数"
+      filePath:
+        type: string
+        description: "文件路径"
+      innerIp:
+        type: string
+        description: "内网ip"
+      outerIp:
+        type: string
+        description: "外网IP"
+
+
+  CourseTeachingPackageVo:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: "操作人id"
+      userName:
+        type: string
+        description: "操作人姓名"
+      courseStructureIds:
+        type: array
+        description: "课程结构id"
+        items:
+          $ref: "string"
+      resourceIds:
+        type: array
+        description: "课程资源id"
+        items:
+          $ref: "string"
+      resourceFileIds:
+        type: array
+        description: "课程资源文件ID"
+        items:
+          $ref: "string"
+      teachingPackageName:
+        type: string
+        description: "课程包名称"
+      teachingPackageIntroduction:
+        type: string
+        description: "课程包简介"
+      teachingPackageFileId:
+        type: string
+        description: "课程包封面文件ID"
+      filePath:
+        type: string
+        description: "文件路径"
+      innerIp:
+        type: string
+        description: "内网ip"
+      outerIp:
+        type: string
+        description: "外网IP"
+      labelIds:
+        type: array
+        description: "标签ID"
+        items:
+          $ref: "string"
+      labelNames:
+        type: array
+        description: "标签名称"
+        items:
+          $ref: "string"
+      courseVersionId:
+        type: string
+        description: "版本ID"
+      courseId:
+        type: string
+        description: "课程ID"
+      courseName:
+        type: string
+        description: "课程名称"
+      visionNumber:
+        type: string
+        description: "版本号"
+      visionTime:
+        type: string
+        description: "版本时间"
+  QuoteTeachingPackageVo:
+    type: object
+    properties:
+      teachingPackageId:
+        type: string
+        description: "教学包ID"
+      courseId:
+        type: string
+        description: "课程ID"
+      versionId:
+        type: string
+        description: "版本ID"
+      userId:
+        type: string
+        description: "引用人ID"
+      userName:
+        type: string
+        description: "引用人名称"
+      teachingPackageQuote:
+        type: "array"
+        items:
+          $ref: "#/definitions/TeachingPackageCourseStructureVo"
+        description: "引用课程结构"
+  TeachingPackageVo:
+    type: object
+    properties:
+      teachingPackageId:
+        type: string
+        description: "教学包ID"
+      courseId:
+        type: string
+        description: "课程ID"
+      courseName:
+        type: string
+        description: "课程名称"
+      teachingPackageName:
+        type: string
+        description: "课程包名称"
+      teachingPackageIntroduction:
+        type: string
+        description: "课程包简介"
+      userId:
+        type: string
+        description: "操作人id"
+      userName:
+        type: string
+        description: "操作人姓名"
+      quoteNum:
+        type: integer
+        description: "引用次数"
+      visionNumber:
+        type: integer
+        description: "版本号"
+      visionTime:
+        type: string
+        description: "版本时间"
+      labelNames:
+        type: array
+        description: "标签名称"
+        items:
+          $ref: "string"
+      courseStructureList:
+        type: "array"
+        items:
+          $ref: "#/definitions/TeachingPackageCourseStructureVo"
+        description: "课程结构"
+  TeachingPackageCourseStructureVo:
+    type: "object"
+    properties:
+      structureId:
+        type: "string"
+        description: "课程结构id"
+      parentId:
+        type: "string"
+        description: "父id"
+      parentName:
+        type: "string"
+        description: "父课程结构名称"
+      structureName:
+        type: "string"
+        description: "课程结构名称"
+      showOrder:
+        type: "integer"
+        description: "排序字段"
+      childStructureList:
+        type: "array"
+        items:
+          $ref: "#/definitions/TeachingPackageCourseStructureVo"
+        description: "子课程结构"
+      courseResourceList:
+        type: "array"
+        items:
+          $ref: "#/definitions/TeachingPackageCourseResourceVo"
+        description: "资源集合"
+
+  TeachingPackageCourseResourceVo:
+    type: "object"
+    properties:
+      isQuote:
+        type: boolean
+        description: "资源是否被引用"
+      resourceId:
+        type: "string"
+        description: "资源id"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      resourceType:
+        type: "integer"
+        description: "资源类型(0-课件 1-视频 2-测验)"
+      resourceSize:
+        type: "string"
+        description: "资源大小"
+      resourceNum:
+        type: "string"
+        description: "问题数量"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+      modifierName:
+        type: "string"
+        description: "更新人名称"
+      modifierId:
+        type: "string"
+        description: "更新人id"
+      innerIp:
+        type: "string"
+        description: "内网ip"
+      outerIp:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      isPublic:
+        type: "integer"
+        description: "是否公开 0 不公开 1公开"
+      questionNum:
+        type: "integer"
+        description: "题目数量"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情id"
+      fileSavedName:
+        type: "string"
+        description: "资源名称(上传名称)"
+      fileSize:
+        type: "string"
+        description: "资源大小(上传)"
+      resourceReferences:
+        type: "integer"
+        description: "资源引用次数"
+      transcodeStatus:
+        type: "integer"
+        description: "转码状态：0:不转码;1:转码中;2:转码成功;3:转码失败"
+      knowledgePointList:
+        type: array
+        items:
+          $ref: "#/definitions/PackageKnowledgePointResource"
+        description: "知识点集合"
+  PackageKnowledgePointResource:
+    type: object
+    properties:
+      pointId:
+        type: string
+        description: "知识点id"
+      pointName:
+        type: string
+        description: "知识点名称"
+  TeachingPackageCourseVersionResource:
+    type: object
+    properties:
+      versionNumber:
+        type: string
+        description: "版本号"
+      visionTime:
+        type: string
+        description: "归档时间"
+      filingUserId:
+        type: string
+        description: "归档人id"
+      filingUserName:
+        type: string
+        description: "归档人姓名"

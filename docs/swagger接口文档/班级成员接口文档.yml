@@ -1,0 +1,688 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "新增班级成员接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/group/{id}/groupmembers":
+    post:
+      tags:
+        - "groupMembersResource"
+      summary: "新增班级成员"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+        - name: "userName"
+          type: "string"
+          in: "query"
+          description: "老师姓名"
+          required: true
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "组Id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id=?&signKey=123123(md5加密)"
+          required: true
+        - in: "body"
+          name: "groupMembers"
+          description: "班级成员信息集合"
+          required: true
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GroupMembersResource"
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/groupmembers/{groupId}":
+    get:
+      tags:
+        - "groupMembersResource"
+      summary: "获取班级成员信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          type: "string"
+          in: "path"
+          description: "组Id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：groupId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UsersInfo"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/groupteachers":
+    get:
+      tags:
+        - "groupMembersResource"
+      summary: "获取班级上课老师信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "组Id"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程Id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：groupId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UsersInfo"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/group/importgroupmembers":
+    post:
+      tags:
+        - "ImportGroupMember"
+      summary: "Excel导入班级成员"
+      description: "云课堂前端使用"
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程Id"
+          required: true
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "组Id"
+          required: true
+        - name: "groupMember"
+          type: "file"
+          in: "formData"
+          description: "成员信息"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ImportGroupMemberResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到导入的Excel信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/group/deletegroupmembers":
+    post:
+      tags:
+        - "DeleteGroupMember"
+      summary: "删除班级成员"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId "
+          type: "string"
+          in: "query"
+          description: "组Id"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "studentId"
+          type: "string"
+          in: "query"
+          description: "学生Id"
+          required: true
+        - name: "teacherName"
+          type: "string"
+          in: "query"
+          description: "教师姓名"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        403:
+          description: "解密验证失败"
+        404:
+          description: "未找到学生信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/group/batchdeletegroupmembers":
+    post:
+      tags:
+        - "BatchDeleteGroupMembers"
+      operationId: "batchDeleteGroupMembers"
+      summary: "批量删除班级成员"
+      description: "小程序端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "组Id"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "studentIds"
+          type: "string"
+          in: "query"
+          description: "学生Id 使用,分割的字符串"
+          required: true
+        - name: "teacherName"
+          type: "string"
+          in: "query"
+          description: "教师姓名"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        403:
+          description: "解密验证失败"
+        404:
+          description: "未找到学生信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/groupmembers":
+    get:
+      tags:
+        - "groupMembersResource"
+      summary: "根据组名称和学号/工号查询组成员信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          type: "string"
+          in: "query"
+          description: "组名称"
+          required: true
+        - name: "userNo"
+          type: "string"
+          in: "query"
+          description: "学号/工号"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GroupMembersResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/groupmembers/userIdOrOpenId":
+    get:
+      tags:
+        - "groupMembersResource"
+      summary: "根据学生Id或微信openId查询成员信息"
+      description: "teachingApi使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          type: "string"
+          in: "query"
+          description: "用户Id"
+          required: false
+        - name: "openId"
+          type: "string"
+          in: "query"
+          description: "微信openId"
+          required: false
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "分组Id"
+          required: false
+        - name: "excludeDelete"
+          type: "integer"
+          in: "query"
+          description: "排除删除状态"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/UsersInfo"
+        403:
+          description: "验证失败"
+        404:
+          description: "未找到用户信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  '/group/groupmember':
+    post:
+      tags:
+        - "groupMembersResource"
+      summary: "根据学生姓名或学号模糊获取班级学生信息接口"
+      description: "调用方：1、云课堂老师web端-云课堂课程公告"
+      operationId: "getGroupMemberByStudentNoOrNameIsLike"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "验证码&signKey=123123(md5加密)"
+        - name: 'userNoOrUserIdVoList'
+          in: 'body'
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMemberByStudentNoOrNameVo'
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/StudentVo'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  "/groups/teachers":
+    post:
+      tags:
+        - "groupMembersResource"
+      summary: "根据多个班级获取班级上课老师信息"
+      description: "课程整体数据：teachingApi使用"
+      operationId: "getGroupteachers"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          in: 'body'
+          required: true
+          schema:
+            $ref: '#/definitions/GroupsTeachersVo'
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UsersInfo"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/group/{id}/assistants":
+    get:
+      tags:
+        - "groupMembersResource"
+      summary: "根据学年学期和老师id获取当前学期下老师所有班级助教列表信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "schoolYear"
+          type: "string"
+          in: "query"
+          description: "学年"
+          required: true
+        - name: "term"
+          type: "integer"
+          in: "query"
+          description: "学期"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AssistantResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课表信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/groupmembers/studentidentity":
+    post:
+      tags:
+        - "groupMembersResource"
+      summary: "根据学生id和组id更改学生身份"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "studentId"
+          type: "string"
+          in: "query"
+          description: "学生id"
+          required: true
+        - name: "groupId"
+          type: "string"
+          in: "query"
+          description: "教学班id"
+          required: true
+        - name: "studentIdentityCode"
+          type: "integer"
+          in: "query"
+          description: "学生身份编码(0:学生；1：助教)"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：studentId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+definitions:
+  UsersInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "用户id"
+      openId:
+        type: "string"
+        description: "微信账号"
+      userNo:
+        type: "string"
+        description: "用户学号"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      college:
+        type: "string"
+        description: "学院"
+      eamil:
+        type: "string"
+        description: "邮箱"
+      avatarPath:
+        type: "string"
+        description: "用户头像"
+      className:
+        type: "string"
+        description: "行政班"
+      majorName:
+        type: "string"
+        description: "专业"
+      gender:
+        type: "string"
+        description: "性别 0=未知 1=男 2=女"
+      updateTime:
+        type: "string"
+        description: "学生加入班级时间"
+      createTime:
+        type: "string"
+        description: "学生最初加入班级时间"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      groupNo:
+        type: "string"
+        description: "班级编号"
+      avatarInnerUrl:
+        type: string
+        description: "头像内网地址"
+      avatarOuterUrl:
+        type: string
+        description: "头像外网地址"
+      grade:
+        type: "string"
+        description: "年级"
+      studentIdentityCode:
+        type: "string"
+        description: "学生身份编号"
+      studentIdentityName:
+        type: "string"
+        description: "学生身份名称"
+
+  GroupMembersResource:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        description: "学生Id"
+      studentNo:
+        type: "string"
+        description: "学生学号"
+      studentName:
+        type: "string"
+        description: "学生姓名"
+      openId:
+        type: "string"
+        description: "微信账号"
+      administrativeClassName:
+        type: string
+        description: "行政班名称"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  ImportGroupMemberResource:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        description: "返回消息"
+      groupMembers:
+        type: "array"
+        items:
+          $ref: "#/definitions/GroupMembersResource"
+        description: "班级成员信息"
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  GroupMemberByStudentNoOrNameVo:
+    type: "object"
+    properties:
+      studentNoOrName:
+        type: "string"
+        description: "根据学生编号或名称模糊查询字段"
+      groupIdList:
+        type: "array"
+        description: "查询班级Id集合"
+        items:
+          description: "查询班级Id集"
+          type: 'string'
+
+
+  StudentVo:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        description: "学生ID"
+      studentNo:
+        type: "string"
+        description: "学生学号"
+      studentName:
+        type: "string"
+        description: "学生姓名"
+      groupId:
+        type: "string"
+        description: "班级id"
+      groupName:
+        type: "string"
+        description: "班级名称"
+  GroupsTeachersVo:
+    type: "object"
+    properties:
+      courseId:
+        type: string
+        description: "课程Id"
+      groupIds:
+        type: array
+        description: "班级ID"
+        items:
+          $ref: "string"
+  AssistantResource:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        description: "学生Id"
+      studentNo:
+        type: "string"
+        description: "学生学号"
+      studentName:
+        type: "string"
+        description: "学生姓名"
+

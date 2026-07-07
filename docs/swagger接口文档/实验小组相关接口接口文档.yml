@@ -1,0 +1,351 @@
+swagger: "2.0"
+info:
+  title: "实验小组相关接口接口文档"
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /
+schemes:
+  - https
+  - http
+
+paths:
+  /group/{id}/experimentalgroup:
+    get:
+      tags:
+        - "ExperimentalGroup"
+      summary: "获取班级下的实验小组信息接口"
+      description: "1.云课堂教师端：实验小组管理使用"
+      operationId: getGroupExperimentalGroupList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "组id"
+          type: string
+          required: true
+          in: path
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ExperimentalGroupResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /experimentalgroup:
+    post:
+      tags:
+        - "ExperimentalGroup"
+      summary: "新增或更新实验小组"
+      description: "1.云课堂教师端-实现小组管理使用"
+      operationId: insertOrUpdateExperimentalGroup
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: "experimentalGroupCreateVo"
+          in: body
+          required: true
+          description: ""
+          schema:
+            $ref: '#/definitions/ExperimentalGroupCreateResource'
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /group/{id}/unassignedexperimentalgroup/member/:
+    get:
+      tags:
+        - "ExperimentalGroup"
+      summary: "获取班级未分配实验小组成员接口"
+      description: "1.云课堂教师端-实验小组管理使用"
+      operationId: getGroupUnassignedExperimentalGroupList
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "组id"
+          type: string
+          required: true
+          in: path
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ExperimentalGroupMemberResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /experimentalgroup/{id}/detail:
+    get:
+      tags:
+        - "ExperimentalGroup"
+      summary: "获取班级实验小组详情接口"
+      description: "1.云课堂教师端-实验小组管理使用"
+      operationId: getExperimentalGroupDetail
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "组id"
+          type: string
+          required: true
+          in: path
+        - name: isGetMemberList
+          description: "是否获取组员详情 默认不获取"
+          type: boolean
+          default: fale
+          required: false
+          in: query
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ExperimentalGroupResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /experimentalgroup/{id}/delete:
+    post:
+      tags:
+        - "ExperimentalGroup"
+      summary: "删除实验小组接口"
+      description: "1.云课堂教师端-实验小组管理使用"
+      operationId: deleteExperimentalGroup
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "组id"
+          type: string
+          required: true
+          in: path
+        - name: "modifierId"
+          type: string
+          description: "操作人id"
+          required: true
+          in: query
+        - name: "modifierName"
+          type: string
+          description: "操作人姓名"
+          required: true
+          in: query
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /group/{id}/experimentalgroupnum:
+    get:
+      tags:
+        - "ExperimentalGroup"
+      summary: "1.获取班级实验小组数量"
+      description: "1.云课堂教师端-实验小组管理使用"
+      operationId: getGroupExperimentalGroupNum
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "组id"
+          type: string
+          required: true
+          in: path
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ExperimentalGroupNum"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  ExperimentalGroupResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "实验小组id"
+      groupName:
+        type: string
+        description: "组名"
+      responsibleTeacherId:
+        type: string
+        description: "负责教师id"
+      responsibleTeacherName:
+        type: string
+        description: "负责教师姓名"
+      responsibleTeacherNo:
+        type: string
+        description: "负责教师工号"
+      groupLeaderId:
+        type: string
+        description: "组长id"
+      groupLeaderName:
+        type: string
+        description: "组长姓名"
+      groupLeaderNo:
+        type: string
+        description: "组长工号"
+      memberNum:
+        type: integer
+        description: "组员数量"
+      memberList:
+        type: array
+        description: "实验小组成员列表"
+        items:
+          $ref: "#/definitions/ExperimentalGroupMemberResource"
+
+  ExperimentalGroupCreateResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "实验小组id"
+      groupName:
+        type: string
+        description: "组名"
+      creatorId:
+        type: string
+        description: "创建人id"
+      creatorName:
+        type: string
+        description: "创建人姓名"
+      classId:
+        type: string
+        description: "班级id"
+      responsibleTeacherId:
+        type: string
+        description: "负责教师id"
+      responsibleTeacherName:
+        type: string
+        description: "负责教师姓名"
+      responsibleTeacherNo:
+        type: string
+        description: "负责教师工号"
+      groupLeaderId:
+        type: string
+        description: "组长id"
+      groupLeaderName:
+        type: string
+        description: "组长姓名"
+      groupLeaderNo:
+        type: string
+        description: "组长工号"
+      memberNum:
+        type: integer
+        description: "组员数量"
+      memberList:
+        type: array
+        items:
+          $ref: "#/definitions/ExperimentalGroupMemberResource"
+
+  ExperimentalGroupMemberResource:
+    type: object
+    properties:
+      studentId:
+        type: string
+        description: "学生id"
+      studentName:
+        type: string
+        description: "学生姓名"
+      studentNo:
+        type: string
+        description: "学生工号"
+      isGroupLeader:
+        type: boolean
+        description: "是否是组长"
+
+  ExperimentalGroupNum:
+    type: object
+    properties:
+      experimentalGroupNum:
+        type: integer
+        description: "实验小组数量"

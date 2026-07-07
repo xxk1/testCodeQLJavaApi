@@ -1,0 +1,603 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取节次信息的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/segment":
+    get:
+      tags:
+        - "SegmentResource"
+      summary: "根据楼栋查询节次信息"
+      description: "云课堂前端使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "buildId"
+          type: "string"
+          in: "query"
+          description: "楼栋Id"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SegmentResource"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课次信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+  "/segmenttime":
+    get:
+      tags:
+        - "Segment"
+      summary: "获取节次时间"
+      description: "小程序调用"
+      parameters:
+        - in: "query"
+          name: "buildingId"
+          required: false
+          type: "string"
+          description: "buildingId"
+        - in: "query"
+          name: "segment"
+          required: true
+          type: "integer"
+          description: "节次"
+        - in: "query"
+          name: "weekNum"
+          required: true
+          type: "integer"
+          description: "周次"
+        - in: "query"
+          name: "weekDay"
+          required: true
+          type: "integer"
+          description: "星期"
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: "string"
+          description: "MD5加密验证字符串(&signKey=123123)"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/SegmentTimeResource"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+  "/segment/nowdate":
+    get:
+      tags:
+        - "Segment"
+      summary: "获取当前周次、星期、节次信息"
+      description: "小程序调用"
+      parameters:
+        - in: "query"
+          name: "buildingId"
+          required: false
+          type: string
+          description: "buildingId"
+        - in: "query"
+          name: "validCode"
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/WeekIndexResource"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证失败"
+        404:
+          description: "未找到当前周次、星期、节次信息"
+        500:
+          description: "服务器异常"
+  "/segment/getNowSegmentInfo":
+    get:
+      tags:
+        - "Segment"
+      operationId: "getNowSegmentInfo"
+      summary: "根据楼栋id获楼栋当前节次"
+      description: "InformationReleaseSystemInternalApi项目调用"
+      parameters:
+        - in: query
+          name: validCode
+          required: true
+          type: string
+          description: "MD5加密验证字符串buildId=?&signKey=123123"
+        - in: query
+          name: buildId
+          required: true
+          type: string
+          description: "楼栋Id"
+      responses:
+        200:
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/NowSegment"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+  "/segment/buildingIds":
+    get:
+      tags:
+        - "SegmentResource"
+      summary: "根据楼栋ids查询节次信息"
+      description: "信息发布服务调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "buildIds"
+          type: "string"
+          in: "query"
+          description: "楼栋Ids"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/BuildingVo"
+        401:
+          description: "解密验证失败"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+  "/segment/classroomSegmentCourseDetails":
+    post:
+      tags:
+        - "Segment"
+      summary: "教室查询结果详情接口"
+      description: "1.自助终端使用"
+      parameters:
+        - in: "body"
+          name: "segmentQueryParam"
+          required: true
+          schema:
+            $ref: "#/definitions/SegmentQueryParam"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ClassroomSegmentCourseVo"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+  "/segment/courseScheduleDetails":
+    post:
+      tags:
+        - "Segment"
+      summary: "课表查询结果详情接口"
+      description: "1.自助终端使用"
+      parameters:
+        - in: "body"
+          name: "courseQueryParam"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseQueryParam"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/ClassroomSegmentCoursePage"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+
+  "/segment/all":
+    get:
+      tags:
+        - "Segment"
+      summary: "获取所有节次信息（去重）"
+      description: "1.三画面下载使用"
+      parameters:
+        - in: "query"
+          name: "validCode"
+          required: true
+          type: string
+          description: "MD5加密验证字符串 &signKey=123123"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SegmentVo"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+  "/segment/{roomId}":
+    get:
+      tags:
+        - "Segment"
+      summary: "根据教室id获取今天对应节次课表课程信息"
+      description: "1.电子班牌"
+      operationId: getBuildingSegmentResource
+      parameters:
+        - name: "roomId"
+          in: "path"
+          description: "教室id"
+          required: true
+          type: "string"
+        - name: "validCode"
+          in: "query"
+          description: "验证码：roomId=?&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/BuildingSegmentResource"
+        400:
+          description: "参数异常"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+  "/segments":
+    get:
+      tags:
+        - "SegmentResource"
+      summary: "根据楼栋查询节次信息"
+      description: "云课堂课表录制服务使用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "buildId"
+          type: "string"
+          in: "query"
+          description: "楼栋Id"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SegmentResourceVo"
+        401:
+          description: "解密验证失败"
+        404:
+          description: "未找到课次信息"
+        400:
+          description: "参数不正确"
+        500:
+          description: "服务器异常"
+
+definitions:
+  SegmentResource:
+    type: "object"
+    properties:
+      segment:
+        type: "string"
+        description: "节次"
+      buildName:
+        type: "string"
+        description: "楼栋"
+      startTime:
+        type: "string"
+      endTime:
+        type: "string"
+      description:
+        type: "string"
+        description: "描述"
+
+  SegmentTimeResource:
+    type: "object"
+    properties:
+      startDate:
+        type: "string"
+        description: "开始时间 yyyy-mm-dd"
+      endDate:
+        type: "string"
+        description: "结束时间 yyyy-mm-dd"
+      segmentTime:
+        type: "string"
+        description: "节次时间"
+
+  WeekIndexResource:
+    type: "object"
+    properties:
+      weekIndex:
+        type: "array"
+        items:
+          type: "integer"
+  NowSegment:
+    type: object
+    properties:
+      buildId:
+        type: string
+        description: "楼栋Id"
+      buildName:
+        type: string
+        description: "楼栋名称"
+      segment:
+        type: integer
+        description: "节次"
+      startTime:
+        type: string
+        description: "开始时间"
+      endTime:
+        type: string
+        description: "结束时间"
+  BuildingVo:
+    type: "object"
+    properties:
+      buildId:
+        type: "string"
+        description: "楼栋Id"
+      segmentList:
+        type: array
+        items:
+          $ref: "#/definitions/SegmentVo"
+
+  SegmentVo:
+    type: "object"
+    properties:
+      segmentName:
+        type: "string"
+        description: "节次"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+
+  SegmentQueryParam:
+    properties:
+      buildingId:
+        type: string
+        description: "楼栋id"
+      classRoomId:
+        type: string
+        description: "教室id"
+      segmentList:
+        type: array
+        items:
+          $ref: "#/definitions/Segments"
+      searchDate:
+        type: string
+        description: "查询日期"
+      validecode:
+        type: string
+        description: "验证码md5加密"
+
+  ClassroomSegmentCourseVo:
+    properties:
+      sectionName:
+        type: string
+        description: "节次名称"
+      courseName:
+        type: string
+        description: "课程名称"
+      teacherName:
+        type: string
+        description: "老师名称"
+      collegeName:
+        type: string
+        description: "学院名称"
+      studentNums:
+        type: integer
+        description: "学生数量"
+      className:
+        type: string
+        description: "班级名称"
+      roomName:
+        type: string
+        description: "教室名称"
+      courseCategoryName:
+        type: string
+        description: "课程类别名称"
+      courseWeekName:
+        type: string
+        description: "课程周类型名称"
+
+  Segments:
+    properties:
+      segment:
+        type: integer
+        description: "节次"
+      occupyTypeIndex:
+        type: integer
+        description: "占用类型值"
+
+  CourseQueryParam:
+    properties:
+      buildingId:
+        type: string
+        description: "楼栋id"
+      roomId:
+        type: string
+        description: "教室id"
+      collegeId:
+        type: string
+        description: "学院id"
+      courseOrTeacherName:
+        type: string
+        description: "课程/教师名称"
+      segment:
+        type: integer
+        description: "节次"
+      searchDate:
+        type: string
+        description: "查询日期"
+      validecode:
+        type: string
+        description: "验证码md5加密"
+      page:
+        type: integer
+        description: "当前页"
+      pageSize:
+        type: integer
+        description: "页大小"
+
+  ClassroomSegmentCoursePage:
+    properties:
+      page:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      weekNum:
+        type: "string"
+        description: "第几周"
+      week:
+        type: "string"
+        description: "星期几"
+      ClassroomSegmentCourseList:
+        type: "array"
+        items:
+          $ref: "#/definitions/ClassroomSegmentCourseVo"
+
+  BuildingSegmentResource:
+    type: "object"
+    properties:
+      buildingId:
+        type: string
+        description: "楼栋id"
+      buildingName:
+        type: string
+        description: "楼栋名称"
+      segmentList:
+        type: "array"
+        items:
+          $ref: "#/definitions/SegmentMode"
+  SegmentMode:
+    type: "object"
+    properties:
+      segmentName:
+        type: "string"
+        description: "节次"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+      courseList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseBasicVo"
+  CourseBasicVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCategoryId:
+        type: "integer"
+        description: "课程类型id"
+      courseCategoryName:
+        type: "string"
+        description: "课程类型名称"
+      teacherNames:
+        type: "string"
+        description: "老师名称(多个逗号拼接)"
+      groupId:
+        type: "string"
+        description: "教学班id"
+      groupNo:
+        type: "string"
+        description: "教学班编号"
+      groupName:
+        type: "string"
+        description: "教学班名称"
+      collegeId:
+        type: "string"
+        description: "开课学院id"
+      collegeName:
+        type: "string"
+        description: "开课学院名称"
+      groupMemberCounts:
+        type: "integer"
+        description: "教学班学生总数"
+  SegmentResourceVo:
+    type: "object"
+    properties:
+      buildId:
+        type: "string"
+        description: "楼栋"
+      buildName:
+        type: "string"
+        description: "楼栋"
+      segment:
+        type: "string"
+        description: "节次"
+      startTime:
+        type: "string"
+        description: "开始时间"
+      endTime:
+        type: "string"
+        description: "结束时间"
+      recordStartTime:
+        type: "string"
+        description: "录制开始时间"
+      recordEndTime:
+        type: "string"
+        description: "录制结束时间"
+      description:
+        type: "string"
+        description: "描述"

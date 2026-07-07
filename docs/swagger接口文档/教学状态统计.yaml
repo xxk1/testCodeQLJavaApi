@@ -1,0 +1,178 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "教学状态统计的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+
+  "/teachingstatusstatistic/getcurrentusingclassroomnum":
+    get:
+      tags:
+        - "teachingstatusstatistic"
+      summary: "获取当前正在上课的教室数量"
+      description: "调用方：矿大门户"
+      operationId: getCurrentUsingClassroom
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码: &signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: integer
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  "/teachingstatusstatistic/getcurrentinclassstudentnum":
+    get:
+      tags:
+        - "teachingstatusstatistic"
+      summary: "获取当前正在上课的学生数量"
+      description: "调用方：矿大门户"
+      operationId: getCurrentInClassStudentNum
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码: &signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: integer
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/teachingstatusstatistic/getcurrentinclassteachernum":
+    get:
+      tags:
+        - "teachingstatusstatistic"
+      summary: "获取当前正在上课的教师数量"
+      description: "调用方：矿大门户"
+      operationId: getCurrentInClassTeacherNum
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码: &signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: integer
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/teachingstatusstatistic/getallcollegenum":
+    get:
+      tags:
+        - "teachingstatusstatistic"
+      summary: "获取开课学院数量"
+      description: "调用方：矿大门户"
+      operationId: getAllCollegeNum
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码: &signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: integer
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/teachingstatusstatistic/getallcoursenum":
+    get:
+      tags:
+        - "teachingstatusstatistic"
+      summary: "获取开课数量"
+      description: "调用方：矿大门户"
+      operationId: getAllCourseNum
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码: &signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: integer
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"

@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  title: "CourseApi-Api文档"
+  version: "1.0.0"
+  description: "获取课程信息的接口文档"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  "/coursetabledetails/roomscheduleinformation":
+    get:
+      tags:
+        - "CourseTableDetailResource"
+      summary: "根据房间ids获取大于当前时间课表详情信息"
+      description: "teachingApi预约获取实验室时间段接口调用"
+      operationId: getRoomScheduleInformationList
+      produces:
+        - "application/json"
+      parameters:
+        - name: "roomIds"
+          type: "string"
+          in: "query"
+          description: "房间Ids（多个用“,”隔开）"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "加密验证码roomId=?&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RoomScheduleInformation"
+        401:
+          description: "解密验证失败"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课表信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/coursetabledetails/timeframecoursetabledetails":
+    get:
+      tags:
+        - "CourseTableDetailResource"
+      summary: "获取时间范围课表详情信息"
+      description: "调用方：1、teachingApi-教室预约获取占用教室信息接口调用"
+      operationId: getTimeFrameCourseTableDetailList
+      produces:
+        - "application/json"
+      parameters:
+        - name: startTime
+          in: query
+          description: "开始时间（格式：yyyy-MM-dd HH:mm）"
+          required: true
+          type: string
+        - name: endTime
+          in: query
+          description: "结束时间（格式：yyyy-MM-dd HH:mm）"
+          required: true
+          type: string
+        - name: "validCode"
+          in: "query"
+          description: "验证码&signKey=123123"
+          type: "string"
+          required: true
+      responses:
+        '200':
+          description: 成功
+          schema:
+            items:
+              $ref: "#/definitions/RoomScheduleInformation"
+        '400':
+          description: 参数不正确
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '403':
+          description: 验证码错误
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        '500':
+          description: 服务器异常
+
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  RoomScheduleInformation:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "课表明细id"
+      roomId:
+        type: "string"
+        description: "上课教室Id"
+      roomCode:
+        type: "string"
+        description: "上课教室编号"
+      roomName:
+        type: "string"
+        description: "上课教室名称"
+      courseDate:
+        type: "string"
+        description: "课程日期"
+      segmentStartTime:
+        type: "string"
+        description: "节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "节次结束时间"
+          

@@ -1,0 +1,149 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "获取节次信息接口文档"
+host: "192.168.1.34:8080"
+basePath: "/ICloudCourse/v1"
+# 分类标签/资源描述
+tags:
+  - name: "Segment"
+# 协议类型
+schemes:
+  - "http"
+# 资源访问地址描述
+paths:
+  "/futureWeeks":
+    get:
+      tags:
+        - "Segment"
+      summary: "根据当前时间获取周节次"
+      description: "小程序调用"
+      parameters:
+        - in: query
+          name: validCode
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: query
+          name: buildingId
+          required: false
+          type: string
+          description: "节次id"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/WeeksResources"
+        404:
+          description: "未找到信息"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+  "/datebyweek":
+    post:
+      tags:
+        - "Segment"
+      summary: "根据周次，星期获取当前日期"
+      description: "小程序调用"
+      parameters:
+        - in: query
+          name: validCode
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: query
+          name: buildingId
+          required: false
+          type: string
+          description: "节次id"
+        - in: query
+          name: weekDay
+          required: true
+          type: integer
+          description: "星期"
+        - in: query
+          name: weekNum
+          required: true
+          type: integer
+          description: "周次"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseDate"
+        404:
+          description: "未找到日期信息"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+  "/timebysegment":
+    post:
+      tags:
+        - "Segment"
+      summary: "根据开始结束时间获取节次时间段"
+      description: "小程序调用"
+      parameters:
+        - in: query
+          name: validCode
+          required: true
+          type: string
+          description: "MD5加密验证字符串(&signKey=123123)"
+        - in: query
+          name: buildingId
+          required: false
+          type: string
+          description: "节次id"
+        - in: query
+          name: sSegment
+          required: true
+          type: integer
+          description: "开始节次"
+        - in: query
+          name: eSegment
+          required: true
+          type: integer
+          description: "结束节次"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseDate"
+        404:
+          description: "未找到日期信息"
+        400:
+          description: "参数不正确"
+        403:
+          description: "验证码错误"
+        500:
+          description: "服务器异常"
+# 资源属性描述,接口返回,参数等公共引用
+definitions:
+  WeeksResources:
+    type: "object"
+    properties:
+      nameList:
+        type: "array"
+        description: "节次名称集合"
+        items:
+          type: array
+          items:
+            type: string
+      indexList:
+        type: "array"
+        description: "总节次数量集合"
+        items:
+          type: array
+          items:
+            type: integer
+  CourseDate:
+    type: "object"
+    properties:
+      sementTime:
+        type: string
+        description: "返回课程时间"

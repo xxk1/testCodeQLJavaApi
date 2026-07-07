@@ -1,0 +1,623 @@
+swagger: "2.0"
+info:
+  description: "督导听课相关接口"
+  version: "1.0.0"
+  title: "courseApi文档"
+host: "192.168.1.34:8080"
+basePath: "/courseApi"
+schemes:
+  - "https"
+  - "http"
+paths:
+
+  "/superviseevaluations/coursetabledetails":
+    post:
+      tags:
+        - "SuperviseEvaluationV2"
+      summary: "接口-根据课表明细id列表等查询课程、老师和直播信息"
+      description: "1、云课堂听查课端督导听课列表接口调用（内部）"
+      operationId: "getSupervisionCourseAndCourseTableDetail"
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "查询条件"
+          schema:
+            $ref: '#/definitions/SupervisionCourseTableDetialQueryParam'
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SupervisionCourseAndCourseTableDetailVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/superviseevaluations/supervisioncourseanddetails":
+    post:
+      tags:
+        - "SuperviseEvaluationV2"
+      summary: "接口-根据学院id、课程/老师姓名等条件查询督导听课老师课程列表信息"
+      description: "1、云课堂听查课端督导听课列表接口调用（内部）"
+      operationId: "getSupervisionCourseAndCourseTableDetailList"
+      parameters:
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "督导听课老师课程列表查询条件"
+          schema:
+            $ref: '#/definitions/SupervisionCourseQueryParamV2'
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/SupervisionCourseListPageV2"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  "/superviseevaluations/coursetableanddetails":
+    post:
+      tags:
+        - "SuperviseEvaluationV2"
+      summary: "接口-根据课程id，老师ids等查询课表列表信息"
+      description: "1、云课堂听查课端督导听课详情接口调用（内部）"
+      operationId: "getSupervisionCourseTableAndDetailList"
+      parameters:
+        - name: "queryParam"
+          in: 'body'
+          required: true
+          description: "查询条件"
+          schema:
+            $ref: '#/definitions/SupervisionCourseAndDetailQueryParam'
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SupervisionCourseTableAndDetailVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/superviseevaluations/coursetabledetaillistencourseinfo":
+    get:
+      tags:
+        - "SuperviseEvaluationV2"
+      summary: "接口-根据课表明细查询课程、老师、开课学生类型信息"
+      description: "1、云课堂听查课端督导听听课课智能推荐跳转至听课详情页使用"
+      operationId: "getListenCourseInfoByCourseTableDetailId"
+      parameters:
+        - name: "courseTableDetailId"
+          in: "query"
+          description: "课表明细id"
+          type: "string"
+          required: true
+        - name: "collegeType"
+          in: "query"
+          description: "开课学院类型（0：授课教师学院；1：开课学院）"
+          type: "integer"
+          required: true
+        - name: "collegeId"
+          in: "query"
+          description: "学院id"
+          type: "string"
+          required: true
+        - name: "teacherId"
+          in: "query"
+          description: "老师id"
+          type: "string"
+          required: true
+        - name: "hasLive"
+          in: "query"
+          description: "是否直播：null或true：只查询直播;false：不区分直播"
+          type: "boolean"
+          required: false
+        - name: "validCode"
+          in: "query"
+          description: "验证码：courseDetailId={}&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/ListenCourseInfoVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/superviseevaluations/{courseTableDetailId}":
+    get:
+      tags:
+        - "SuperviseEvaluationV2"
+      summary: "接口-督导听课根据课表id获取课表信息"
+      description: "1、云课堂听查课端"
+      operationId: "getCanListenCourseTableDetailResourceVo"
+      parameters:
+        - name: "courseTableDetailId"
+          type: "string"
+          in: "path"
+          description: "课表详情ID"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CanListenCourseTableDetailResourceVo"
+        400:
+          description: "错误的请求"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  CanListenCourseTableDetailResourceVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "开课id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "班级id"
+      className:
+        type: "string"
+        description: "班级名称"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      classCompositionName:
+        type: "string"
+        description: "班级组成"
+      courseAttrName:
+        type: "string"
+        description: "课程属性名称"
+      courseTableDetailSegmentStartTime:
+        type: "string"
+        description: "课表节次开始时间"
+      segment:
+        type: "string"
+        description: "上课节次"
+      courseTableDetailSegmentEndTime:
+        type: "string"
+        description: "课表节次开始时间"
+      courseDate:
+        type: "string"
+        description: "上课日期（yyyy-MM-dd）"
+      courseDateOrder:
+        type: "string"
+        description: "上课日期(排序)"
+      live:
+        type: "boolean"
+        description: "是否直播中（0-不在直播中，1-直播中）"
+      studentCount:
+        type: "string"
+        description: "班级学生人数"
+      teachers:
+        type: "array"
+        description: "老师列表"
+        items:
+          $ref: '#/definitions/CourseTableDetailTeacherResource'
+      rooms:
+        type: "array"
+        description: "教室列表"
+        items:
+          $ref: '#/definitions/CourseTableDetailRoomResource'
+      studentTypeIndex:
+        type: "integer"
+        description: "学生类型编号"
+      studentTypeName:
+        type: "string"
+        description: "学生类型名称"
+  CourseTableDetailTeacherResource:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      teacherName:
+        type: "string"
+        description: "老师姓名"
+      teacherNo:
+        type: "string"
+        description: "老师工号"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeId:
+        type: "string"
+        description: "学院ID"
+  CourseTableDetailRoomResource:
+    type: "object"
+    properties:
+      roomId:
+        type: "string"
+        description: "教室id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+  SupervisionCourseTableDetialQueryParam:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      collegeType:
+        type: "integer"
+        description: "学院类型（0：授课教师学院；1：开课学院）"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      studentType:
+        type: "string"
+        description: "开课类型"
+      nowTime:
+        type: "string"
+        description: "现在的时间（yyyy-MM-hh HH:mm:ss）"
+      sourceDataSource:
+        type: string
+        description: "数据来源"
+      isDistinguishCourseStudentType:
+        type: "string"
+        description: "是否区分学生类型（0：不区分；1：区分）"
+      courseStudentTypes:
+        type: "string"
+        description: "授课学生类型，多个使用逗号隔开"
+      live:
+        type: "integer"
+        description: "是否直播中（0-不在直播中，1-直播中）"
+      evaluationStatusType:
+        type: "integer"
+        description: "评价状态类型 0: 课程无人评价；1：教师无人评价 2：我已评价 3：我未评价"
+      courseNameOrTeacherName:
+        type: "string"
+        description: "课程名称或老师名称"
+      courseTableDetails:
+        type: "array"
+        description: "课表明细ids"
+        items:
+          $ref: "#/definitions/SupervisionCourseTableDetailVo"
+
+  SupervisionCourseTableDetailVo:
+    type: "object"
+    properties:
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+
+
+  SupervisionCourseAndCourseTableDetailVo:
+    type: "object"
+    properties:
+      courseTableDetails:
+        type: "array"
+        description: "课表明细ids"
+        items:
+          $ref: "#/definitions/SupervisionCourseTableDetailVo"
+      studentType:
+        type: "string"
+        description: "开课类型"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      teachers:
+        type: "string"
+        description: "老师信息（id,工号,姓名，多个;分割）"
+      live:
+        type: "boolean"
+        description: "是否直播中（0-不在直播中，1-直播中）"
+      liveCourseTableDetailId:
+        type: "string"
+        description: "直播中的课表明细ids"
+      courseTableDetailSegmentStartTime:
+        type: "string"
+        description: "课表节次开始时间"
+      courseTableDetailSegmentEndTime:
+        type: "string"
+        description: "课表节次结束时间"
+      sourceDataSource:
+        type: string
+        description: "数据来源"
+      sourceDataSourceName:
+        type: string
+        description: "数据来源名称"
+  SupervisionCourseQueryParamV2:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeIds:
+        type: "string"
+        description: "学院ids"
+      courseId:
+        type: string
+        description: "课程id"
+      teacherNameOrNo:
+        type: string
+        description: "授课教师姓名或工号"
+      courseNameOrTeacherName:
+        type: "string"
+        description: "课程/老师姓名"
+      nowTime:
+        type: "string"
+        description: "现在的时间（yyyy-MM-hh HH:mm:ss）"
+      live:
+        type: "integer"
+        description: "是否直播中（1-直播中，其他不作为查询条件）"
+      pagingEnabled:
+        type: boolean
+        description: "是否需要分页  默认需要"
+      sortName:
+        type: string
+        description: "排序字段名称"
+      schoolYear:
+        type: string
+        description: "学年"
+      term:
+        type: string
+        description: "学期"
+      isDistinguishCourseStudentType:
+        type: string
+        description: "是否需要区分授课学生类型"
+      courseStudentTypes:
+        type: string
+        description: "授课学生类型，多个使用逗号隔开"
+      isNeedFilterPoliticalCourse:
+        type: boolean
+        description: "是否需要过思政课"
+      superviseCollegeType:
+        type: integer
+        description: "督导听课查询学类型 0：授课教师学院；1：开课学院"
+      onlyGraduateCourse:
+        type: integer
+        description: "是否研究生（1-是，其他不作为查询条件）"
+      evaluationStatusType:
+        type: integer
+        description: "评价状态类型 0: 课程无人评价；1：教师无人评价 2：我已评价 3：我未评价"
+      evaluatedDataIdList:
+        type: "array"
+        description: "评价数据id列表"
+        items:
+          type: "string"
+
+  SupervisionCourseListPageV2:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: "当前页码"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      supervisionCourseList:
+        type: "array"
+        description: "老师课程列表"
+        items:
+          $ref: "#/definitions/SupervisionCourseAndCourseTableDetailVo"
+
+  SupervisionCourseAndDetailQueryParam:
+    type: "object"
+    properties:
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      collegeType:
+        type: "integer"
+        description: "学院类型（0：授课教师学院；1：开课学院）"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      nowTime:
+        type: "string"
+        description: "现在的时间（yyyy-MM-hh HH:mm:ss）"
+      courseId:
+        type: "string"
+        description: "课程id"
+      teachers:
+        type: "string"
+        description: "老师ids"
+      studentType:
+        type: "string"
+        description: "开课类型"
+
+  SupervisionCourseTableAndDetailVo:
+    type: "object"
+    properties:
+      courseTableId:
+        type: "string"
+        description: "开课id"
+      courseTableDetailId:
+        type: "string"
+        description: "课表明细id"
+      groupId:
+        type: "string"
+        description: "班级id"
+      className:
+        type: "string"
+        description: "班级名称"
+      classNickName:
+        type: "string"
+        description: "班级昵称"
+      classCompositionName:
+        type: "string"
+        description: "班级组成"
+      courseAttrName:
+        type: "string"
+        description: "课程属性名称"
+      segment:
+        type: "string"
+        description: "节次信息"
+      studentCount:
+        type: "string"
+        description: "学生人数"
+      courseDate:
+        type: "string"
+        description: "上课日期"
+      segmentStartTime:
+        type: "string"
+        description: "大节次开始时间"
+      segmentEndTime:
+        type: "string"
+        description: "大节次结束时间"
+      teachers:
+        type: "array"
+        description: "老师信息列表"
+        items:
+          $ref: "#/definitions/SupervisionCourseTableDetailTeacherVo"
+      rooms:
+        type: "array"
+        description: "教室信息列表"
+        items:
+          $ref: "#/definitions/SupervisionCourseTableDetailRoomVo"
+      sourceDataSource:
+        type: string
+        description: "数据来源"
+      sourceDataSourceName:
+        type: string
+        description: "数据来源名称"
+
+  SupervisionCourseTableDetailRoomVo:
+    type: "object"
+    properties:
+      roomId:
+        type: "string"
+        description: "教室id"
+      roomName:
+        type: "string"
+        description: "教室名称"
+
+  SupervisionCourseTableDetailTeacherVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      teacherName:
+        type: "string"
+        description: "老师姓名"
+      teacherNo:
+        type: "string"
+        description: "老师工号"
+      teacherTitle:
+        type: string
+        description: "老师职称"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+
+  ListenCourseInfoVo:
+    type: "object"
+    properties:
+      studentType:
+        type: "string"
+        description: "开课类型"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      teachers:
+        type: "string"
+        description: "老师信息（id,工号,姓名，多个;分割）"
+      collegeType:
+        type: "integer"
+        description: "学院类型（0：授课教师学院；1：开课学院）"
+      collegeId:
+        type: "string"
+        description: "学院id"
+      collegeName:
+        type: "string"
+        description: "学院名称"

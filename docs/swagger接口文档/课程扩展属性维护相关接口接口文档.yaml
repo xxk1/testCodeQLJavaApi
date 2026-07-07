@@ -1,0 +1,376 @@
+swagger: "2.0"
+info:
+  title: 课程扩展属性维护接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+  - http
+paths:
+
+  /courseexpansion:
+    post:
+      tags:
+        - "CourseExpansion"
+      summary: "新增课程属性信息"
+      description: "1.云课堂管理端-新增思政课使用"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - in: "body"
+          name: "expansionInfo"
+          description: "添加思政课程信息"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseExpansionCreateResource"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务校验错误信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+    get:
+      tags:
+        - "CourseExpansion"
+      summary: "根据扩展属性的key获取课程以及扩展信息"
+      description: "1.云课堂管理端-获取思政课使用；2.云课堂听查课端-获取思政课使用"
+      operationId: "getCourseExpansion"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：expansionKey={}&signKey=123123(md5加密)"
+          required: true
+        - name: "expansionKey"
+          type: "string"
+          in: "query"
+          description: "扩展属性key"
+          required: true
+        - name: "sortName"
+          type: "string"
+          in: "query"
+          description: "排序字段"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: false
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CourseExpansionResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+  /courseexpansion/{id}/delete:
+    post:
+      tags:
+        - "CourseExpansion"
+      summary: "删除课程附加属性"
+      description: "1.云课堂管理端-删除思政课课程"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id={}&signKey=123123(md5加密)"
+          required: true
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "扩展属性id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseexpansion/page:
+    post:
+      tags:
+        - "CourseExpansion"
+      summary: "分页获取课程附加属性"
+      description: "1.云课堂管理端-课程听课类型维护"
+      operationId: "getCourseExpansionPage"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - in: "body"
+          name: "courseExpansionQuery"
+          description: "分页查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/CourseExpansionQuery"
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseExpansionResourcePage"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseexpansion/coursetype:
+    get:
+      tags:
+        - "CourseExpansion"
+      summary: "根据课程获取课程类型(听课类型)"
+      description: "1.云课堂管理端-课程听课类型维护回显/查询"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseListeningTypeResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "课程不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+  /courseexpansion/import:
+    post:
+      tags:
+        - "CourseExpansion"
+      summary: "Excel导入课程听课类型"
+      description: "1.云课堂管理端-课程听课类型维护导入"
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: "creatorId"
+          type: "string"
+          in: "query"
+          description: "创建人id"
+          required: true
+        - name: "creatorName"
+          type: "string"
+          in: "query"
+          description: "创建人姓名"
+          required: true
+        - name: "superviseModel"
+          type: "integer"
+          in: "query"
+          description: "听课类型模式(0:固定,1:灵活)"
+          required: true
+        - name: "usageRange"
+          type: "integer"
+          in: "query"
+          description: "听课类型接口参数usageRange（默认0）"
+          required: false
+        - name: "courseStudentTypeIds"
+          type: "string"
+          in: "query"
+          description: "听课类型接口参数courseStudentTypeIds（默认0）"
+          required: false
+        - name: "isDistinguishCourseStudentType"
+          type: "integer"
+          in: "query"
+          description: "听课类型接口参数isDistinguishCourseStudentType（默认1）"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "importFile"
+          type: "file"
+          in: "formData"
+          description: "导入文件（xlsx）"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        409:
+          description: "业务校验错误信息"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  CourseExpansionCreateResource:
+    type: object
+    properties:
+      expansionKey:
+        type: string
+        description: "扩展属性key"
+      expansionKeyName:
+        type: string
+        description: "扩展属性key名称"
+      courseCode:
+        type: string
+        description: "课程编号"
+      courseId:
+        type: string
+        description: "课程id"
+      creatorId:
+        type: string
+        description: "创建人id"
+      creatorName:
+        type: string
+        description: "创建人姓名"
+
+  CourseListeningTypeResource:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: "课程id"
+      courseCode:
+        type: string
+        description: "课程编号"
+      courseName:
+        type: string
+        description: "课程名称"
+      expansionKey:
+        type: string
+        description: "课程类型key(听课类型key)"
+      listeningTypeName:
+        type: string
+        description: "课程类型名称(听课类型名称)"
+  CourseExpansionResourcePage:
+    type: object
+    properties:
+      total:
+        type: integer
+        description: "总记录数"
+      page:
+        type: integer
+        description: "当前页码"
+      pageSize:
+        type: integer
+        description: "每页数量"
+      totalPage:
+        type: integer
+        description: "总页数"
+      resourceList:
+        type: array
+        items:
+          $ref: "#/definitions/CourseExpansionResource"
+
+  CourseExpansionResource:
+    type: object
+    properties:
+      courseId:
+        type: string
+        description: "课程id"
+      courseCode:
+        type: string
+        description: "课程编号"
+      courseName:
+        type: string
+        description: "课程名称"
+      collegeId:
+        type: string
+        description: "学院id"
+      collegeName:
+        type: string
+        description: "学院名称"
+      courseExpansionId:
+        type: string
+        description: "课程附属属性id"
+      expansionKey:
+        type: string
+        description: "扩展属性key"
+      expansionKeyName:
+        type: string
+        description: "扩展属性key名称"
+
+  CourseExpansionQuery:
+    type: object
+    properties:
+      expansionKey:
+        type: string
+        description: "扩展属性key"
+      courseNameOrCode:
+        type: string
+        description: "课程名称或者编号"
+      page:
+        type: integer
+        description: "页码"
+      pageSize:
+        type: integer
+        description: "每页数量"
+

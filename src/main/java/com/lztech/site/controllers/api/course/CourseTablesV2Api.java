@@ -1,0 +1,48 @@
+package com.lztech.site.controllers.api.course;
+
+import com.lztech.site.resource.course.CourseStudentResource;
+import io.swagger.annotations.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+/**
+ * 课程表 V2 API
+ * 性能优化版本，使用 Native Query 减少表关联
+ */
+@Api(value = "courseTables-v2", description = "课程表 API V2（性能优化版）")
+public interface CourseTablesV2Api {
+
+    @ApiOperation(value = "获取学生课程信息（V2 性能优化版）", 
+            nickname = "courseTablesStudentCourseListGetV2", 
+            notes = "云课堂调用 - 性能优化版本，响应更快，资源消耗更低",
+            response = CourseStudentResource.class, 
+            responseContainer = "List", 
+            tags = {"CourseStudentResource",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "成功", response = CourseStudentResource.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "参数不正确"),
+            @ApiResponse(code = 403, message = "解密错误"),
+            @ApiResponse(code = 404, message = "未找到学生课程信息"),
+            @ApiResponse(code = 500, message = "服务器异常")})
+    
+    @RequestMapping(value = "/v2/courseTables/studentCourseList",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<List<CourseStudentResource>> courseTablesStudentCourseListGetV2(
+            @NotNull @ApiParam(value = "学期", required = true)
+            @Valid @RequestParam(value = "term", required = true) Integer term,
+            @NotNull @ApiParam(value = "学年", required = true)
+            @Valid @RequestParam(value = "schoolYear", required = true) String schoolYear,
+            @NotNull @ApiParam(value = "验证码（?&signKey=123123）", required = true)
+            @Valid @RequestParam(value = "validCode", required = true) String validCode,
+            @ApiParam(value = "学生Id")
+            @Valid @RequestParam(value = "userId", required = false) String userId,
+            @ApiParam(value = "openId")
+            @Valid @RequestParam(value = "openId", required = false) String openId);
+}

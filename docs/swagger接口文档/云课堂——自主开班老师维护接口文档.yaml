@@ -1,0 +1,155 @@
+swagger: "2.0"
+info:
+  description: "云课堂——自主开班老师维护接口文档"
+  version: "1.0.0"
+  title: "自主开班老师维护接口文档API"
+host: "192.168.1.105:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "http"
+paths:
+
+  /autonomousclassteacher/addteacher:
+    post:
+      tags:
+        - "AutonomousClassTeacher"
+      summary: "自主开班老师添加"
+      description: "云课堂web"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "addTeacherList"
+          in: "body"
+          required: true
+          schema:
+            description: "添加教师信息"
+            type: "array"
+            items:
+              $ref: "#/definitions/AutonomousClassTeacher"
+        - name: "courseTableId"
+          in: "query"
+          description: "主课表id"
+          type: "string"
+          required: true
+        - name: "operatorId"
+          in: "query"
+          description: "操作人Id"
+          type: "string"
+          required: true
+        - name: "operatorName"
+          in: "query"
+          description: "操作人名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "courseTableId=XX&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "客户端错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "自由班级信息不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+  /autonomousclassteacher/deleteteacher:
+    post:
+      tags:
+        - "AutonomousClassTeacher"
+      summary: "自主开班老师删除"
+      description: "云课堂web"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "deleteTeacherIdList"
+          in: "body"
+          required: true
+          schema:
+            description: "删除教师信息"
+            type: "array"
+            items:
+              $ref: "#/definitions/AutonomousClassTeacher"
+        - name: "courseTableId"
+          in: "query"
+          description: "主课表id"
+          type: "string"
+          required: true
+        - name: "operatorId"
+          in: "query"
+          description: "操作人Id"
+          type: "string"
+          required: true
+        - name: "operatorName"
+          in: "query"
+          description: "操作人名称"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "courseTableId=XX&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "客户端错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        404:
+          description: "自由班级信息/老师信息不存在"
+          schema:
+            $ref: '#/definitions/ErrorResult'
+        500:
+          description: "服务器异常"
+
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+
+  AutonomousClassTeacher:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师Id"
+      teacherNo:
+        type: "string"
+        description: "老师编号"
+      teacherName:
+        type: "string"
+        description: "老师名称"
+      teacherCollegeName:
+        type: "string"
+        description: "老师所属学院名称"
+      teacherCollegeId:
+        type: "string"
+        description: "老师所属学院Id"
+
+

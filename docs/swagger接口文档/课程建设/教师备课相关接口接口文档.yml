@@ -1,0 +1,97 @@
+swagger: "2.0"
+info:
+  description: "教师备课相关接口"
+  version: "1.0.0"
+  title: "教师备课相关接口Api"
+host: "192.168.1.34:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+
+  /teacherPrepareLessons/courseResource/copied:
+    post:
+      tags:
+        - "TeacherPrepareLessons"
+      summary: "教师备课教学资源引用"
+      description: "1.云课堂教师端-教师备课使用"
+      operationId: copyTeacherCourseResource
+      parameters:
+        - name: "validCode"
+          in: "query"
+          description: "验证码&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+        - name: "copiedCourseResourceVo"
+          in: body
+          required: true
+          description: "复制的教学资源信息"
+          schema:
+            $ref: "#/definitions/CopiedCourseResourceVo"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验错误信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  CopiedCourseResourceVo:
+    type: object
+    properties:
+      operatorId:
+        type: "string"
+        description: "操作人ID"
+      operatorName:
+        type: "string"
+        description: "操作人姓名"
+      courseId:
+        type: "string"
+        description: "课程ID"
+      courseVersionId:
+        type: "string"
+        description: "课程版本ID"
+      resourceList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CopiedCourseResourceDetailVo"
+  CopiedCourseResourceDetailVo:
+    type: object
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源ID"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情ID"
+      resourceType:
+        type: "integer"
+        description: "资源类型"
+      copiedResourceDetailId:
+        type: string
+        description: "复制之后的资源详情ID"
+
+
+

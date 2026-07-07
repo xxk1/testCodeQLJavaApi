@@ -1,0 +1,1739 @@
+swagger: "2.0"
+info:
+  description: "备课包接口文档"
+  version: "1.0.0"
+  title: "备课包接口文档API"
+host: "192.168.1.34:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "https"
+  - "http"
+paths:
+
+
+  '/preparation':
+    get:
+      tags:
+        - "Preparation"
+      summary: "老师我的课程信息"
+      description: "云课堂调用"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PreparationResource"
+        400:
+          description: "参数不正确"
+        404:
+          description: "未找到老师我的课程信息"
+        403:
+          description: "解密错误"
+        500:
+          description: "服务器异常"
+
+
+  "/preparationcoursebag/{courseId}/hide":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-备课包课程隐藏"
+      description: "1.云课堂老师端课程管理使用"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "用户id"
+          type: "string"
+          required: true
+        - name: "userName"
+          in: "query"
+          description: "用户名称"
+          type: "string"
+          required: true
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{courseId}/show":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-备课包课程显示"
+      description: "1.云课堂老师端课程管理使用"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "用户id"
+          type: "string"
+          required: true
+        - name: "courseId"
+          in: "path"
+          description: "课程id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/classtestpaper":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "创建课堂测验试卷"
+      description: "1.云课堂老师端创建课堂测验试卷"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "testPaperParmVo"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/TestPaperParmVo"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/TestPaperParmVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到题目信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{teacherId}/courses":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-查看老师备课包课程列表"
+      description: "1.云课堂老师端备课包管理使用"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PreparationCourse"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{teacherId}/courseresources":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-老师查看课程结构下资源列表"
+      description: "1.云课堂老师端备课包管理使用"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "courseStructureId"
+          type: "string"
+          in: "query"
+          description: "课程结构id"
+          required: true
+        - name: "resourceName"
+          type: string
+          in: query
+          description: "资源名称"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResourceVo"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程结构信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/courseresource/{id}":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-根据资源 id获取资源信息"
+      description: "1.云课堂老师端备课包管理发布使用"
+      parameters:
+        - name: "id"
+          type: "string"
+          in: "path"
+          description: "资源id"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：id=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseResourceModule"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程结构信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/teachingfiles":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-获取备课包老师教学资源"
+      description: "互动课堂备课包获取该老师该课程下的教学资源"
+      operationId: "getPreparationCourseBagTeachingFiles"
+      parameters:
+        - name: "teacherId"
+          in: "query"
+          description: "教师Id"
+          type: "string"
+          required: true
+        - name: "courseId"
+          in: "query"
+          description: "课程Id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingFileVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-更新备课包资源公开状态"
+      description: "调用方：1、云课堂管理web端—备课包教学资源"
+      operationId: "updateCourseResourceListIsPublic"
+      parameters:
+        - name: "courseResourceId"
+          in: "query"
+          description: "课程资源Id集合"
+          type: "boolean"
+          required: true
+        - name: "courseId"
+          in: "query"
+          description: "课程Id"
+          type: "boolean"
+          required: true
+        - name: "isPublic"
+          in: "query"
+          description: "是否为公共资源(true:公开；false:隐藏)"
+          type: "boolean"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "资源信息不存在"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "已存在相同名称公共资源"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{teacherId}/teachingfiles":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-根据老师id获取老师备课包教学资源"
+      description: "互动课堂取该老师该课程下备课包的教学资源（包含视频）"
+      operationId: "getTeacherPreparationCourseBag"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "path"
+          description: "资源id"
+          required: true
+        - name: "courseId"
+          in: "query"
+          description: "课程Id"
+          type: "string"
+          required: true
+        - name: "validCode"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeachingFileVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到资源信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+
+  "/preparationcoursebag/{courseId}/teacherCourse":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-发布跳转，获取老师当前学期或下个学期的课程相关信息"
+      description: "1.云课堂老师端备课包管理发布使用"
+      parameters:
+        - name: "courseId"
+          type: "string"
+          in: "path"
+          description: "课程id"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseResource"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程班级信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{teacherId}/courseteacher":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-老师添加我的课程课程列表信息"
+      description: "1.云课堂老师端我的课程使用"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTeacherVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/{courseId}/images":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-互动课堂获取备课包图片信息"
+      operationId: "getPreparationCourseBagImages"
+      description: "1.互动课堂使用"
+      parameters:
+        - name: "courseId"
+          type: "string"
+          in: "path"
+          description: "课程id"
+          required: true
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseResourceVo"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/classtestpaper/num":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-题目删除修改备课包测验题数"
+      description: "1.互动课堂使用"
+      parameters:
+        - in: "body"
+          name: "classTestPaperIds"
+          required: true
+          schema:
+            type: "array"
+            items:
+              type: string
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：courseId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcourse/{teacherId}/courseteacher":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-老师添加我的课程"
+      description: "1.云课堂老师端我的课程使用"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "path"
+          description: "老师id"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：teacherId=?&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseTeacherNewVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/material/statistic":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员查看素材统计"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "preparationcoursebagMaterialStatistic"
+      parameters:
+        - in: "body"
+          name: "queryParam"
+          description: "统计查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/StatisticQueryParam"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/StatisticResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/material/downloadstatistic":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员导出素材统计"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "coursebagMaterialDownloadStatistic"
+      parameters:
+        - in: "body"
+          name: "queryParam"
+          description: "统计查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/StatisticQueryParam"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "导出成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/material/teachermateriastatistic":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员统计教师和对应素材数量"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "teacherMateriaStatistic"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "courseStructureId"
+          type: "string"
+          in: "query"
+          description: "课程结构id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/TeacherMateriaStatistic"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/material/coursemateriastatistic":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员统计素材类型和对应得素材数量"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "courseMateriaStatistic"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "courseStructureId"
+          type: "string"
+          in: "query"
+          description: "课程结构id"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseMateriaStatistic"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  "/preparationcoursebag/material/{courseStructureId}":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员查看指定课程的素材列表"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "courseMateriaList"
+      parameters:
+        - in: "body"
+          name: "queryParam"
+          description: "统计查询参数"
+          required: true
+          schema:
+            $ref: "#/definitions/MateriaListQueryParam"
+        - name: "courseStructureId"
+          type: "string"
+          in: "path"
+          description: "课程结构ID"
+          required: true
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            $ref: "#/definitions/CourseMateriaList"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/classtestpapers":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-获取备课包老师测验（试卷）资源"
+      description: "1.互动课堂使用"
+      operationId: "getPreparationCourseBagClassTestPapers"
+      parameters:
+        - name: "teacherId"
+          type: "string"
+          in: "query"
+          description: "教师ID"
+          required: true
+        - name: "courseId"
+          type: "string"
+          in: "query"
+          description: "课程ID"
+          required: true
+        - name: "courseVisionId"
+          type: "string"
+          in: "query"
+          description: "课程版本id"
+          required: false
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ClassTestPaperVo"
+        400:
+          description: "参数不正确"
+
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/material/export":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员导出素材"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "preparationcoursebagMaterialExport"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "collageId"
+          type: "string"
+          in: "query"
+          description: "学院ID(传0为全部)"
+          required: true
+        - name: "courseCodeOrName"
+          type: "string"
+          in: "query"
+          description: "课程编号或名称"
+          required: false
+        - name: "userId"
+          type: "string"
+          in: "query"
+          description: "用户ID"
+          required: true
+        - name: "userName"
+          type: "string"
+          in: "query"
+          description: "用户名称"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/material/export/list":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-管理员导出素材列表"
+      description: "1.云课堂 管理端 教学素材管理-课程素材 使用"
+      operationId: "preparationcoursebagMaterialExportList"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "userId"
+          type: "string"
+          in: "query"
+          description: "用户ID"
+          required: true
+        - name: "userName"
+          type: "string"
+          in: "query"
+          description: "用户名称"
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PreparationPackageListVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/classtestpaper/batchupdatenum":
+    post:
+      tags:
+        - "PreparationCourseBag"
+      operationId: "batchUpdateClassTestPaperNum"
+      summary: "接口-题目删除批量修改备课包测验题数"
+      description: "1.云课堂老师端"
+      parameters:
+        - in: "body"
+          name: "classTestPaperResultList"
+          required: true
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ClassTestPaperResult"
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到课程信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/teacherstatistics":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-获取老师备课包资源统计"
+      description: "1.teachingService 服务使用"
+      operationId: "getPreparationCourseBagTeacherStatistics"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "导出成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeacherCourseResourceStatisticVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/teacherreferencestatistics":
+    get:
+      tags:
+        - "PreparationCourseBag"
+      summary: "接口-获取老师备课包资源引用统计"
+      description: "1.teachingService 服务使用"
+      operationId: "getPreparationCourseBagTeacherReferenceStatistics"
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+      responses:
+        200:
+          description: "导出成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TeacherCourseResourceReferenceStatisticVo"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到素材统计信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  "/preparationcoursebag/courseresource/reorder":
+    post:
+      tags:
+        - "courseResource"
+      summary: "备课包资源拖动排序"
+      description: "1.云课堂-老师端-教师备课-备课包资源拖动排序"
+      operationId: courseResourceReorder
+      parameters:
+        - name: "validCode"
+          type: "string"
+          in: "query"
+          description: "验证码：&signKey=123123(md5加密)"
+          required: true
+        - name: "reorderParams"
+          in: "body"
+          description: "重新排序参数"
+          required: true
+          schema:
+            $ref: "#/definitions/ReorderParams"
+      responses:
+        200:
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "解密错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到题库课程"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  ClassTestPaperVo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "资源id"
+      resourceId:
+        type: "string"
+        description: "资源id"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      subjectNum:
+        type: "string"
+        description: "题目数量"
+      updateTime:
+        type: "string"
+        description: "更新时间"
+
+
+  PreparationCourse:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      versionId:
+        type: string
+        description: "版本id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      collegeId:
+        type: "string"
+        description: "学院ID"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseSource:
+        type: integer
+        description: "来源 0：对接；1：老师新增"
+      isPrincipal:
+        type: "integer"
+        description: "是否负责人 0:不是； 1:是"
+      isJoin:
+        type: "integer"
+        description: "是否加入备课包：0 未加入；1 已加入"
+      ifHide:
+        type: "integer"
+        description: "是否隐藏包：0 未隐藏；1 隐藏 "
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+
+  TestPaperParmVo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "测验id"
+      source:
+        type: "integer"
+        description: "来源：0:教师备课，1:教学内容"
+      isPublic:
+        type: "boolean"
+        description: "是否公开"
+      paperId:
+        type: "string"
+        description: "试卷Id"
+      paperName:
+        type: "string"
+        description: "试卷名称"
+      userId:
+        type: "string"
+        description: "用户id"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      courseStructureId:
+        type: "string"
+        description: "课程结构Id"
+      courseId:
+        type: "string"
+        description: "课程Id"
+      questionNum:
+        type: "integer"
+        description: "题数"
+
+  CourseResourceVo:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源id"
+      fileSavedName:
+        type: "string"
+        description: "资源名称(上传资源名称)"
+      fileSize:
+        type: "string"
+        description: "资源大小(上传)"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      resourceType:
+        type: "integer"
+        description: "资源类型(0-课件 1-视频 2-测验 3-图片 4-主题)"
+      resourceSize:
+        type: "string"
+        description: "资源大小"
+      modifyTime:
+        type: "string"
+        description: "更新时间"
+      modifierName:
+        type: "string"
+        description: "更新人名称"
+      modifierId:
+        type: "string"
+        description: "更新人id"
+      innerIp:
+        type: "string"
+        description: "内网ip"
+      outerIp:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      isPublic:
+        type: "integer"
+        description: "是否公开 0 不公开 1公开"
+      resourceNum:
+        type: "integer"
+        description: "资源下包含的资源数量"
+      questionNum:
+        type: "integer"
+        description: "题目数量"
+      resourceDetailId:
+        type: "string"
+        description: "资源详情id"
+      creatorId:
+        type: "string"
+        description: "创建人id"
+      resourceReferences:
+        type: "integer"
+        description: "资源引用次数(个人引用次数)"
+      resourceOtherReferences:
+        type: "integer"
+        description: "资源引用次数(他人引用次数)"
+      courseId:
+        type: "string"
+        description: "课程ID"
+      sourceType:
+        type: integer
+        description: "课程来源类型 0：用户新增；1：用户复引用"
+      transcodeStatus:
+        type: "integer"
+        description: "转码状态：0:不转码;1:转码中;2:转码成功;3:转码失败"
+
+  CourseResourceModule:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源id"
+      fileName:
+        type: "string"
+        description: "资源名称"
+      fileSize:
+        type: "string"
+        description: "资源大小"
+      inTranetFilePath:
+        type: "string"
+        description: "内网ip"
+      outTranetFilePath:
+        type: "string"
+        description: "外网ip"
+      filePath:
+        type: "string"
+        description: "文件路径"
+      uploadedFileName:
+        type: "string"
+        description: "文件服务器存储的名称"
+      fileType:
+        type: "string"
+        description: "文件类型"
+      courseStructureId:
+        type: "string"
+        description: "课程结构id"
+      courseStructureName:
+        type: "string"
+        description: "课程结构名称"
+
+  TeachingFileVo:
+    type: "object"
+    properties:
+      resourceId:
+        type: "string"
+        description: "资源文件Id"
+      resourceName:
+        type: "string"
+        description: "资源文件名称"
+      innerResourceUrl:
+        type: "string"
+        description: "内网资源文件路径(互动课堂：内网Ip+路径)"
+      outerResourceUrl:
+        type: "string"
+        description: "外网资源文件路径(互动课堂：外网Ip+路径)"
+      resourceType:
+        type: "string"
+        description: "资源文件后缀名"
+
+  CourseResource:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseCollegeId:
+        type: "string"
+        description: "课程学院id"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      courseCategoryId:
+        type: "string"
+        description: "课程类别Id"
+      courseCategory:
+        type: "string"
+        description: "课程类别"
+      teacherId:
+        type: "string"
+        description: "上课老师id,多个老师使用“,” 隔开"
+      teacherName:
+        type: "string"
+        description: "上课老师名称,多个老师使用“,” 隔开"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+      teachingClassName:
+        description: "上课班级列表"
+        type: "array"
+        items:
+          properties:
+            source:
+              type: "string"
+              description: "班级来源（数据对接,0；系统录入,1；外部导入,2；自主开班,3；）"
+            teachingClassId:
+              type: "string"
+              description: "上课班级Id"
+            teachingClassName:
+              type: "string"
+              description: "上课班级"
+            teachingClassNo:
+              type: "string"
+              description: "上课班级编号"
+            teachingClassMembers:
+              type: "integer"
+              description: "上课班级人数"
+            courseTableId:
+              type: "string"
+              description: "主课表id"
+            teachingClassTeacherName:
+              type: "string"
+              description: "上课老師"
+            classNickName:
+              type: "string"
+              description: "班级昵称"
+            classCompositionName:
+              type: "string"
+              description: "班级组成名称"
+            courseTableCollegeId:
+              type: "string"
+              description: "开课学院id"
+            courseTableCollegeName:
+              type: "string"
+              description: "开课学院名称"
+
+  CourseTeacherVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCategoryId:
+        type: "integer"
+        description: "课程类别Id"
+      courseCategoryName:
+        type: "integer"
+        description: "课程类别名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+
+  CourseTeacherNewVo:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程Id"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCategoryId:
+        type: "integer"
+        description: "课程类别Id"
+      courseCategoryName:
+        type: "string"
+        description: "课程类别名称"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      courseType:
+        type: "integer"
+        description: "课程类型（0：理论课 1：实验课）"
+      courseSource:
+        type: "integer"
+        description: "课程来源（0：数据对接 1：课程管理）"
+
+  PreparationResource:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "id"
+      courseId:
+        type: "string"
+        description: "课程ID"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      teacherId:
+        type: "string"
+        description: "老师Id"
+      teacherName:
+        type: "string"
+        description: "老师姓名"
+
+  StatisticResult:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      courseResourceStatisticList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseResourceStatisticVo"
+
+  StatisticQueryParam:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      sort:
+        type: "string"
+        description: "ASC:升序排列 DESC:降序排列"
+      sortType:
+        type: "integer"
+        description: "排序方式 0:默认按照课程编号 1：按素材总数 2：课件 3：视频 4:图片"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+
+  CourseResourceStatisticVo:
+    type: "object"
+    properties:
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseCollege:
+        type: "string"
+        description: "课程学院"
+      courseCode:
+        type: "string"
+        description: "课程编号"
+      materialNum:
+        type: "integer"
+        description: "素材总数"
+      coursewareNum:
+        type: "integer"
+        description: "课件数量"
+      pictureNum:
+        type: "integer"
+        description: "图片数量"
+      videoNum:
+        type: "integer"
+        description: "视频数量"
+      courseStructureId:
+        type: "string"
+        description: "课程结构ID"
+      collegeCode:
+        type: "string"
+        description: "学院编号"
+      useState:
+        type: "string"
+        description: "课程是否删除"
+      courseId:
+        type: "string"
+        description: "课程ID"
+
+  TeacherMateriaStatistic:
+    type: "object"
+    properties:
+      teacherNameList:
+        type: "array"
+        items:
+          type: "string"
+        description: "老师姓名"
+      resourceNumList:
+        type: "array"
+        items:
+          type: "string"
+        description: "老师素材数量"
+
+  CourseMateriaStatistic:
+    type: "array"
+    items:
+      $ref: "#/definitions/CourseMateriaStatisticVO"
+
+  CourseMateriaStatisticVO:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+        description: "素材数量"
+      name:
+        type: "string"
+        description: "素材类型"
+
+  MateriaListQueryParam:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      resourceType:
+        type: "integer"
+        description: "资源类型(0-课件 1-视频 2-测验 3-图片 4-主题)"
+      resourceName:
+        type: "string"
+        description: "素材名称"
+      modifierName:
+        type: "string"
+        description: "教师名称"
+
+  CourseMateriaList:
+    type: "object"
+    properties:
+      pageNum:
+        type: "integer"
+        description: "当前页码"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      totalCount:
+        type: "integer"
+        description: "总条数"
+      courseResourceList:
+        type: "array"
+        items:
+          $ref: "#/definitions/CourseResourceVo"
+  PreparationPackageListVo:
+    type: "object"
+    properties:
+      collegeId:
+        type: "string"
+        description: "学院ID"
+      collegeName:
+        type: "string"
+        description: "学院名称"
+      taskType:
+        type: "string"
+        description: "任务类型"
+      fileSize:
+        type: "string"
+        description: "文件大小"
+      startTime:
+        type: "string"
+        description: "打包开始时间"
+      taskStatus:
+        type: "string"
+        description: "任务状态"
+      intranetFilePath:
+        type: "string"
+        description: "内网访问地址"
+      outerNetFilePath:
+        type: "string"
+        description: "外网访问地址"
+      physicalPath:
+        type: "string"
+        description: "文件物理路径"
+  ClassTestPaperResult:
+    type: "object"
+    properties:
+      classTestPaperId:
+        type: "string"
+        description: "测验id"
+      questionNum:
+        type: "integer"
+        description: "题目总数"
+  TeacherCourseResourceStatisticVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      teacherName:
+        type: "string"
+        description: "老师名称"
+      resourceTypeId:
+        type: "integer"
+        description: "资源id"
+      resourceTypeName:
+        type: "integer"
+        description: "资源名称"
+      resourceCount:
+        type: "integer"
+        description: "资源个数"
+  TeacherCourseResourceReferenceStatisticVo:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "老师id"
+      teacherName:
+        type: "string"
+        description: "老师名称"
+      individualReference:
+        type: "integer"
+        description: "个人引用个数"
+      otherReference:
+        type: "integer"
+        description: "他人引用个数"
+  ReorderParams:
+    type: "object"
+    properties:
+      teacherId:
+        type: "string"
+        description: "教师id"
+      courseStructureId:
+        type: "string"
+        description: "课程结构id"
+      needToBeMovedResourceId:
+        type: "string"
+        description: "被移动的资源id"
+      targetLocationBeforeResourceId:
+        type: "string"
+        description: "目标位置前资源id"
+      targetLocationAfterResourceId:
+        type: "string"
+        description: "目标位置后资源id"

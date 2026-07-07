@@ -1,0 +1,78 @@
+swagger: "2.0"
+info:
+  title: 实验中心统计接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /
+schemes:
+  - https
+  - http
+paths:
+
+  /teachingcenter/jobtitle/statistics:
+    get:
+      tags:
+        - "TeachingCenterStatistics"
+      summary: "根据实验中心统计上课教师信息"
+      description: "1、云课堂管理端-实验中心统计使用"
+      operationId: "courseJobTitleTeacherStatistics"
+      parameters:
+        - name: "teachingCenterId"
+          required: false
+          type: string
+          in: query
+          description: "实验中心id"
+        - name: "schoolYear"
+          required: true
+          type: string
+          description: "学年"
+          in: query
+        - name: "term"
+          required: true
+          type: integer
+          description: "学期"
+          in: query
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TeachingCenterJobTitleStatistics'
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+
+  TeachingCenterJobTitleStatistics:
+    type: "object"
+    properties:
+      jobTitleName:
+        type: "string"
+        description: "职称名称"
+      teacherNum:
+        type: "integer"
+        description: "老师数量"

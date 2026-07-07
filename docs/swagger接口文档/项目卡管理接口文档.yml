@@ -1,0 +1,534 @@
+swagger: "2.0"
+info:
+  description: "项目卡管理相关接口"
+  version: "1.0.0"
+  title: "courseApi文档"
+host: "192.168.1.105:8080"
+basePath: "/courseApi/v1"
+schemes:
+  - "http"
+# 资源访问地址描述
+paths:
+  '/projectSuite':
+    get:
+      tags:
+        - 'projectSuite'
+      summary: '根据套件类型、套件名称获取套件列表'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串&signKey=123123'
+        - in: 'query'
+          name: 'projectSuiteName'
+          type: string
+          description: '套件名称'
+          required: false
+        - in: 'query'
+          name: 'projectSuteType'
+          type: string
+          description: '套件名称:0 设备仪器、1 低值易耗 '
+          required: false
+        - in: 'query'
+          name: 'page'
+          type: 'integer'
+          required: true
+          description: '当前页'
+        - in: 'query'
+          name: 'pageSize'
+          type: 'integer'
+          description: '每页个数'
+          required: true
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/projectSuitePageVo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+    post:
+      tags:
+        - 'projectSuite'
+      summary: '添加或修改项目套件及其相关物品'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串'
+        - in: 'body'
+          name: 'projectSuiteVo'
+          required: true
+          schema:
+            $ref: "#/definitions/ProjectSuiteVo"
+          description: '低值易耗品'
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+  '/projectSuite/delete':
+    post:
+      tags:
+        - 'projectSuite'
+      summary: '根据套件id删除对应的项目卡套件（假删）'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串projectSuiteIds=?&signKey=123123'
+        - in: 'query'
+          name: 'projectSuiteIds'
+          type: string
+          description: '套件id(逗号分割)'
+          required: true
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到套件信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+  '/projectSuite/{projectSuiteId}':
+    get:
+      tags:
+        - 'projectSuite'
+      summary: '根据套件id获取套件及相关物品信息'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串projectSuiteId=?&signKey=123123'
+        - in: 'path'
+          name: 'projectSuiteId'
+          type: string
+          description: '套件id'
+          required: true
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/ProjectSuiteInfo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到套件信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+  '/projectSuite/lowValueArticles':
+    post:
+      tags:
+        - 'projectSuite'
+      summary: '根据套件id和数量列表获取套件中易耗品信息'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串&signKey=123123'
+        - in: 'body'
+          required: true
+          name: 'projectSuiteResources'
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ProjectSuiteResourceVo"
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/articlesModel"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到套件信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+  '/projectCard':
+    get:
+      tags:
+        - 'projectCard'
+      summary: '添加项目卡信息接口'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串&signKey=123123'
+        - in: 'query'
+          name: 'projectName'
+          type: string
+          description: '项目卡名称'
+          required: false
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+          schema:
+            $ref: "#/definitions/ProjectCardPageVo"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+    post:
+      tags:
+        - 'projectCard'
+      summary: '添加项目卡信息'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'MD5加密验证字符串&signKey=123123'
+        - in: 'body'
+          name: 'projectCardVo'
+          required: true
+          schema:
+            $ref: "#/definitions/ProjectCardVo"
+
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+
+  '/projectCard/delete':
+    delete:
+      tags:
+        - 'projectCard'
+      summary: '根据项目卡id，删除项目卡及其相关内容'
+      description: '云课堂管理端项目卡管理使用'
+      parameters:
+        - in: 'query'
+          name: 'validCode'
+          required: true
+          type: string
+          description: 'projectCardIds=?&signKey=123123'
+        - in: 'query'
+          name: 'projectCardIds'
+          type: string
+          description: '项目卡id(逗号分割)'
+          required: true
+      responses: # 响应体定制,如果没有返回值可以使用defalut指定默认项目
+        200: # 在200 情况下的返回值和注释
+          description: "操作成功"
+        400:
+          description: "参数异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到套件信息"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+definitions:
+  ProjectSuiteVo:
+    type: object
+    properties:
+      projectSuiteId:
+        type: string
+        description: '项目套件Id'
+      projectSuiteName:
+        type: string
+        description: '项目套件名称'
+      rojectSuiteType:
+        type: integer
+        description: '0:设备仪器;1:低值易耗'
+      articlesList:
+        type: array
+        items:
+          $ref: '#/definitions/articlesVo'
+
+  articlesVo:
+    type: object
+    properties:
+      articlesId:
+        type: string
+        description: "物品id"
+      articlesNo:
+        type: string
+        description: "物品编号"
+      number:
+        type: integer
+        description: "数量"
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      message:
+        type: "string"
+        description: "错误信息"
+  projectSuitePageVo:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '1'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      projectSuiteModels:
+        type: array
+        items:
+          $ref: '#/definitions/ProjectSuiteModel'
+
+  ProjectSuiteModel:
+    type: object
+    properties:
+      projectSuiteId:
+        type: string
+        description: "套件类型Id"
+      projectSuiteName:
+        type: string
+        description: "套件名称"
+      projectSuiteTypeId:
+        type: string
+        description: '套件类型编号'
+      projectSuiteTypeName:
+        type: string
+        description: "套件类型名称"
+      projectSuiteDetail:
+        type: string
+        description: '项目套件明细'
+  ProjectSuiteInfo:
+    type: object
+    properties:
+      projectSuiteId:
+        type: string
+        description: "套件id"
+      projectSuiteName:
+        type: string
+        description: '项目套件名称'
+      ProjectSuiteType:
+        type: integer
+        description: '0:设备仪器;1:低值易耗'
+      articlesList:
+        type: array
+        items:
+          $ref: '#/definitions/articlesModel'
+
+  articlesModel:
+    type: object
+    properties:
+      articlesId:
+        type: string
+        description: "物品id"
+      articlesNo:
+        type: string
+        description: '物品编号'
+      articlesName:
+        type: string
+        description: '物品名称'
+      articlesNorms:
+        type: string
+        description: '物品规则'
+      articlesUnits:
+        type: string
+        description: '物品单位'
+      articlesTypeId:
+        type: string
+        description: "物品分类id"
+      articlesTypeNo:
+        type: string
+        description: '物品分类编号'
+      articlesTypeName:
+        type: string
+        description: '物品分类名称'
+      price:
+        type: string
+        description: "物品价格"
+      number:
+        type: integer
+        description: '数量'
+
+  ProjectCardPageVo:
+    type: "object"
+    properties:
+      total:
+        type: 'integer'
+        description: '总页数'
+        example: '10'
+      page:
+        type: 'integer'
+        description: '当前页'
+        example: '1'
+      pageSize:
+        type: 'integer'
+        description: '每页个数'
+        example: '10'
+      ProjectCardModels:
+        type: array
+        items:
+          $ref: '#/definitions/ProjectCardModel'
+  ProjectCardModel:
+    type: object
+    properties:
+      projectCardId:
+        type: string
+        description: "项目卡Id"
+      projectId:
+        type: string
+        description: "项目Id"
+      projectName:
+        type: string
+        description: "项目名称"
+      courseId:
+        type: string
+        description: "课程id"
+      courseName:
+        type: string
+        description: "课程名称"
+      projectCardPeriod:
+        type: string
+        description: '项目学时(小时)'
+      projectSuiteId:
+        type: string
+        description: '套件名称'
+      articlesDetail:
+        type: string
+        description: '项目仪器明细'
+      lowValueArticlesDetail:
+        type: string
+        description: "低值易耗品明细"
+  ProjectCardVo:
+    type: object
+    properties:
+      projectId:
+        type: string
+        description: "项目Id"
+      projectName:
+        type: string
+        description: "项目名称"
+      courseId:
+        type: string
+        description: "课程Id"
+      courseName:
+        type: string
+        description: "课程名称"
+      projectSuiteIds:
+        type: "array"
+        description: "項目套件id集合"
+        items:
+          type: string
+
+  ProjectSuiteResourceVo:
+    type: object
+    properties:
+      projectId:
+        type: string
+        description: "套件Id"
+      number:
+        type: integer
+        description: '数量'

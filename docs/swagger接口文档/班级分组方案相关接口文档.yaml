@@ -1,0 +1,449 @@
+swagger: "2.0"
+info:
+  title: 班级分组方案相关接口文档
+  version: "1.0"
+host: 192.168.1.34:8080
+basePath: /v1
+schemes:
+  - https
+paths:
+  /classgroupingscheme:
+    post:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "新增班级分组方案接口"
+      description: "云课堂老师端-新增班级分案调用"
+      operationId: insertClassGroupingScheme
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（groupId={}&signKey=123123）
+          type: string
+          required: true
+        - name: groupId
+          description: "班级id"
+          type: string
+          required: true
+          in: query
+        - name: schemeResource
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ClassGroupingSchemeInsertResource"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "验证信息错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /classgroupingscheme/{id}:
+    get:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "获取班级分组方案详情"
+      description: "1、云课堂老师端-获取班级分组方案详情接口"
+      operationId: "getClassGroupingSchemeDetail"
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（id={}&signKey=123123）
+          type: string
+          required: true
+        - name: id
+          description: "班级分组方案id"
+          type: string
+          required: true
+          in: path
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/ClassGroupingSchemeResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        404:
+          description: "未找到此班级方案"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /classgroupingscheme/checkaddexperimental:
+    post:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "校验添加实验小组方案"
+      description: "云课堂老师端-校验能否添加实验小组方案"
+      operationId: checkCanAddExperimentalGroupingScheme
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（groupId={}&signKey=123123）
+          type: string
+          required: true
+        - name: groupId
+          description: "班级id"
+          type: string
+          required: true
+          in: query
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/GroupingSchemeAddCheckedResource"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /classgroupingscheme/responsibleteacher:
+    get:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "获取课程下所有小组的负责老师"
+      description: "云课堂老师端-实验互评获取负责老师"
+      operationId: getResponsibleTeacher
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: groupIds
+          description: "班级id(多个班级用“，”隔开)"
+          type: string
+          required: true
+          in: query
+        - name: teacherName
+          description: "老师名称"
+          type: string
+          required: true
+          in: query
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GroupingSchemeTeacher"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /classgroupingscheme/responsibleclass:
+    get:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "获取老师负责下的所有小组"
+      description: "云课堂老师端-实验互评获取负责小组"
+      operationId: getResponsibleClassGroup
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: teacherId
+          description: "老师Id"
+          type: string
+          required: false
+          in: query
+        - name: className
+          description: "小组名称"
+          type: string
+          required: false
+          in: query
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ClassGroupingVO"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /classgroupingscheme/responsiblestudent:
+    get:
+      tags:
+        - "ClassGroupingScheme"
+      summary: "根据班级，负责老师，负责小组，获取课程下所有学生信息"
+      description: "teachingApi:云课堂老师端-老师端获取同伴互评项目评价统计-接口调用"
+      operationId: getResponsibleStudent
+      parameters:
+        - name: validCode
+          in: query
+          description: 验证码（&signKey=123123）
+          type: string
+          required: true
+        - name: groupIds
+          description: "班级id(多个班级用“，”隔开)"
+          type: string
+          required: true
+          in: query
+        - name: responsibleTeacherId
+          description: "负责老师ID"
+          type: string
+          required: false
+          in: query
+        - name: classGroupId
+          description: "小组ID"
+          type: string
+          required: false
+          in: query
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GroupingSchemeStudent"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  ClassGroupingSchemeResource:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "班级方案id"
+      schemeName:
+        type: string
+        description: "班级方案名称"
+      schemeDescription:
+        type: string
+        description: "班级方案描述"
+      schemaType:
+        type: integer
+        description: "方案类型 0：普通小组方案；1：实验小组方案"
+      classGroupingList:
+        type: array
+        items:
+          $ref: "#/definitions/ClassGroupingResource"
+
+  ClassGroupingResource:
+    type: object
+    properties:
+      classGroupingId:
+        type: string
+        description: "班级小组id"
+      classGroupingName:
+        type: string
+        description: "班级小组名称"
+      classGroupingType:
+        type: integer
+        description: "班级小组类型  0: 已分配；1：未分配"
+      responsibleTeacherId:
+        type: string
+        description: "负责教师id"
+      responsibleTeacherName:
+        type: string
+        description: "负责教师姓名"
+      responsibleTeacherNo:
+        type: string
+        description: "负责教师工号"
+      memberNum:
+        type: integer
+        description: "班级小组人数"
+      memberList:
+        type: array
+        items:
+          $ref: "#/definitions/ClassGroupingMemberResource"
+
+  ClassGroupingMemberResource:
+    type: object
+    properties:
+      id:
+        type: "string"
+        description: "用户id"
+      userNo:
+        type: "string"
+        description: "用户学号"
+      userName:
+        type: "string"
+        description: "用户姓名"
+      college:
+        type: "string"
+        description: "学院"
+      eamil:
+        type: "string"
+        description: "邮箱"
+      avatarPath:
+        type: "string"
+        description: "用户头像"
+      avatarInnerUrl:
+        type: string
+        description: "头像内网地址"
+      avatarOuterUrl:
+        type: string
+        description: "头像外网地址"
+      className:
+        type: "string"
+        description: "行政班"
+      majorName:
+        type: "string"
+        description: "专业"
+      gender:
+        type: "string"
+        description: "性别 0=未知 1=男 2=女"
+      whetherGroupLeader:
+        type: boolean
+        description: "是否为组长"
+
+
+  ClassGroupingSchemeInsertResource:
+    type: object
+    properties:
+      schemaId:
+        type: string
+        description: "方案id"
+      operatorId:
+        type: string
+        description: "操作人id"
+      operatorName:
+        type: string
+        description: "操作人姓名"
+      schemaName:
+        type: string
+        description: "方案名称"
+      schemaDescription:
+        type: string
+        description: "方案描述"
+      schemaType:
+        type: integer
+        description: "方案类型 0：普通小组方案；1：实验小组方案"
+      classGroupList:
+        type: array
+        items:
+          $ref: "#/definitions/ClassGroupingInsertResource"
+  ClassGroupingInsertResource:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "小组名称"
+      responsibleTeacherId:
+        type: string
+        description: "负责教师id"
+      responsibleTeacherName:
+        type: string
+        description: "负责教师姓名"
+      responsibleTeacherNo:
+        type: string
+        description: "负责教师工号"
+      memberList:
+        type: array
+        items:
+          $ref: "#/definitions/ClassGroupingMemberInsertResource"
+  ClassGroupingMemberInsertResource:
+    type: object
+    properties:
+      studentId:
+        type: string
+        description: "学生id"
+      studentName:
+        type: string
+        description: "学生姓名"
+      studentNo:
+        type: string
+        description: "学号"
+      administrativeClassName:
+        type: string
+        description: "行政班名称"
+      majorName:
+        type: string
+        description: "专业"
+      collegeName:
+        type: string
+        description: "学员名称"
+      whetherGroupLeader:
+        type: boolean
+        description: "是否为组长"
+
+  GroupingSchemeAddCheckedResource:
+    type: object
+    properties:
+      checkedStatus:
+        type: integer
+        description: "0:允许添加实验小组；1：允许添加普通小组；2：都不允许添加"
+  GroupingSchemeTeacher:
+    type: object
+    properties:
+      teacherId:
+        type: string
+        description: "教师ID"
+      teacherName:
+        type: string
+        description: "教师名称"
+  ClassGroupingVO:
+    type: object
+    properties:
+      classGroupId:
+        type: string
+        description: "小组Id"
+      classGroupName:
+        type: string
+        description: "小组名称"
+  GroupingSchemeStudent:
+    type: object
+    properties:
+      studentId:
+        type: string
+        description: "教师ID"
+      studentName:
+        type: string
+        description: "教师名称"

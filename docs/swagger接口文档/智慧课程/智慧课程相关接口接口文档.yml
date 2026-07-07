@@ -1,0 +1,528 @@
+swagger: "2.0"
+info:
+  title: 智慧课程相关接口接口文档
+  version: "1.0"
+host: 192.168.1.34
+basePath: /api/v1
+schemes:
+  - https
+  - http
+paths:
+  /wisdomCourse:
+    post:
+      tags:
+        - "WisdomCourse"
+      summary: "新增智慧课程接口"
+      description: "1.云课堂管理端使用"
+      operationId: "addWisdomCourse"
+      parameters:
+        - name: "wisdomCourseParam"
+          in: "body"
+          description: "智慧课程信息"
+          required: true
+          schema:
+            $ref: "#/definitions/WisdomCourseParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/page:
+    post:
+      tags:
+        - "WisdomCourse"
+      summary: "分页查询智慧课程接口"
+      description: "1.云课堂管理端使用"
+      operationId: "queryWisdomCoursePage"
+      parameters:
+        - name: "wisdomCoursePageParam"
+          in: "body"
+          description: "分页查询智慧课程参数"
+          required: true
+          schema:
+            $ref: "#/definitions/WisdomCoursePageParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/WisdomCoursePageResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+  /wisdomCourse/statistics:
+    get:
+      tags:
+        - "WisdomCourse"
+      summary: "根据课程Id获取AI知识库任务情况"
+      description: "1.云课堂管理端使用"
+      operationId: "getWisdomCourseTaskStatistics"
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id"
+          required: true
+          type: string
+        - name: "taskTypes"
+          in: "query"
+          description: "智慧课程任务编号，多个逗号分割"
+          required: true
+          type: string
+        - name: "validCode"
+          in: "query"
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/WisdomCourseStatisticsResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/delete:
+    post:
+      tags:
+        - "WisdomCourse"
+      summary: "删除智慧课程接口"
+      description: "1.云课堂管理端使用"
+      operationId: "deleteWisdomCourse"
+      parameters:
+        - name: "wisdomCourseId"
+          in: "query"
+          description: "智慧课程id"
+          required: true
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码 （wisdomCourseId={}&signKey=123123）"
+          required: true
+          type: string
+        - name: operatorId
+          in: query
+          description: "操作人id"
+          required: true
+          type: string
+        - name: operatorName
+          in: query
+          description: "操作人名称"
+          required: true
+          type: string
+        - name: operatorNo
+          in: query
+          description: "操作人编号"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/task:
+    get:
+      tags:
+        - "WisdomCourse"
+      summary: "根据条件查询智慧课程任务接口"
+      description: "1.ai助教接口"
+      operationId: "queryWisdomCourseTaskBy"
+      parameters:
+        - name: "courseId"
+          in: "query"
+          type: string
+          description: "课程id"
+          required: false
+        - name: "taskTypes"
+          in: "query"
+          type: string
+          description: "任务类型（多个逗号分割）"
+          required: false
+        - name: "taskStatus"
+          in: "query"
+          type: string
+          description: "任务结果（多个逗号分割）"
+          required: false
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/WisdomCourseTaskResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/task/page:
+    post:
+      tags:
+        - "WisdomCourse"
+      summary: "分页查询智慧课程任务接口"
+      description: "1.云课堂管理端使用"
+      operationId: "queryWisdomCourseTaskPage"
+      parameters:
+        - name: "wisdomCourseTaskPageParam"
+          in: "body"
+          description: "分页查询智慧课程任务参数"
+          required: true
+          schema:
+            $ref: "#/definitions/WisdomCourseTaskPageParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            $ref: "#/definitions/WisdomCourseTaskPageResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/task/retry:
+    post:
+      tags:
+        - "WisdomCourse"
+      summary: "智慧课程任务重试接口"
+      description: "1.云课堂管理端使用"
+      operationId: "retryWisdomCourseTask"
+      parameters:
+        - name: "wisdomCourseTaskRetryParam"
+          in: "body"
+          description: "智慧课程任务重试参数"
+          required: true
+          schema:
+            $ref: "#/definitions/WisdomCourseTaskRetryParam"
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        409:
+          description: "业务校验数据错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+
+  /wisdomCourse/query:
+    get:
+      tags:
+        - "WisdomCourse"
+      summary: "查询智慧课程接口"
+      description: "1.云课堂教师端使用"
+      operationId: "queryWisdomCourse"
+      parameters:
+        - name: "courseId"
+          in: "query"
+          description: "课程id,多个逗号分割"
+          required: false
+          type: string
+        - name: validCode
+          in: query
+          description: "验证码 （&signKey=123123）"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "成功"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/WisdomCourseResult"
+        400:
+          description: "参数不正确"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        403:
+          description: "验证码错误"
+          schema:
+            $ref: "#/definitions/ErrorResult"
+        500:
+          description: "服务器异常"
+definitions:
+  ErrorResult:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "错误码"
+      error:
+        type: "string"
+        description: "错误信息"
+  WisdomCourseParam:
+    type: "object"
+    properties:
+      courseId:
+        type: "string"
+        description: "课程id"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+      historyTermList :
+        type: "array"
+        items:
+          $ref: "#/definitions/WisdomCourseHistoryTermParam"
+  WisdomCourseHistoryTermParam:
+    type: "object"
+    properties:
+      termId:
+        type: "string"
+        description: "学期id"
+      schoolYear:
+        type: "string"
+        description: "学年"
+      term:
+        type: "integer"
+        description: "学期"
+  WisdomCoursePageParam:
+    type: "object"
+    properties:
+      courseNoOrName:
+        type: "string"
+        description: "课程编号或名称"
+      pageNum:
+        type: "integer"
+        description: "页码"
+      pageSize:
+        type: "integer"
+        description: "页大小"
+      teacherNoOrName:
+        type: "string"
+        description: "教师编号或名称"
+  WisdomCoursePageResult:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+        description: "总记录数"
+      page:
+        type: "integer"
+        description: "页码"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总记录数"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      courseList:
+        type: "array"
+        items:
+          $ref: "#/definitions/WisdomCourseResult"
+  WisdomCourseResult:
+    type: "object"
+    properties:
+      id :
+        type: "string"
+        description: "智慧课程id"
+      courseNo:
+        type: "string"
+        description: "课程编号"
+      courseName:
+        type: "string"
+        description: "课程名称"
+      courseId:
+        type: "string"
+        description: "课程id"
+      courseTeacherTeamNames:
+        type: "string"
+        description: "课程教师团队名称"
+      createTime:
+        type: "string"
+        description: "创建时间"
+      completedTaskNum:
+        type: "integer"
+        description: "已完成任务数"
+      totalTaskNum:
+        type: "integer"
+        description: "任务总数"
+  WisdomCourseTaskPageParam:
+    type: "object"
+    properties:
+      wisdomCourseId:
+        type: "string"
+        description: "智慧课程id"
+      pageNum:
+        type: "integer"
+        description: "页码"
+      pageSize:
+        type: "integer"
+        description: "页大小"
+      taskType:
+        type: "integer"
+        description: "任务类型 0:文件解析-教材；1：文件解析-课件；2：语音转写；3：课堂总结；4：课堂要点；5：知识图谱；6：课堂导览；7：课堂词云；8：智能题库；9：知识图谱挂载-视频；10：知识图谱挂载-题库"
+      taskStatus:
+        type: "integer"
+        description: "任务状态 0：待处理；1：处理中；2：已完成；3：处理失败"
+  WisdomCourseTaskPageResult:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+        description: "总记录数"
+      page:
+        type: "integer"
+        description: "页码"
+      pageCount:
+        type: "integer"
+        description: "总页数"
+      totalCount:
+        type: "integer"
+        description: "总记录数"
+      pageSize:
+        type: "integer"
+        description: "每页记录数"
+      taskList:
+        type: "array"
+        items:
+          $ref: "#/definitions/WisdomCourseTaskResult"
+  WisdomCourseTaskResult:
+    type: "object"
+    properties:
+      taskId:
+        type: "string"
+        description: "任务id"
+      taskType:
+        type: "integer"
+        description: "任务类型 0:文件解析-教材；1：文件解析-课件；2：语音转写；3：课堂总结；4：课堂要点；5：知识图谱；6：课堂导览；7：课堂词云；8：智能题库；9：知识图谱挂载-视频；10：知识图谱挂载-题库"
+      taskTypeName:
+        type: "string"
+        description: "任务类型名称"
+
+      taskStatus:
+        type: "integer"
+        description: "任务状态 0：待处理；1：处理中；2：已完成；3：处理失败"
+      remark:
+        type: "string"
+        description: "识别结果原因"
+      taskStatusName:
+        type: "string"
+        description: "任务状态名称"
+      resourceName:
+        type: "string"
+        description: "资源名称"
+      createTime:
+        type: "string"
+        description: "创建时间"
+      resourceType:
+        type: "integer"
+        description: "资源类型 0：教材；1：课件；2：视频；3：题库"
+      resourceTypeName:
+        type: "string"
+        description: "资源类型名称"
+  WisdomCourseTaskRetryParam:
+    type: "object"
+    properties:
+      taskIds:
+        type: "string"
+        description: "任务id列表，多个用逗号分隔"
+      operatorId:
+        type: "string"
+        description: "操作人id"
+      operatorName:
+        type: "string"
+        description: "操作人名称"
+      operatorNo:
+        type: "string"
+        description: "操作人编号"
+  WisdomCourseStatisticsResult:
+    type: "object"
+    properties:
+      taskType:
+        type: "Integer"
+        description: "任务类型"
+      taskTypeName:
+        type: "string"
+        description: "任务类型名称"
+      count:
+        type: "Integer"
+        description: "统计名称"
