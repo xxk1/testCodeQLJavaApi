@@ -31,7 +31,7 @@ jobs:
             # 对于 Java 这种编译型语言，通常需要指定构建模式
             # 如果项目是 Maven/Gradle 且能被自动识别，可以不写或设为 'auto'
             # 如果自动构建失败，需要改为 'manual' 并在下方添加构建步骤
-            build-mode: auto 
+            build-mode: autobuild 
 
     steps:
       - name: Checkout repository
