@@ -1,0 +1,58 @@
+name: "CodeQL Advanced"
+
+on:
+  # 触发条件：当有 push 操作到以 FN# 开头的分支时
+  push:
+    branches:
+      - 'FN#*'
+  # 触发条件：当有 pull_request 操作针对以 FN# 开头的分支时
+  pull_request:
+    branches:
+      - 'FN#*'
+  # 保留原有的每周六定时扫描任务（可选）
+  schedule:
+    - cron: '44 22 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 指定分析语言为 java-kotlin，这会覆盖自动检测
+          - language: java-kotlin
+            # 对于 Java 这种编译型语言，通常需要指定构建模式
+            # 如果项目是 Maven/Gradle 且能被自动识别，可以不写或设为 'auto'
+            # 如果自动构建失败，需要改为 'manual' 并在下方添加构建步骤
+            build-mode: auto 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # 可以在这里添加自定义查询包，例如：
+          # queries: security-extended,security-and-quality
+
+      # 如果 build-mode 设置为 'manual'，则需要取消下方步骤的注释并填写构建命令
+      # - name: Run manual build steps
+      #   if: matrix.build-mode == 'manual'
+      #   run: |
+      #     echo "Add your build commands here, e.g., mvn compile or gradle build"
+      #     exit 1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
